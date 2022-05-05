@@ -1,0 +1,128 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.btn-dark-light {
+  text-decoration: none;
+  color: white;
+}
+
+.btn-dark-light:hover {
+  color: rgb(26, 25, 25);
+}
+
+.main-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  background-blend-mode: darken;
+  background-color: rgba(19, 19, 19, 0.728);
+  background-image: url(images/forum.jpg);
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+.main-wrapper .list-group-item {
+  background-color: #666f7091;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border-radius: 13px;
+}
+
+.list-group-item.list-section-item a {
+  text-decoration: none;
+}
+.wrappering-link {
+  text-decoration: none;
+}
+.actions-bar a {
+  margin-right: 5px;
+}
+
+.main-wrapper .list-group-item.list-section-item:hover {
+  background-color: #7e8c8e91;
+}
+
+.content-section {
+  color: aliceblue;
+  text-shadow: 0 0 10px #999494;
+}
+
+.comment-list .card {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+}
+.comment-list .card-footer {
+  background-color: rgb(163 183 182 / 29%);
+  border-radius: 15px;
+}
+
+.comment-list .card-footer .btn {
+  margin-left: 5px;
+}
+
+/* .forum-background {
+  width: 100vw;
+  min-height: 100vh;
+  position: absolute;
+  background-image: url(images/forum.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; 
+} */
+
+.profile-section {
+  background-color: #68839747;
+}
+
+.profile-section .form-control:focus {
+  box-shadow: none;
+  border-color: #BA68C8
+}
+
+.profile-section .profile-button {
+  background: rgb(99, 39, 120);
+  box-shadow: none;
+  border: none
+}
+
+.profile-section .profile-button:hover {
+  background: #682773
+}
+
+.profile-section .profile-button:focus {
+  background: #682773;
+  box-shadow: none
+}
+
+.profile-section .profile-button:active {
+  background: #682773;
+  box-shadow: none
+}
+
+.profile-section .back:hover {
+  color: #682773;
+  cursor: pointer
+}
+
+.profile-section .labels {
+  font-size: 11px
+}
+
+.profile-section .add-experience:hover {
+  background: #BA68C8;
+  color: #fff;
+  cursor: pointer;
+  border: solid 1px #BA68C8
+}
