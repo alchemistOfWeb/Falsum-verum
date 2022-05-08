@@ -171,3 +171,4 @@ class TopicCommentViewSet(viewsets.ViewSet):
         topic.is_blocked = True
         topic.save()
         return Response(status=status.HTTP_205_RESET_CONTENT)
+

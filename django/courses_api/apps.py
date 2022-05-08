@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ForumApiConfig(AppConfig):
+class CoursesApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'forum_api'
+    name = 'courses_api'
