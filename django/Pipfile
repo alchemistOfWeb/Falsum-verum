@@ -13,6 +13,7 @@ djoser = "*"
 django-cors-headers = "*"
 pillow = "*"
 django-imagekit = "*"
+django-ckeditor = "*"
 
 [dev-packages]
 
