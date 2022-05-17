@@ -2,11 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-
+import ckeditor_uploader
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include('forum_api.urls')),
+    path('api/v1/', include('courses_api.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ]
 
 if settings.DEBUG:
