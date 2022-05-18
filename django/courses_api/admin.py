@@ -44,7 +44,7 @@ class StepAdmin(admin.ModelAdmin):
     list_display = ['title', 'lesson', 'step_type', 'grade', 'order', 'doshow']
 
 class StepCommentAdmin(admin.ModelAdmin):
-    list_display = ['author', 'course']
+    list_display = ['author', 'step', 'updated_at']
 
 
 # Register your models here.

@@ -104,7 +104,8 @@ class Course(models.Model):
     description = ckeditor.fields.RichTextField(max_length=5000, null=True, blank=True)
     duration = models.DurationField('продолжительность курса', null=True, blank=True)
     doshow = models.BooleanField(default=False, blank=True)
-    authors = models.ManyToManyField(User, related_name="courses")
+    authors = models.ManyToManyField(User, related_name="own_courses")
+    listeners = models.ManyToManyField(User, related_name="undergoing_courses") # todo: add through_related
     specialization = models.ForeignKey(
         Specialization, 
         related_name='courses',
@@ -192,6 +193,7 @@ class LessonType(models.Model):
 
 class Lesson(models.Model): 
     title = models.CharField(max_length=512, null=False)
+    lesson_type = models.ForeignKey(LessonType, on_delete=models.SET_NULL, null=True, blank=True)
     module = models.ForeignKey(
         Module, 
         related_name='lessons',
@@ -207,6 +209,17 @@ class Lesson(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+class LessonReactionType(models.IntegerChoices):
+    DISLIKE = 0, 'dislike'
+    LIKE = 1, 'like'
+
+class LessonReaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, related_name='reactions', on_delete=models.CASCADE)
+    value = models.SmallIntegerField(choices=LessonReactionType.choices, null=False)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True)
 
 
 class StepType(models.IntegerChoices):
@@ -247,7 +260,7 @@ class Step(models.Model):
 
 class StepComment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    step = models.ForeignKey(Step, related_name='comments', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
     content = ckeditor.fields.RichTextField(max_length=1000, null=True, blank=True)
@@ -255,6 +268,16 @@ class StepComment(models.Model):
 
     def __str__(self) -> str:
         return f'{self.author} on {self.course}'
+
+
+class StepReactionType(models.IntegerChoices):
+    DISLIKE = 0, 'dislike'
+    LIKE = 1, 'like'
+
+class StepReaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    step = models.ForeignKey(Step, related_name='reactions', on_delete=models.CASCADE)
+    value = models.SmallIntegerField(choices=StepReactionType.choices, null=False)
 
 # балы за урок
 # сертификат
