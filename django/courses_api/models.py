@@ -39,6 +39,7 @@ class Organization(models.Model):
     title = models.CharField(max_length=512)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
+    is_active = models.BooleanField(null=False, default=True)
     users = models.ManyToManyField(
         User, 
         related_name='organizations', 

@@ -8,16 +8,19 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, permissions, generics
 from rest_framework.views import APIView
-from .models import Topic, TopicComment, Section, Profile
-from .serializers import (TopicSerializer, 
-                          TopicCommentSerializer, 
-                          SectionSerializer, 
-                          ProfileSerializer, UserSerializer)
+from .models import (
+    Specialization, Organization, Course, 
+    Module, Lesson, Step, CourseReport, StepComment
+)
+from .serializers import ( 
+    ProfileSerializer, UserSerializer, SpecializationSerializer,
+    OrganizationSerializer, CourseSerializer
+)
 from .filters import TopicFilter
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
-
+from django.contrib.auth.models import User
 
 # class SectionListView(APIView)
 # ----------- PROFILE ----------- #
@@ -40,12 +43,154 @@ def current_profile(request):
     return Response({'user': serializer.data})
 
 
-# ----------- SECTIONS ----------- #
+
+# Courses + Specializations + Organizations) with filters
 @api_view(['GET'])
-def section_list(request):
-    sections = Section.objects.all()
-    serializer = SectionSerializer(sections, many=True)
-    return Response({'sections': serializer.data})
+def specialization_list(request):
+    specializations = Specialization.objects.all()
+    serializer = SpecializationSerializer(specializations, many=True)
+    return Response({'specializations': serializer.data})
+
+@api_view(['GET'])
+def course_list(request):
+    courses = Course.objects.all()
+    serializer = CourseSerializer(courses, many=True)
+    return Response({'courses': serializer.data})
+
+@api_view(['GET'])
+def organization_list(request):
+    organizations = Organization.objects.all()
+    serializer = OrganizationSerializer(organizations, many=True)
+    return Response({'organizations': serializer.data})
+
+
+
+# detail Specialization description (with authors, courses)
+# detail Specialization update (for owners|authors)
+# Specialization create (in Organization)
+
+
+# ON MAIN PAGE
+# <------------------------------------>
+class OrganizationViewSet(viewsets.ViewSet):
+    queryset = Organization.objects
+    serializer_class = OrganizationSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_class = TopicFilter
+    ordering_fields = ['created_at', 'updated_at']
+    search_fields = ['title']
+    ordering = ['updated_at']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # swagger_schema = CustomAutoSchema
+    # my_tags = ['Tasks']
+
+    def filter_queryset(self, queryset):
+        for backend in self.filter_backends:
+            queryset = backend().filter_queryset(self.request, queryset, view=self)
+
+        return queryset
+
+    def list(self, request):
+        """ 
+        for all
+        """
+        serializer = self.serializer_class(self.filter_queryset(self.queryset), many=True)
+        ctx = {'organizations': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        """ 
+        For authorized user
+        """
+        # data = {**request.data, '': section_pk}
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj)
+        ctx = {'organization': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def delete(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.is_active = False
+        obj.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['patch'])
+    def attach_user(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.user = get_object_or_404(User.objects, pk=request.data.get('user_pk'))
+        obj.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+# <------------------------------------/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# detail Organization description (with authors, specializations, courses)
+# detail Organization update (for owners|authors)
+# Organization create
+# add user to Organization
+
+# detail Course description (with authors, statistics)
+# detail Course update (for owners|authors)
+# detail Course create (in Organization or Specialization)
+
+# detail Course undergoing
+# detail Step undergoing
 
 
 # ----------- TOPICS ----------- #
