@@ -101,14 +101,15 @@
 ### 1 Установка зависимостей
 <a name="dependences"></a> 
 
-Для начала установите python.
-Установите npm версии выше 7.14
+Для начала установите python3 версии не ниже 3.7 (https://www.python.org/downloads/)
+Установите node.js вместе с npm версии выше 7.14 (https://nodejs.org/en/)
+установите pipenv (подробнее здесь: https://semakin.dev/2020/04/pipenv/)
 
 ```bash
 cd нужный каталог, где будет лежать код приложения
 git clone https://github.com/alchemistOfWeb/forumKEI.git
 cd forumKEI/django
-pipenv # чтобы установить зависимости django
+pipenv install # чтобы установить все зависимости проекта
 cd ../reactapp
 npm install # чтобы установить зависимости для react
 ```
@@ -125,7 +126,7 @@ pipenv run python manage.py shell
 >>> from django.core.management.utils import get_random_secret_key
 >>> print(get_random_secret_key()) # скопируйте полученный командой ключ
 >>> exit()
-pipenv run dotenv set SECRET_KEY 'getted_secret_key' # сюда нужно вставить полученный ключ
+pipenv run dotenv set SECRET_KEY "{sk}" # заместо {sk} должен быть полученный выше ключ
 ```
 
 ### 3 Настройка базы данных
@@ -140,10 +141,8 @@ pipenv run dotenv set SECRET_KEY 'getted_secret_key' # сюда нужно вс�
 
 Сделайте миграции в вашу бд
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 ```
-
 
 ### 5 Для доступа к админке 
 <a name="admin_panel"></a> 
