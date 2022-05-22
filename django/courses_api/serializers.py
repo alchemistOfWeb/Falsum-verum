@@ -102,7 +102,6 @@ class ModuleSerializer(serializers.ModelSerializer):
 class CourseFullSerializer(serializers.ModelSerializer):
     modules = ModuleSerializer(read_only=True)
 
-
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["total_listeners"] = instance.listeners.count()
@@ -114,9 +113,24 @@ class CourseFullSerializer(serializers.ModelSerializer):
 
 # <------------------------------------/>
 
-# ON STEP PAGE
+# ON LESSON|STEP PAGES
 # <------------------------------------>
-class StepFullSerializer(serializers.ModelSerializer):
+class LessonSerializer(serializers.ModelSerializer):
+    steps = StepShortSerializer(read_only=True)
+    lesson_type = LessonTypeSerializer()
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()
+        rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
+        return rep
+
+    class Meta:
+        model = Step
+        fields = '__all__'
+
+
+class StepSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()

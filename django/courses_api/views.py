@@ -13,10 +13,11 @@ from .models import (
     Module, Lesson, Step, CourseReport, StepComment
 )
 from .serializers import ( 
-    ProfileSerializer, UserSerializer, SpecializationSerializer,
-    OrganizationSerializer, CourseSerializer
+    CourseFullSerializer, ModuleSerializer, ProfileSerializer, 
+    UserSerializer, SpecializationSerializer, OrganizationSerializer, 
+    CourseSerializer, LessonSerializer, StepSerializer
 )
-from .filters import TopicFilter
+from .filters import OrganizationFilter, SpecializationFilter, CourseFilter
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
@@ -45,23 +46,23 @@ def current_profile(request):
 
 
 # Courses + Specializations + Organizations) with filters
-@api_view(['GET'])
-def specialization_list(request):
-    specializations = Specialization.objects.all()
-    serializer = SpecializationSerializer(specializations, many=True)
-    return Response({'specializations': serializer.data})
+# @api_view(['GET'])
+# def specialization_list(request):
+#     specializations = Specialization.objects.all()
+#     serializer = SpecializationSerializer(specializations, many=True)
+#     return Response({'specializations': serializer.data})
 
-@api_view(['GET'])
-def course_list(request):
-    courses = Course.objects.all()
-    serializer = CourseSerializer(courses, many=True)
-    return Response({'courses': serializer.data})
+# @api_view(['GET'])
+# def course_list(request):
+#     courses = Course.objects.all()
+#     serializer = CourseSerializer(courses, many=True)
+#     return Response({'courses': serializer.data})
 
-@api_view(['GET'])
-def organization_list(request):
-    organizations = Organization.objects.all()
-    serializer = OrganizationSerializer(organizations, many=True)
-    return Response({'organizations': serializer.data})
+# @api_view(['GET'])
+# def organization_list(request):
+#     organizations = Organization.objects.all()
+#     serializer = OrganizationSerializer(organizations, many=True)
+#     return Response({'organizations': serializer.data})
 
 
 
@@ -154,6 +155,297 @@ class OrganizationViewSet(viewsets.ViewSet):
         obj.save()
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
+
+class SpecializationViewSet(viewsets.ViewSet):
+    queryset = Specialization.objects
+    serializer_class = SpecializationSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_class = SpecializationFilter
+    ordering_fields = ['created_at', 'updated_at']
+    search_fields = ['title']
+    ordering = ['updated_at']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # swagger_schema = CustomAutoSchema
+    # my_tags = ['Tasks']
+
+    def filter_queryset(self, queryset):
+        for backend in self.filter_backends:
+            queryset = backend().filter_queryset(self.request, queryset, view=self)
+
+        return queryset
+
+    def list(self, request):
+        """ 
+        for all
+        """
+        serializer = self.serializer_class(self.filter_queryset(self.queryset), many=True)
+        ctx = {'specializations': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        """ 
+        For authorized user
+        """
+        # data = {**request.data, '': section_pk}
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj)
+        ctx = {'specialization': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def delete(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.is_active = False
+        obj.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['patch'])
+    def attach_user(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.user = get_object_or_404(User.objects, pk=request.data.get('user_pk'))
+        obj.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+
+class CourseViewSet(viewsets.ViewSet):
+    queryset = Course.objects
+    serializer_class = CourseSerializer
+    full_course_serializer_class = CourseFullSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_class = CourseFilter
+    ordering_fields = ['created_at', 'updated_at']
+    search_fields = ['title']
+    ordering = ['updated_at']
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # swagger_schema = CustomAutoSchema
+    # my_tags = ['Tasks']
+
+    def filter_queryset(self, queryset):
+        for backend in self.filter_backends:
+            queryset = backend().filter_queryset(self.request, queryset, view=self)
+
+        return queryset
+
+    def list(self, request):
+        """ 
+        for all
+        """
+        serializer = self.serializer_class(self.filter_queryset(self.queryset), many=True)
+        ctx = {'courses': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        """ 
+        For authorized user
+        """
+        # data = {**request.data, '': section_pk}
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+
+        if request.data.get('full'):
+            obj_serializer = self.serializer_class(obj)
+        else:
+            obj_serializer = self.full_course_serializer_class(obj)
+        
+        ctx = {'course': obj_serializer.data}
+
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def delete(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.is_active = False
+        obj.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=['patch'])
+    def attach_user(self, request, pk=None):
+        """ 
+        For owner|author
+        """
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.user = get_object_or_404(User.objects, pk=request.data.get('user_pk'))
+        obj.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+        
+
+class ModuleViewSet(viewsets.ViewSet):
+    queryset = Module.objects
+    serializer_class = ModuleSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def create(self, request, course):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, course, module):
+        obj = get_object_or_404(self.queryset, pk=module)
+        serializer = self.serializer_class(obj)
+        ctx = {'organization': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, course, module):
+        obj = get_object_or_404(self.queryset, pk=module)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, course, module):
+        obj = get_object_or_404(self.queryset, pk=module)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def destroy(self, course, request, module):
+        obj = get_object_or_404(self.queryset, pk=module)
+        obj.is_active = False
+        obj.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class LessonViewSet(viewsets.ViewSet):
+    queryset = Lesson.objects
+    serializer_class = LessonSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def create(self, request, course, module):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, course, module, lesson):
+        obj = get_object_or_404(self.queryset, pk=lesson)
+        serializer = self.serializer_class(obj)
+        ctx = {'organization': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, course, module, lesson):
+        obj = get_object_or_404(self.queryset, pk=lesson)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, course, module, lesson):
+        obj = get_object_or_404(self.queryset, pk=lesson)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def destroy(self, request, course, module, lesson):
+        obj = get_object_or_404(self.queryset, pk=lesson)
+        obj.is_active = False
+        obj.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class StepViewSet(viewsets.ViewSet):
+    queryset = Step.objects
+    serializer_class = StepSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def create(self, request, course, module, lesson):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, course, module, lesson, step):
+        obj = get_object_or_404(self.queryset, pk=step)
+        serializer = self.serializer_class(obj)
+        ctx = {'organization': serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, course, module, lesson, step):
+        obj = get_object_or_404(self.queryset, pk=step)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, course, module, lesson, step):
+        obj = get_object_or_404(self.queryset, pk=step)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def destroy(self, request, course, module, lesson, step):
+        obj = get_object_or_404(self.queryset, pk=step)
+        obj.is_active = False
+        obj.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 # <------------------------------------/>
 
 
@@ -194,67 +486,67 @@ class OrganizationViewSet(viewsets.ViewSet):
 
 
 # ----------- TOPICS ----------- #
-class TopicViewSet(viewsets.ViewSet):
-    queryset = Topic.objects
-    serializer_class = TopicSerializer
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-    filterset_class = TopicFilter
-    ordering_fields = ['created_at', 'updated_at']
-    search_fields = ['author__username', 'title']
-    ordering = ['updated_at']
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # swagger_schema = CustomAutoSchema
-    # my_tags = ['Tasks']
+# class TopicViewSet(viewsets.ViewSet):
+#     queryset = Topic.objects
+#     serializer_class = TopicSerializer
+#     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+#     filterset_class = TopicFilter
+#     ordering_fields = ['created_at', 'updated_at']
+#     search_fields = ['author__username', 'title']
+#     ordering = ['updated_at']
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+#     # swagger_schema = CustomAutoSchema
+#     # my_tags = ['Tasks']
 
-    def filter_queryset(self, queryset):
-        for backend in self.filter_backends:
-            queryset = backend().filter_queryset(self.request, queryset, view=self)
+#     def filter_queryset(self, queryset):
+#         for backend in self.filter_backends:
+#             queryset = backend().filter_queryset(self.request, queryset, view=self)
 
-        return queryset
+#         return queryset
 
-    def list(self, request, section_pk=None):
-        topics = self.queryset.filter(section=section_pk)
-        serializer = self.serializer_class(self.filter_queryset(topics), many=True)
-        section = Section.objects.get(pk=section_pk)
-        serialized_section = SectionSerializer(section, many=False)
-        ctx = {'topics': serializer.data, 'section': serialized_section.data}
-        return Response(data=ctx, status=status.HTTP_200_OK)
+#     def list(self, request, section_pk=None):
+#         topics = self.queryset.filter(section=section_pk)
+#         serializer = self.serializer_class(self.filter_queryset(topics), many=True)
+#         section = Section.objects.get(pk=section_pk)
+#         serialized_section = SectionSerializer(section, many=False)
+#         ctx = {'topics': serializer.data, 'section': serialized_section.data}
+#         return Response(data=ctx, status=status.HTTP_200_OK)
 
-    def create(self, request, section_pk=None):
-        data = {**request.data, 'section': section_pk}
-        serializer = self.serializer_class(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     def create(self, request, section_pk=None):
+#         data = {**request.data, 'section': section_pk}
+#         serializer = self.serializer_class(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # def retrieve(self, request, section_pk=None):
-    def update(self, request, section_pk=None, pk=None):
-        task = get_object_or_404(self.queryset, pk=pk)
-        serializer = self.serializer_class(task, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+#     # def retrieve(self, request, section_pk=None):
+#     def update(self, request, section_pk=None, pk=None):
+#         task = get_object_or_404(self.queryset, pk=pk)
+#         serializer = self.serializer_class(task, data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
 
-    def partial_update(self, request, section_pk=None, pk=None):
-        task = get_object_or_404(self.queryset, pk=pk)
-        serializer = self.serializer_class(task, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+#     def partial_update(self, request, section_pk=None, pk=None):
+#         task = get_object_or_404(self.queryset, pk=pk)
+#         serializer = self.serializer_class(task, data=request.data, partial=True)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
 
-    @action(detail=True, methods=['patch'])
-    def block(self, request, section_pk=None, topic_pk=None):
-        topic = get_object_or_404(self.queryset, pk=topic_pk)
-        topic.is_blocked = True
-        topic.save()
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+#     @action(detail=True, methods=['patch'])
+#     def block(self, request, section_pk=None, topic_pk=None):
+#         topic = get_object_or_404(self.queryset, pk=topic_pk)
+#         topic.is_blocked = True
+#         topic.save()
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
 
-    @action(detail=True, methods=['patch'])
-    def close(self, request, section_pk=None, topic_pk=None):
-        topic = get_object_or_404(self.queryset, pk=topic_pk)
-        topic.is_open = False
-        topic.save()
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+#     @action(detail=True, methods=['patch'])
+#     def close(self, request, section_pk=None, topic_pk=None):
+#         topic = get_object_or_404(self.queryset, pk=topic_pk)
+#         topic.is_open = False
+#         topic.save()
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
 
 
 # ----------- COMMENTS ----------- #
