@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'mdb-ui-kit/css/mdb.min.css';
 import './index.css';
 import Layout from './pages/Layout';
 import Home from './pages/Home';
@@ -13,21 +14,20 @@ import SignUp from './pages/SignUp';
 import Profile from './pages/Profile';
 import Rules from './pages/Rules';
 
-import Catalog from './pages/Catalog';
+import Catalog from './pages/catalog/Catalog';
 
-import CatalogSpecList from './pages/CatalogSpecList';
-import CatalogSpecCreate from './pages/CatalogSpecCreate';
-import CatalogSpecDetail from './pages/CatalogSpecDetail';
-import CatalogSpecEdit from './pages/CatalogSpecEdit';
+import CatalogSpecList from './pages/catalog/CatalogSpecList';
+import CatalogSpecCreate from './pages/catalog/CatalogSpecCreate';
+import CatalogSpecDetail from './pages/catalog/CatalogSpecDetail';
+import CatalogSpecEdit from './pages/catalog/CatalogSpecEdit';
 
-import CatalogCourseList from './pages/CatalogCourseList';
-import CatalogCourseCreate from './pages/CatalogCourseCreate';
-import CatalogCourseDetail from './pages/CatalogCourseDetail';
-import CatalogCourseEdit from './pages/CatalogCourseEdit';
+import CatalogCourseList from './pages/catalog/CatalogCourseList';
+import CatalogCourseCreate from './pages/catalog/CatalogCourseCreate';
+import CatalogCourseDetail from './pages/catalog/CatalogCourseDetail';
+import CatalogCourseEdit from './pages/catalog/CatalogCourseEdit';
 
 import CourseDetail from './pages/course/CourseDetail';
-import CourseEditor from './pages/course/CourseEditor';
-import Catalog from './pages/Catalog';
+import LessonDetail from './pages/course/LessonDetail';
 
 
 import NoPage from './pages/NoPage';
@@ -45,7 +45,7 @@ export default function App() {
           <Route path="signin" element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="profile/:profileId" element={<Profile />} />
-          <Route path="settings" element={<Settings />} />
+          {/* <Route path="settings" element={<Settings />} /> */}
           
           <Route path="catalog" element={<Catalog/>} />
           <Route path="catalog/specializations" element={<CatalogSpecList/>} />
@@ -59,7 +59,7 @@ export default function App() {
           <Route path="catalog/courses/:courseId/edit" element={<CatalogCourseEdit/>} />
           
           <Route path="courses/:courseId" element={<CourseDetail/>} />
-          <Route path="courses/:courseId/editor" element={<CourseEditor/>} />
+          <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>} />
           {/* <Route path="courses/:courseId/sections/:sectionId" element={<CourseSectionDetail/>} /> */}
         </Route>
         <Route path="*" element={<NoPage />} />

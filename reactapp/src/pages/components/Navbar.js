@@ -76,16 +76,16 @@ export default function Navbar() {
                 <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                     <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li>
-                        <Link to="/" className="nav-link px-2 text-secondary">Home</Link>
+                        <Link to="/" className="nav-link px-2 text-secondary">Главная</Link>
                     </li>
                     <li>
-                        <Link to="/sections" className="nav-link px-2 text-white">Sections</Link>
+                        <Link to="/catalog" className="nav-link px-2 text-white">Каталог</Link>
                     </li>
                     <li>
-                        <Link to="/about" className="nav-link px-2 text-white">About</Link>
+                        <Link to="/about" className="nav-link px-2 text-white">О нас</Link>
                     </li>
                     <li>
-                        <Link to="/rules" className="nav-link px-2 text-white">Rules</Link>
+                        <Link to="/rules" className="nav-link px-2 text-white">Правила</Link>
                     </li>
                     </ul>
 

@@ -70,6 +70,8 @@ class Specialization(models.Model): # mb another name is Specialization
         null=True, blank=False,
         on_delete=models.CASCADE
     )
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True)
     description = ckeditor.fields.RichTextField(max_length=5000, null=True, blank=True)
     image_sm = ProcessedImageField(verbose_name="image(sm)",
                                 upload_to='images/avatars/sm/',

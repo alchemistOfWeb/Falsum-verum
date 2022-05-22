@@ -20,10 +20,10 @@ router.register(r'specializations', SpecializationViewSet, basename='specializat
 router.register(r'courses/(?P<course>\d+)/modules',
                 ModuleViewSet, basename='module_list')
 
-router.register(r'courses/(?P<course>\d+)/modules/(?P<course>\d+)/lessons',
+router.register(r'courses/(?P<course>\d+)/modules/(?P<module>\d+)/lessons',
                 LessonViewSet, basename='lesson_list')
 
-router.register(r'courses/(?P<course>\d+)/modules/(?P<course>\d+)/lessons/(?P<course>\d+)/steps',
+router.register(r'courses/(?P<course>\d+)/modules/(?P<module>\d+)/lessons/(?P<lesson>\d+)/steps',
                 StepViewSet, basename='step_list')
 
 urlpatterns = [

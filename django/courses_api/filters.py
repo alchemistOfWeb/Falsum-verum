@@ -1,6 +1,6 @@
 import django_filters
 from django_filters import rest_framework as filters
-from .models import Topic
+from .models import Course, Organization, Specialization
 
 
 # class IdFilterInFilter(filters.BaseInFilter, filters.NumberFilter):
@@ -18,7 +18,7 @@ class OrganizationFilter(filters.FilterSet):
     # tags = IdFilterInFilter(field_name='tags__id', lookup_expr='in')
 
     class Meta:
-        model = Topic
+        model = Organization
         fields = [
             'created_at',
             'updated_at'
@@ -36,7 +36,7 @@ class SpecializationFilter(filters.FilterSet):
     # tags = IdFilterInFilter(field_name='tags__id', lookup_expr='in')
 
     class Meta:
-        model = Topic
+        model = Specialization
         fields = [
             'created_at',
             'updated_at'
@@ -54,7 +54,7 @@ class CourseFilter(filters.FilterSet):
     # tags = IdFilterInFilter(field_name='tags__id', lookup_expr='in')
 
     class Meta:
-        model = Topic
+        model = Course
         fields = [
             'created_at',
             'updated_at'
