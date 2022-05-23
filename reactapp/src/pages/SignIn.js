@@ -46,7 +46,7 @@ async function loginResponse (username, password) {
 
 
 export default function SignIn() {
-    if (window.user) window.location.href = '/';
+    // if (window.user) window.location.href = '/';
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
