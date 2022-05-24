@@ -52,13 +52,13 @@ export default function SignUp() {
     return (
         <main className="container mt-3 d-flex justify-content-center">
             <form className="col-6 col-sm-4" onSubmit={handleSignUp}>
-                <h1 className="h3 mb-3 font-weight-normal text-center">Register</h1>
+                <h1 className="h3 mb-3 font-weight-normal text-center">Регистрация</h1>
                 <div className="mb-3">
                     <input 
                         type="text" 
                         id="inputUsername" 
                         className="form-control" 
-                        placeholder="Username" 
+                        placeholder="Логин" 
                         required autofocus=""
                     />
                     <div className="error-list  d-flex flex-column"></div>
@@ -68,7 +68,7 @@ export default function SignUp() {
                         type="email" 
                         id="inputEmail" 
                         className="form-control" 
-                        placeholder="Email address" 
+                        placeholder="Email" 
                         required autofocus=""
                     />
                     <div className="error-list d-flex flex-column"></div>
@@ -78,7 +78,7 @@ export default function SignUp() {
                         type="password" 
                         id="inputPassword" 
                         className="form-control" 
-                        placeholder="Password" 
+                        placeholder="Пароль" 
                         required
                     />
                     <div className="error-list d-flex flex-column"></div>
@@ -88,29 +88,29 @@ export default function SignUp() {
                         type="password" 
                         id="inputPassword2" 
                         className="form-control" 
-                        placeholder="Repeat password" 
+                        placeholder="Повторите пароль" 
                         required
                     />
                     <div className="error-list d-flex flex-column"></div>
                 </div>
                 <div className="checkbox mb-3">
                 <label>
-                    <input type="checkbox" value="remember-me"/> Remember me
+                    <input type="checkbox" value="remember-me"/> Запомнить меня
                 </label>
                 </div>
                 <p>
-                    Have already registered? You can 
-                    <Link to="/signin">signin</Link>
+                    Уже зарегистрированы? Вы можете 
+                    <Link to="/signin" className="text-decoration-none"> войти</Link>
                 </p>
                 <div className="d-flex justify-content-center">
                     <button
                         className="btn btn-lg btn-primary btn-block"
                         type="submit"
                     >
-                        Sign up
+                        Зарегистрироваться
                     </button>
                 </div>
-                <p className="mt-5 mb-3 text-muted">© 1917-2022</p>
+                <p className="mt-5 mb-3 text-muted">© 2022</p>
             </form>  
         </main>
     )

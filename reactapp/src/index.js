@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'mdb-ui-kit/css/mdb.min.css';
 import './index.css';
+import './index.scss';
 import Layout from './pages/Layout';
 import Home from './pages/Home';
 import About from './pages/About';

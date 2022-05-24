@@ -52,7 +52,9 @@ class Organization(models.Model):
         return self.title
 
     class Meta:
-        verbose_name_plural = '    Organizations' # 4
+        verbose_name = 'Организация'
+        # verbose_name_plural = '    Organizations' # 4
+        verbose_name_plural = '    Организации' # 4
 
 
 
@@ -92,7 +94,9 @@ class Specialization(models.Model): # mb another name is Specialization
         return self.title
 
     class Meta:
-        verbose_name_plural = '   Specializations' # 4
+        verbose_name = "Специализация"
+        # verbose_name_plural = '   Specializations' # 4
+        verbose_name_plural = '   Специализации' # 4
 
 
 class TagForCourse(models.Model):
@@ -100,33 +104,40 @@ class TagForCourse(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+    class Meta:
+        verbose_name = 'Тег для курса'
+        verbose_name_plural = 'Теги для курса'
 
 
 class Course(models.Model):
-    title = models.CharField(max_length=512, null=False)
-    description = ckeditor.fields.RichTextField(max_length=5000, null=True, blank=True)
-    duration = models.DurationField('продолжительность курса', null=True, blank=True)
-    doshow = models.BooleanField(default=False, blank=True)
-    authors = models.ManyToManyField(User, related_name="own_courses")
-    listeners = models.ManyToManyField(User, related_name="undergoing_courses") # todo: add through_related
+    title = models.CharField(verbose_name="Название", max_length=128, null=False)
+    short_description = models.CharField(verbose_name="Короткое описание", max_length=255, null=False, default="", blank=True)
+    description = ckeditor.fields.RichTextField(verbose_name="Подробное описание", max_length=5000, null=True, blank=True)
+    duration = models.DurationField(verbose_name='продолжительность курса', null=True, blank=True)
+    doshow = models.BooleanField(verbose_name="Показывать слушателям курса", default=False, blank=True)
+    authors = models.ManyToManyField(User, verbose_name="Учителя", related_name="own_courses")
+    listeners = models.ManyToManyField(User, verbose_name="Слушатели",  related_name="undergoing_courses") # todo: add through_related
     specialization = models.ForeignKey(
         Specialization, 
+        verbose_name="Специализация", 
         related_name='courses',
         on_delete=models.CASCADE, 
         null=True, blank=True
     )
     organization = models.ForeignKey(
         Organization, 
+        verbose_name="Организация",
         related_name='courses',
         null=True, blank=False,
         on_delete=models.CASCADE
     )
-    order_in_specialization = models.SmallIntegerField(null=False, default=0)
-    tags = models.ManyToManyField(TagForCourse, related_name="courses")
+    order_in_specialization = models.SmallIntegerField(verbose_name="Порядковый номер", null=False, default=0)
+    tags = models.ManyToManyField(TagForCourse, verbose_name="Теги", related_name="courses")
     # roadmap = models.JSONField(null=False, blank=True, default=Value('null')) # in future
     # category = models.ForeignKey(CourseCategory, on_delete=models.SET_NULL, null=True, blank=False)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, blank=True)
+    created_at = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, blank=True)
+    updated_at = models.DateTimeField(verbose_name="Последнее обновление", auto_now=True, blank=True)
     image_sm = ProcessedImageField(verbose_name="image(sm)",
                                 upload_to='images/avatars/sm/',
                                 processors=[ResizeToFit(100, 100)],
@@ -145,6 +156,10 @@ class Course(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        verbose_name = 'Курс'
+        verbose_name_plural = 'Курсы'
+
 
 # class CourseRoadmap(models.Model): ... # mongo?
 
@@ -155,6 +170,10 @@ class CourseReport(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
     content = ckeditor.fields.RichTextField(max_length=5000, null=False, default='', blank=True)
+
+    class Meta:
+        verbose_name = 'Отзыв на курс'
+        verbose_name_plural = 'Отзывы на курс'
 
 
 class Module(models.Model): 
@@ -175,6 +194,10 @@ class Module(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+    class Meta:
+        verbose_name = 'Модуль'
+        verbose_name_plural = 'Модули'
 
 
 class LessonType(models.Model): 
@@ -192,6 +215,10 @@ class LessonType(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'Тип урока'
+        verbose_name_plural = 'Типы уроков'
 
 
 class Lesson(models.Model): 
@@ -212,6 +239,12 @@ class Lesson(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    class Meta:
+        verbose_name = 'Урок'
+        verbose_name_plural = 'Уроки'
+
+
 
 class LessonReactionType(models.IntegerChoices):
     DISLIKE = 0, 'dislike'
@@ -261,6 +294,11 @@ class Step(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        verbose_name = 'Шаг в уроке'
+        verbose_name_plural = 'Шаги в уроке'
+
+
 class StepComment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     step = models.ForeignKey(Step, related_name='comments', on_delete=models.CASCADE)
@@ -271,6 +309,10 @@ class StepComment(models.Model):
 
     def __str__(self) -> str:
         return f'{self.author} on {self.course}'
+    
+    class Meta:
+        verbose_name = 'Комментарий на Шаг'
+        verbose_name_plural = 'Комментарии на Шаг'
 
 
 class StepReactionType(models.IntegerChoices):

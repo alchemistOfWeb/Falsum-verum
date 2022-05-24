@@ -78,14 +78,14 @@ export default function SignIn() {
 
     return (
         <main className="container mt-3 d-flex justify-content-center">
-            <form className="col-6 col-sm-4" onSubmit={handleSignIn}>
-                <h1 className="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
+            <form className="col-12 col-sm-6 col-md-4" onSubmit={handleSignIn}>
+                <h1 className="h3 mb-3 font-weight-normal text-center">Вход</h1>
                 <div className="mb-3">
                     <input 
                         type="text" 
                         id="inputUsername" 
                         className="form-control" 
-                        placeholder="Username" 
+                        placeholder="Логин или почта" 
                         required autoFocus=""
                         onChange={(e)=>{setUsername(e.target.value)}}
                     />
@@ -96,7 +96,7 @@ export default function SignIn() {
                         type="password" 
                         id="inputPassword" 
                         className="form-control" 
-                        placeholder="Password" 
+                        placeholder="Пароль" 
                         required
                         onChange={(e)=>{setPassword(e.target.value)}}
                     />
@@ -104,16 +104,16 @@ export default function SignIn() {
                 </div>
                 <div className="checkbox mb-3">
                 <label>
-                    <input type="checkbox" value="remember-me"/> Remember me
+                    <input type="checkbox" value="remember-me"/>Запомнить меня
                 </label>
                 </div>
-                <p>Have not registered yet? You can do this now - 
-                    <Link to="/signup">signup</Link>
+                <p>Ещё не зарегистровались?  
+                    <Link to="/signup" className="text-decoration-none"> Зарегистрироваться</Link>
                 </p>
                 <div className="d-flex justify-content-center">
-                    <button type="submit" className="btn btn-lg btn-primary btn-block" id="signin-submit">Sign in</button>
+                    <button type="submit" className="btn btn-lg btn-primary btn-block" id="signin-submit">Войти</button>
                 </div>
-                <p className="mt-5 mb-3 text-muted">© 1717-2022</p>
+                <p className="mt-5 mb-3 text-muted">© 2022</p>
             </form>  
         </main>
     )

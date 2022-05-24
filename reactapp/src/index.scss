@@ -1,0 +1,20 @@
+.catalog-category-list {
+    .nav-link {
+        color: rgb(47, 173, 47);
+    }
+    .nav-link.active {        
+        border-bottom: 3px solid rgba(116, 197, 153, 0.842);
+    }
+} 
+.course-description-section-list {
+    .nav-link {
+        color: rgb(167, 197, 202);
+    }
+    .nav-link.active {        
+        border-bottom: 3px solid rgba(148, 190, 212, 0.842);
+    }
+}
+
+// .catalog-list-card {
+//     height: 120px;
+// }

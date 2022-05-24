@@ -1,0 +1,13 @@
+#header, .module caption {
+    background-color: #212529; 
+    /* #1f3e3b */
+}
+
+body {
+    background-color: #273e7e;
+}
+
+.results {
+    padding: 10px;
+    background-color: #191a1c;
+}

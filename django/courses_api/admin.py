@@ -7,6 +7,9 @@ from .models import (
     Module, Specialization
 )
 
+admin.site.site_title = "Stepo - образовательная платформа"
+admin.site.site_header = "Stepo - образовательная платформа"
+
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'image_preview', 'score', 'is_blocked']
 

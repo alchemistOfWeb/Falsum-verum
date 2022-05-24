@@ -28,7 +28,7 @@ const Layout = () => {
         <>
             <div className="main-wrapper m-0">
                 <Navbar/>
-                <div className="container overflow-auto content-section py-3">
+                <div className="overflow-auto content-section pb-3">
                     <Outlet />
                 </div>
             </div>
