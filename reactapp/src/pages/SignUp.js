@@ -19,7 +19,8 @@ async function createuserResponse (params={}) {
 }
 
 export default function SignUp() {
-    if (getCookie('access_token')) window.location.href = '/';
+    // if (getCookie('access_token')) window.location.href = '/';
+    if (window.user) window.location.href = '/';
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");

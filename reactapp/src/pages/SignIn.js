@@ -46,6 +46,7 @@ async function loginResponse (username, password) {
 
 
 export default function SignIn() {
+    console.log('hello sign in')
     // if (window.user) window.location.href = '/';
 
     const [username, setUsername] = useState("")

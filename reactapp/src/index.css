@@ -24,8 +24,8 @@ code {
 .main-wrapper {
   width: 100%;
   min-height: 100vh;
-  background-blend-mode: darken;
-  background-color: rgba(19, 19, 19, 0.728);
+  background-blend-mode: darken;  
+  background-color: rgb(39 62 126);
   /* background-image: url(images/forum.jpg); */
   background-position: center;
   background-size: cover;
