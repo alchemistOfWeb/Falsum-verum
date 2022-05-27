@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 // import 'mdb-ui-kit/css/mdb.min.css';
 import './index.css';
 import './index.scss';
@@ -59,10 +60,10 @@ export default function App() {
           <Route path="catalog/courses/:courseId" element={<CatalogCourseDetail/>} />
           <Route path="catalog/courses/:courseId/edit" element={<CatalogCourseEdit/>} />
           
-          <Route path="courses/:courseId" element={<CourseDetail/>} />
-          <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>} />
           {/* <Route path="courses/:courseId/sections/:sectionId" element={<CourseSectionDetail/>} /> */}
         </Route>
+        <Route path="courses/:courseId" element={<CourseDetail/>} />
+        <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>} />
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>

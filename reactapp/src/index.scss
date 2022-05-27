@@ -37,3 +37,18 @@
         }
     }
 }
+
+.offcanvas-btn-sidebar {
+    width: 60px;
+    position: absolute;
+}
+.offcanvas-sidebar {
+    position: relative;
+    .nav-link.active {
+        background-color: rgba(0, 0, 0, 0);
+        color: #dbbf70;
+    }
+    .inner-content {
+        position: fixed;
+    }
+}
