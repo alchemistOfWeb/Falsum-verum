@@ -5,7 +5,9 @@ import React from 'react';
 import { useAsync } from 'react-async';
 import Comment from '../components/Comment'
 import {Nav, Button, Spinner, ListGroup} from 'react-bootstrap';
-
+import telegram_icon from "../../images/social_icons/telegram.ico";
+import vk_icon from "../../images/social_icons/vk.ico";
+import whatsapp_icon from '../../images/social_icons/whatsapp.ico';
 
 const loadCourse = async ({sectionId, topicId}, options) => {
     let headers = {'Authorization': getCookie('access_token')};
@@ -75,20 +77,85 @@ export default function CatalogCourseDetail() {
                                     Вы можете начать сейчас или запланировать на другое время.
                                 </p>
                                 <Nav defaultActiveKey="/home" className="flex-column" variant="pills">
-                                    <Nav.Link className="bg-success text-center my-2" href="/home">Начать прохождение</Nav.Link>
-                                    <Nav.Link className="bg-warning text-center" eventKey="link-1">Запланировать</Nav.Link>
+                                    <Nav.Link 
+                                        className="bg-success text-center my-2 text-light start-course-btn" 
+                                        href={`/courses/${urlParams.courseId}`}
+                                    >
+                                        Начать прохождение
+                                    </Nav.Link>
+                                    <Nav.Link 
+                                        className="bg-warning text-center plan-course-btn" 
+                                        eventKey="link-1"
+                                    >
+                                        Запланировать
+                                    </Nav.Link>
                                 </Nav>
                             </div>
 
                             <div className="p-4">
                                 <h4 className="fst-italic">Поделиться</h4>
-                                <ol className="list-unstyled mb-0">
+                                {/* <ol className="list-unstyled mb-0">
                                     <li><a href="#">вконтакте</a></li>
                                     <li><a href="#">telegram</a></li>
                                     <li><a href="#">однокласники</a></li>
                                     <li><a href="#">facebook</a></li>
                                     <li><a href="#">twitter</a></li>
-                                </ol>
+                                </ol> */}
+                                
+                                <ListGroup horizontal className="list-unstyled social-icons">
+                                    <ListGroup.Item>
+                                        <a 
+                                            target="_blank" 
+                                            rel="nofollow noopener" 
+                                            href={`whatsapp://send?text=${window.location.href}`}
+                                            className="social-whatsapp"
+                                            >
+                                                <img src={whatsapp_icon} alt="[x]"/>
+                                        </a>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <a 
+                                            href={`https://t.me/share/url?url=${window.location.href}&amp;text=seehowicool`}
+                                        >
+                                            <img src={telegram_icon} alt="[x]"/>
+                                        </a>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <a 
+                                            href={`https://vkontakte.ru/share.php?url=${window.location.href}`} 
+                                            target='_blank'
+                                        >
+                                            <img src={vk_icon} alt="[x]"/>
+                                        </a>
+                                    </ListGroup.Item>
+
+                                </ListGroup>
+                                {/* <ul class="list-unstyled social-icons">
+                                    <li>
+                                        <a 
+                                        target="_blank" 
+                                        rel="nofollow noopener" 
+                                        href={`whatsapp://send?text=${window.location.href}`}
+                                        className="social-whatsapp"
+                                        >
+                                            <img src={whatsapp_icon} alt="[x]"/>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href={`https://t.me/share/url?url=${window.location.href}&amp;text=seehowicool`}
+                                        >
+                                            <img src={telegram_icon} alt="[x]"/>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a 
+                                        href={`https://vkontakte.ru/share.php?url=${window.location.href}`} 
+                                        target='_blank'
+                                        >
+                                            <img src={vk_icon} alt="[x]"/>
+                                        </a>
+                                    </li>
+                                </ul> */}
                             </div>
 
                         </div>

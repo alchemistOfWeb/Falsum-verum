@@ -18,3 +18,22 @@
 // .catalog-list-card {
 //     height: 120px;
 // }
+
+.start-course-btn {
+    font-size: 20px;
+}
+
+.plan-course-btn {
+    font-size: 20px;
+}
+
+.social-icons {
+    .list-group-item {
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+        padding: 0px 5px;
+        img {
+            width: 30px;
+        }
+    }
+}

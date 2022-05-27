@@ -7,8 +7,8 @@ import { useAsync } from 'react-async';
 
 export default function CatalogSpecCreate() {
     return (
-        <>
-        <h1>Catalog Spec Create</h1>
-        </>
+        <div className="container">
+            <h1>Catalog Spec Create</h1>
+        </div>
     )
 }
