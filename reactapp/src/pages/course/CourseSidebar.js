@@ -6,7 +6,7 @@ import { useState } from "react";
 
 
 
-export default function CourseSidebar() {
+export default function CourseSidebar({courseId}) {
     const [show, setShow] = useState(false);
     const toggleShow = () => setShow((s) => !s);
 
@@ -25,7 +25,7 @@ export default function CourseSidebar() {
                 </Link>
                 <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
                     <Nav.Item>
-                        <Nav.Link href="#" className="align-middle px-0">
+                        <Nav.Link href={`/catalog/courses/${courseId}`} className="align-middle px-0">
                             <i className="fs-4 bi-house"></i> <span className="ms-1">На страницу каталога</span>
                         </Nav.Link>
                     </Nav.Item>

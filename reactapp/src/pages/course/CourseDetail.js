@@ -7,9 +7,13 @@ import { Collapse, ListGroup, Nav, Container, Row, Col, Dropdown } from "react-b
 import CourseSidebar from "./CourseSidebar";
 
 export default function CourseDetail() {
+    let params = useParams();
+    const courseId = params.courseId;
+    // const [courseId] = ;
+
     return (
         <div id="course-wrapper" className="d-flex">
-            <CourseSidebar/>            
+            <CourseSidebar courseId={courseId}/>
             <div id="content" className="p-4 p-md-5 pt-3">
                 <h2 className="mb-4">Информация о курсе</h2>
                 <hr />
