@@ -6,7 +6,7 @@ $md: 768px;
 $lg: 992px;	
 $xl: 1200px;
 $xxl: 1400px;
-
+$sidebar-text-color: rgb(167, 197, 202);
 
 .catalog-category-list {
     .nav-link {
@@ -65,6 +65,25 @@ $xxl: 1400px;
     &.rolled-up {
         margin-left: 0px;
     }
+    .accordion-item {
+        border: none;        
+    }
+
+    .sidebar-menue-accordion {
+        border: none;
+        color: $sidebar-text-color;
+        button {
+            padding: 10px 0px;
+            background-color:rgba(0, 0, 0, 0);
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.646);
+            border-radius: 0px;
+            color: $sidebar-text-color;
+            &::after {                
+                filter: invert(1);
+            }
+        }
+    }
 
     @media (max-width: 768px) {
         position: fixed;
@@ -76,9 +95,28 @@ $xxl: 1400px;
         }
     }
     
-    .inner-content {
+    .course-sidebar-fixator {
         position: fixed;
         max-width: inherit;
+        min-width: inherit;
+        height: 100%;
+        .scrolling-content {
+            height: 100%;
+            overflow: auto;
+            &::-webkit-scrollbar {
+                width: 5px;
+                background-color: rgb(24 26 26);
+            }
+            &::-webkit-scrollbar-track {
+                // width: 3px;
+                background-color: rgb(48, 69, 74);
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: rgb(129 223 212);
+
+            }
+            
+        }
     }
     .custom-menu {
         display: inline-block;
@@ -119,7 +157,7 @@ $xxl: 1400px;
     }
     
     .nav-link {
-        color:rgb(167, 197, 202);
+        color: rgb(167, 197, 202);
         &.active {
             background-color: rgba(0, 0, 0, 0);
             color: #dbbf70;
