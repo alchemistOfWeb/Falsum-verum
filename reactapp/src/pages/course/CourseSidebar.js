@@ -127,8 +127,101 @@ export default function CourseSidebar({courseId}) {
                     </div>
                     <hr />
                     <div className="p-4">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci eveniet pariatur esse facere aspernatur asperiores nulla ut ratione? Voluptatum veniam libero expedita quaerat minus! Voluptates quae deserunt optio error blanditiis.</p>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci eveniet pariatur esse facere aspernatur asperiores nulla ut ratione? Voluptatum veniam libero expedita quaerat minus! Voluptates quae deserunt optio error blanditiis.</p>
+                        <Accordion defaultActiveKey="1">
+                            <Accordion.Item eventKey="1" className="bg-transparent">
+                                <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
+                                    Модуль 1
+                                </Accordion.Header>
+                                <Accordion.Body>
+                                    <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 1</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 2</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 3</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 4</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                    </Nav>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                        <Accordion defaultActiveKey="2">
+                            <Accordion.Item eventKey="2" className="bg-transparent">
+                                <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
+                                    Модуль 2
+                                </Accordion.Header>
+                                <Accordion.Body>
+                                    <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 1</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 2</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 3</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item>
+                                            <Nav.Link
+                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            className="px-0 align-middle"
+                                            >
+                                                <i className="fs-4 bi-diagram-3-fill"></i> 
+                                                <span className="ms-1">урок 4</span>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                    </Nav>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                        
                     </div>
                 </div>
             </div>
