@@ -3,10 +3,11 @@ import React from 'react';
 import { useAsync } from 'react-async';
 import { Collapse, ListGroup, Nav, Container, Row, Col, Dropdown, Offcanvas, Accordion } from "react-bootstrap";
 import { useState } from "react";
+import { ModuleEl } from "./components/ModuleEl";
 
 
 
-export default function CourseSidebar({courseId}) {
+export default function CourseSidebar({course}) {
     const [show, setShow] = useState(false);
     const toggleShow = () => setShow((s) => !s);
 
@@ -27,6 +28,9 @@ export default function CourseSidebar({courseId}) {
                         <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5">Stepus</span>
                         </Link>
+                        <div className="row">
+                            <h4>{course.title}</h4>
+                        </div>
                         <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="0" className="bg-transparent">
                                 <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
@@ -35,7 +39,7 @@ export default function CourseSidebar({courseId}) {
                                 <Accordion.Body>
                                     <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
                                         <Nav.Item>
-                                            <Nav.Link href={`/catalog/courses/${courseId}`} className="align-middle px-0">
+                                            <Nav.Link href={`/catalog/courses/${course.id}`} className="align-middle px-0">
                                                 <i className="fs-4 bi-house"></i> <span className="ms-1">На страницу каталога</span>
                                             </Nav.Link>
                                         </Nav.Item>
@@ -127,7 +131,15 @@ export default function CourseSidebar({courseId}) {
                     </div>
                     <hr />
                     <div className="p-4">
-                        <Accordion defaultActiveKey="1">
+                        { 
+                            course.modules.length > 0 
+                            ?
+                            course.modules.map(
+                                (m, ind) => <ModuleEl courseId={course.id} moduleObj={m} key={ind} />) 
+                            :
+                            "There are no sections in this section yet."
+                        }
+                        {/* <Accordion>
                             <Accordion.Item eventKey="1" className="bg-transparent">
                                 <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
                                     Модуль 1
@@ -136,7 +148,7 @@ export default function CourseSidebar({courseId}) {
                                     <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -145,7 +157,7 @@ export default function CourseSidebar({courseId}) {
                                         </Nav.Item>
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -154,7 +166,7 @@ export default function CourseSidebar({courseId}) {
                                         </Nav.Item>
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -163,7 +175,7 @@ export default function CourseSidebar({courseId}) {
                                         </Nav.Item>
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -174,7 +186,7 @@ export default function CourseSidebar({courseId}) {
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
-                        <Accordion defaultActiveKey="2">
+                        <Accordion>
                             <Accordion.Item eventKey="2" className="bg-transparent">
                                 <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
                                     Модуль 2
@@ -183,7 +195,7 @@ export default function CourseSidebar({courseId}) {
                                     <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -192,7 +204,7 @@ export default function CourseSidebar({courseId}) {
                                         </Nav.Item>
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -201,7 +213,7 @@ export default function CourseSidebar({courseId}) {
                                         </Nav.Item>
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -210,7 +222,7 @@ export default function CourseSidebar({courseId}) {
                                         </Nav.Item>
                                         <Nav.Item>
                                             <Nav.Link
-                                            href={`/courses/${courseId}/lessons/${courseId}`} 
+                                            href={`/courses/${course.id}/lessons/${course.id}`} 
                                             className="px-0 align-middle"
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
@@ -220,7 +232,7 @@ export default function CourseSidebar({courseId}) {
                                     </Nav>
                                 </Accordion.Body>
                             </Accordion.Item>
-                        </Accordion>
+                        </Accordion> */}
                         
                     </div>
                 </div>

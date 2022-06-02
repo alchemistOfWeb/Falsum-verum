@@ -117,7 +117,12 @@ class Course(models.Model):
     duration = models.DurationField(verbose_name='продолжительность курса', null=True, blank=True)
     doshow = models.BooleanField(verbose_name="Показывать слушателям курса", default=False, blank=True)
     authors = models.ManyToManyField(User, verbose_name="Учителя", related_name="own_courses")
-    listeners = models.ManyToManyField(User, verbose_name="Слушатели",  related_name="undergoing_courses") # todo: add through_related
+    listeners = models.ManyToManyField(
+        User, 
+        verbose_name="Слушатели",  
+        related_name="undergoing_courses"
+    ) # todo: add through_related
+
     specialization = models.ForeignKey(
         Specialization, 
         verbose_name="Специализация", 
@@ -132,7 +137,11 @@ class Course(models.Model):
         null=True, blank=False,
         on_delete=models.CASCADE
     )
-    order_in_specialization = models.SmallIntegerField(verbose_name="Порядковый номер", null=False, default=0)
+    order_in_specialization = models.SmallIntegerField(
+        verbose_name="Порядковый номер", 
+        null=False, 
+        default=0
+    )
     tags = models.ManyToManyField(TagForCourse, verbose_name="Теги", related_name="courses")
     # roadmap = models.JSONField(null=False, blank=True, default=Value('null')) # in future
     # category = models.ForeignKey(CourseCategory, on_delete=models.SET_NULL, null=True, blank=False)

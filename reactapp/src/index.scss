@@ -8,9 +8,115 @@ $xl: 1200px;
 $xxl: 1400px;
 $sidebar-text-color: rgb(167, 197, 202);
 
+body {
+    overflow: hidden !important;
+}
+
+
+.main-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    background-blend-mode: darken;  
+    /* background-color: rgb(39 62 126); */
+    background-color: #3445b4;
+    /* background-image: url(images/forum.jpg); */
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+    .list-group-item {
+        background-color: #666f7091;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        border-radius: 13px;
+    }
+
+    .list-group-item.list-section-item:hover {
+        background-color: #7e8c8e91;
+    }
+}
+
+.list-group-item.list-section-item a {
+    text-decoration: none;
+}
+.wrappering-link {
+    text-decoration: none;
+}
+.actions-bar a {
+    margin-right: 5px;
+}
+
+.content-section {
+    color: aliceblue;
+    text-shadow: 0 0 10px #999494;
+}
+
+.comment-list {
+    .card {
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+    }
+    .card-footer {
+        background-color: rgb(163 183 182 / 29%);
+        border-radius: 15px;
+    }
+    
+    .card-footer .btn {
+        margin-left: 5px;
+    }
+}
+
+
+.profile-section {
+    background-color: #68839747;
+
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #BA68C8
+    }
+      
+    .profile-button {
+        background: rgb(99, 39, 120);
+        box-shadow: none;
+        border: none
+    }
+      
+    .profile-button:hover {
+        background: #682773
+    }
+
+    .profile-button:focus {
+        background: #682773;
+        box-shadow: none
+    }
+      
+    .profile-button:active {
+        background: #682773;
+        box-shadow: none
+    }
+      
+    .back:hover {
+        color: #682773;
+        cursor: pointer
+    }
+      
+    .labels {
+        font-size: 11px
+    }
+      
+    .add-experience:hover {
+        background: #BA68C8;
+        color: #fff;
+        cursor: pointer;
+        border: solid 1px #BA68C8
+    }
+}
+
+
 .catalog-category-list {
     .nav-link {
-        color: rgb(47, 173, 47);
+        color: rgb(167, 197, 202);
     }
     .nav-link.active {        
         border-bottom: 3px solid rgba(116, 197, 153, 0.842);
@@ -174,6 +280,8 @@ $sidebar-text-color: rgb(167, 197, 202);
     transition: all 0.3s;
 }
 
-// #course-wrapper {
+#course-wrapper {
+    overflow: auto;
+    height: 100vh;
+}
 
-// }
