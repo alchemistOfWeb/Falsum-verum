@@ -6,6 +6,8 @@ from .models import (
     Lesson, Step, LessonType,
     Module, Specialization
 )
+import nested_admin
+
 
 admin.site.site_title = "Stepo - образовательная платформа"
 admin.site.site_header = "Stepo - образовательная платформа"
@@ -25,8 +27,35 @@ class SpecializationAdmin(admin.ModelAdmin):
 class CourseReportAdmin(admin.ModelAdmin):
     list_display = ['author', 'course']
 
-class CourseAdmin(admin.ModelAdmin):
+
+class LessonInLine(nested_admin.NestedStackedInline):
+    model = Lesson
+    verbose_name = "Урок"
+    verbose_name_plural = "Уроки"
+    # fieldsets = (
+    #     (None, {
+    #         'fields': (('title',), ('description',),)
+    #     }),
+    # )
+
+
+class ModuleInLine(nested_admin.NestedStackedInline):
+
+    model = Module
+    verbose_name = "Модуль"
+    verbose_name_plural = "Модули"
+    inlines = [LessonInLine]
+
+    # fieldsets = (
+    #     (None, {
+    #         'fields': (('title',), ('description',),)
+    #     }),
+    # )
+
+
+class CourseAdmin(nested_admin.NestedModelAdmin):
     list_display = ['title', 'specialization', 'order_in_specialization', 'doshow']
+    inlines = [ModuleInLine]
     # list_filter = ['category',]
 
 class ModuleAdmin(admin.ModelAdmin):

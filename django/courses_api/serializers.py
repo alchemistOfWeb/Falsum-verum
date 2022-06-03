@@ -95,7 +95,7 @@ class ModuleSerializer(serializers.ModelSerializer):
     lessons = LessonShortSerializer(read_only=True)
 
     class Meta:
-        model = Lesson
+        model = Module
         fields = '__all__'
 
 

@@ -11,3 +11,15 @@ body {
     padding: 10px;
     background-color: #191a1c;
 }
+
+.django-ckeditor-widget {
+    width: 100%;
+}
+
+.cke_browser_webkit {
+    width: 100%;
+}
+
+.django-ckeditor-widget div[role=application] {
+    width: 100% !important;
+}

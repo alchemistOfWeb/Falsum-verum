@@ -281,9 +281,9 @@ class CourseViewSet(viewsets.ViewSet):
         obj = get_object_or_404(self.queryset, pk=pk)
 
         if request.data.get('full'):
-            obj_serializer = self.serializer_class(obj)
-        else:
             obj_serializer = self.full_course_serializer_class(obj)
+        else:
+            obj_serializer = self.serializer_class(obj)
         
         ctx = {'course': obj_serializer.data}
 

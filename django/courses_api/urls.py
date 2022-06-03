@@ -1,5 +1,5 @@
 from unicodedata import name
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from .views import (
     csrf, current_profile,
@@ -32,4 +32,5 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/', include('djoser.urls.jwt')),
+    re_path(r'^_nested_admin/', include('nested_admin.urls')),
 ] + router.urls

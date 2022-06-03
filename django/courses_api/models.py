@@ -120,7 +120,8 @@ class Course(models.Model):
     listeners = models.ManyToManyField(
         User, 
         verbose_name="Слушатели",  
-        related_name="undergoing_courses"
+        related_name="undergoing_courses",
+        blank=True
     ) # todo: add through_related
 
     specialization = models.ForeignKey(

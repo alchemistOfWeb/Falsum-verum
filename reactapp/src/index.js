@@ -35,6 +35,12 @@ import LessonDetail from './pages/course/LessonDetail';
 import NoPage from './pages/NoPage';
 
 import reportWebVitals from './reportWebVitals';
+import CourseInfo from './pages/course/Info';
+import CourseStatistics from './pages/course/Statistics';
+import CourseSchedule from './pages/course/Schedule';
+import CourseRoadmap from './pages/course/Roadmap';
+import CourseAuthors from './pages/course/Authors';
+
 
 export default function App() {
   return (
@@ -62,8 +68,15 @@ export default function App() {
           
           {/* <Route path="courses/:courseId/sections/:sectionId" element={<CourseSectionDetail/>} /> */}
         </Route>
-        <Route path="courses/:courseId" element={<CourseDetail/>} />
-        <Route path="courses/:courseId/lessons/:lessonId" element={<LessonDetail/>} />
+        <Route path="courses/:courseId" element={<CourseDetail/>} >
+          <Route index element={<CourseInfo/>} />
+          <Route path="info" element={<CourseInfo/>} />
+          <Route path="statistics" element={<CourseStatistics/>} />
+          <Route path="schedule" element={<CourseSchedule/>} />
+          <Route path="roadmap" element={<CourseRoadmap/>} />
+          <Route path="authors" element={<CourseAuthors/>} />
+          <Route path="lessons/:lessonId" element={<LessonDetail/>} />
+        </Route>
         <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>

@@ -1,7 +1,16 @@
 import React from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, NavLink } from "react-router-dom";
 import { ListGroup, Nav, Accordion, Tooltip, OverlayTrigger } from "react-bootstrap";
 
+
+function activeLink2({isActive}) {
+    let defaultCls = "px-0 align-middle nav-link"
+    return isActive ? 
+        defaultCls + " active"
+        : 
+        defaultCls;
+    
+}
 
 function LessonEl({courseId, lessonObj}) {
     return (
@@ -16,14 +25,14 @@ function LessonEl({courseId, lessonObj}) {
                     </Tooltip>
                 }
             >
-                <Nav.Link
-                href={`/courses/${courseId}/lessons/${lessonObj.id}`} 
-                className="px-0 align-middle"
+                <NavLink
+                    to={`/courses/${courseId}/lessons/${lessonObj.id}`} 
+                    className={activeLink2}
+                    // className="px-0 align-middle nav-link"
                 >
-                    
-                        <i className="fs-4 bi-diagram-3-fill"></i> 
-                        <span className="ms-1">{lessonObj.title}</span>
-                </Nav.Link>
+                    <i className="fs-4 bi-diagram-3-fill"></i> 
+                    <span className="ms-1">{lessonObj.title}</span>
+                </NavLink>
             </OverlayTrigger>
         </Nav.Item>
     )

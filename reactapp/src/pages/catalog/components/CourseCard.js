@@ -31,7 +31,7 @@ export function CourseCard({props}) {
                         <p className="card-text">{props.short_description}</p>
                     </div>
                     <div className="col-12 col-md-2 d-flex d-md-block justify-content-end mt-3 mt-md-0">
-                        <Link to={`/catalog/courses/${props.pk}`} className="btn btn-primary">
+                        <Link to={`/catalog/courses/${props.id}`} className="btn btn-primary">
                             Открыть курс →
                         </Link>
                     </div>

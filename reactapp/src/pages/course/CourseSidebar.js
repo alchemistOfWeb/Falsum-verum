@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, NavLink } from "react-router-dom";
 import React from 'react';
 import { useAsync } from 'react-async';
 import { Collapse, ListGroup, Nav, Container, Row, Col, Dropdown, Offcanvas, Accordion } from "react-bootstrap";
@@ -6,6 +6,14 @@ import { useState } from "react";
 import { ModuleEl } from "./components/ModuleEl";
 
 
+function activeLink({isActive}) {
+    let defaultCls = "px-0 align-middle nav-link"
+    return isActive ? 
+        defaultCls + " active"
+        : 
+        defaultCls;
+    
+}
 
 export default function CourseSidebar({course}) {
     const [show, setShow] = useState(false);
@@ -38,11 +46,14 @@ export default function CourseSidebar({course}) {
                                 </Accordion.Header>
                                 <Accordion.Body>
                                     <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
-                                        <Nav.Item>
-                                            <Nav.Link href={`/catalog/courses/${course.id}`} className="align-middle px-0">
-                                                <i className="fs-4 bi-house"></i> <span className="ms-1">На страницу каталога</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
+                                        <NavLink
+                                            to={`/catalog/courses/${course.id}`} 
+                                            role="button"
+                                            className={activeLink}
+                                        >
+                                            <i className="fs-4 bi-house"></i> 
+                                            <span className="ms-1">На страницу каталога</span>
+                                        </NavLink>
                                         <Nav.Item>
                                             <Nav.Link href="#submenu1" data-bs-toggle="collapse" className="px-0 align-middle">
                                                 <i className="fs-4 bi-speedometer2"></i> 
@@ -66,63 +77,65 @@ export default function CourseSidebar({course}) {
                                             </Nav>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link href="#submenu3" data-bs-toggle="collapse" className="px-0 align-middle">
-                                                {/* <i className="fs-4 bi-grid"></i>  */}
+                                            <NavLink
+                                                to={`/courses/${course.id}/lessons`}
+                                                role="button"
+                                                className={activeLink}
+                                            >
                                                 <i className="fs-4 bi-easel-fill"></i> 
-                                                <span className="ms-1">Уроки</span> 
-                                            </Nav.Link>
-                                            <ul className="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
-                                                <li className="w-100">
-                                                    <a href="#" className="nav-link px-0"> <span className="d-none d-sm-inline">Product</span> 1</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" className="nav-link px-0"> <span className="d-none d-sm-inline">Product</span> 2</a>
-                                                </li>
-                                            </ul>
+                                                <span className="ms-1">Прохождение</span> 
+                                            </NavLink>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link
-                                            href="/" 
-                                            className="px-0 align-middle"
+                                            <NavLink
+                                                to={`/courses/${course.id}/roadmap`}
+                                                role="button"
+                                                className={activeLink}
                                             >
                                                 <i className="fs-4 bi-diagram-3-fill"></i> 
                                                 <span className="ms-1">Карта курса</span>
-                                            </Nav.Link>
+                                            </NavLink>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link href="#" className="px-0 align-middle">
-                                                <i className="fs-4 bi-table"></i> 
-                                                <span className="ms-1">Календарь</span>
-                                            </Nav.Link>
+                                            <NavLink
+                                                to={`/courses/${course.id}/schedule`} 
+                                                role="button"
+                                                className={activeLink}
+                                            >
+                                                <i className="fs-4 bi-table"></i>
+                                                <span className="ms-1">Календарь</span> 
+                                            </NavLink>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link
-                                            href="/courses/1" 
-                                            className="px-0 align-middle active"
+                                            <NavLink
+                                                to={`/courses/${course.id}/info`}
+                                                role="button"
+                                                className={activeLink}
                                             >
                                                 <i className="fs-4 bi-info-square-fill"></i> 
                                                 <span className="ms-1">Информация о курсе</span> 
-                                            </Nav.Link>
+                                            </NavLink>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link 
-                                            href="/" 
-                                            className="px-0 align-middle"
+                                            <NavLink
+                                                to={`/courses/${course.id}/authors`}
+                                                role="button"
+                                                className={activeLink}
                                             >
                                                 <i className="fs-4 bi-people"></i> 
                                                 <span className="ms-1">Авторы</span> 
-                                            </Nav.Link>
+                                            </NavLink>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link
-                                            href="/" 
-                                            className="px-0 align-middle"
+                                            <NavLink
+                                                to={`/courses/${course.id}/statistics`}
+                                                role="button"
+                                                className={activeLink}
                                             >
                                                 <i className="fs-4 bi-graph-up"></i> 
                                                 <span className="ms-1">Статистика</span> 
-                                            </Nav.Link>
+                                            </NavLink>
                                         </Nav.Item>
-                                        
                                     </Nav>
                                     
                                 </Accordion.Body>
@@ -139,122 +152,9 @@ export default function CourseSidebar({course}) {
                             :
                             "There are no sections in this section yet."
                         }
-                        {/* <Accordion>
-                            <Accordion.Item eventKey="1" className="bg-transparent">
-                                <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
-                                    Модуль 1
-                                </Accordion.Header>
-                                <Accordion.Body>
-                                    <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 1</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 2</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 3</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 4</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </Nav>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
-                        <Accordion>
-                            <Accordion.Item eventKey="2" className="bg-transparent">
-                                <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
-                                    Модуль 2
-                                </Accordion.Header>
-                                <Accordion.Body>
-                                    <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 1</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 2</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 3</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link
-                                            href={`/courses/${course.id}/lessons/${course.id}`} 
-                                            className="px-0 align-middle"
-                                            >
-                                                <i className="fs-4 bi-diagram-3-fill"></i> 
-                                                <span className="ms-1">урок 4</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </Nav>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion> */}
-                        
                     </div>
                 </div>
             </div>
-
-                {/* <div className="mb-5">
-                    <h3 className="h6 mb-3">Subscribe for newsletter</h3>
-                    <form action="#" className="subscribe-form">
-                        <div className="form-group d-flex">
-                        <div className="icon">
-                            <span className="icon-paper-plane"></span>
-                        </div>
-                        <input type="text" className="form-control" placeholder="Enter Email Address"/>
-                        </div>
-                    </form>
-                </div> */}
-                {/* <div className="footer">
-                    <p>
-                    Copyright ©<script>document.write(new Date().getFullYear());</script>2022 All rights reserved | This template is made with <i className="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib.com</a>
-                    </p>
-                </div> */}
-            
         </nav>
         
     )
