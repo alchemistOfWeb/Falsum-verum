@@ -76,7 +76,7 @@ export default function App() {
           <Route path="schedule" element={<CourseSchedule/>} />
           <Route path="roadmap" element={<CourseRoadmap/>} />
           <Route path="authors" element={<CourseAuthors/>} />
-          <Route path="modules/:moduleId/lessons/:lessonId" element={<LessonDetail/>} >
+          <Route path="modules/:moduleId/lessons/:lessonId" element={<LessonDetail/>}>
             <Route path="steps/:stepId" element={<StepDetail/>} />
           </Route>
         </Route>

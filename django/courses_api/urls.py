@@ -17,11 +17,11 @@ router.register(r'specializations', SpecializationViewSet, basename='specializat
 # router.register(r'orgs/(?P<org_pk>\d+)/course',
 #                 CourseFullViewSet, basename='detail_course')
 
-router.register(r'courses/(?P<course>\d+)/modules',
-                ModuleViewSet, basename='module_list')
+# router.register(r'courses/(?P<course>\d+)/modules',
+#                 ModuleViewSet, basename='module_list')
 
-router.register(r'courses/(?P<course>\d+)/modules/(?P<module>\d+)/lessons',
-                LessonViewSet, basename='lesson_list')
+# router.register(r'courses/(?P<course>\d+)/modules/(?P<module>\d+)/lessons',
+#                 LessonViewSet, basename='lesson_list')
 
 router.register(r'courses/(?P<course>\d+)/modules/(?P<module>\d+)/lessons/(?P<lesson>\d+)/steps',
                 StepViewSet, basename='step_list')

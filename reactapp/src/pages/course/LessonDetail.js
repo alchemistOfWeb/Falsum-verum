@@ -16,7 +16,7 @@ function activeLink({isActive}) {
         defaultCls;
 }
 
-function StepLink({stepObj}) {
+function StepLink({courseId, moduleId, lessonId, stepObj}) {
     let iconEl = '';
     if (stepObj.step_type == 0) {
         iconEl = <i className="bi bi-square-fill"></i> 
@@ -26,7 +26,7 @@ function StepLink({stepObj}) {
     }
 
     return (
-        <NavLink to={`steps/${stepObj.id}`} className={activeLink}>
+        <NavLink to={`/courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/steps/${stepObj.id}`} className={activeLink}>
             {iconEl}
         </NavLink>
     )
@@ -58,6 +58,10 @@ export default function LessonDetail() {
                             return (
                                 <StepLink 
                                     stepObj={step}
+                                    courseId={courseId}
+                                    moduleId={moduleId}
+                                    lessonId={lessonId}
+                                    key={`step-link-${ind}`}
                                 />
                             )
                         })
@@ -66,8 +70,6 @@ export default function LessonDetail() {
                     <i className="bi bi-square-fill text-success mx-1"></i>
                 </NavLink> */}
             </Nav>
-            <hr />
-            <h2 className="mb-4 text-center">{currentLesson.title}</h2>
             <hr />
             <Outlet/>
         </>

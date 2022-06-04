@@ -175,7 +175,7 @@ body {
     min-height: 100vh;
     min-width: 270px;
     max-width: 270px;
-    background: #3445b4;
+    z-index: 10;
     color: #fff;
     transition: all 0.3s;
     margin-left: -270px;
@@ -220,6 +220,7 @@ body {
         max-width: inherit;
         min-width: inherit;
         height: 100%;
+        background: #3445b4;
         .scrolling-content {
             height: 100%;
             overflow: auto;
@@ -300,6 +301,7 @@ body {
     padding: 0px;
     margin: 5px;
     color: gray;
+    font-size: 1.25rem;
     &.active {
         filter: drop-shadow(0 0 4px rgb(30, 181, 184)) drop-shadow(0 0 2px rgb(104, 228, 230))
     }

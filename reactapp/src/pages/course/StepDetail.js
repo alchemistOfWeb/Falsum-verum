@@ -1,30 +1,77 @@
 import React from "react";
+import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../setting";
+import { request, getCookie } from '../../functions';
+import { useEffect, useState } from "react";
+import { useParams, Link, Outlet } from "react-router-dom";
+import { useAsync } from 'react-async';
+import { Collapse, ListGroup, Nav, Container, Row, Col, Dropdown, Spinner } from "react-bootstrap";
+import CourseSidebar from "./CourseSidebar";
+import parseHtml from 'html-react-parser';
 
+
+const loadStep = async ({courseId, moduleId, lessonId, stepId}, options) => {
+    let headers = {'Authorization': getCookie('access_token')};
+    let url = `${BACKEND_ROOT_URL}courses/${courseId}/modules/${moduleId}/lessons/${lessonId}/steps/${stepId}`;
+    console.log({url})
+    const res = await request('GET', url, {}, headers, {signal: options.signal});
+    return res;
+}
 
 export default function StepDetail() {
-    return (
-        <>
-            <p>
-                В этом онлайн-курсе НИУ ВШЭ мы познакомимся с базовыми понятиями статистики, научимся аккуратно собирать данные, обрабатывать их и визуализировать. Также мы поговорим про базовые теоремы, которые используются в математической статистике: ЗБЧ и ЦПТ.
-            </p>
-            <p>
-                В онлайн-курсе мы изучим основы математической статистики и аккуратную работу с данными.  
-            </p>
-            <p>
-                Мы научимся собирать и обрабатывать данные с помощью Python, поговорим про их визуализацию и предварительный анализ. 
-            </p>
-            <p>
-                Мы также познакомимся с основными распределениями и описательными статистиками, с которыми аналитики сталкиваются на повседневной основе. И обсудим теоремы, на которых базируется вся наука о данных: закон больших чисел и центральную предельную теорему.
-            </p>
-            <p>
-                Github со всеми материалами курса:  https://github.com/FUlyankin/matstat_online
-            </p>
-            <p>
-                Курс состоит из 5 недель. Каждая включает в себя несколько  коротких видеолекций (суммарная продолжительность – от 60 до 100 минут), тест на знание теоретического материала (5 – 15 вопросов), а также тест, включающий в себя выполнение заданий по программированию и решение теоретических задач. 
-            </p>
-            <p>
-                На некоторых неделях задание по программированию заменено заданием на взаимное оценивание. В конце курса предусмотрен итоговый экзамен, состоящий из тестовых вопросов.
-            </p>
-        </>
-    )
+    let { courseId, moduleId, lessonId, stepId } = useParams();
+    console.log({stepId});
+
+    // const [error, setError] = useState(null);
+    // const [isPending, setIsPending] = useState(false);
+    // const [data, setData] = useState(null);
+
+    // useEffect(() => {
+    //     const { data, error, isPending } = useAsync({
+    //         promiseFn: loadStep,
+    //         courseId: courseId,
+    //         moduleId: moduleId,
+    //         lessonId: lessonId,
+    //         stepId: stepId,
+    //     });
+    //     setIsPending(isPending);
+    //     setError(error);
+    //     setData(data);
+    // }, [courseId, moduleId, lessonId, stepId]);
+
+    const { data, error, isPending } 
+        = useAsync({ 
+            courseId: courseId,
+            moduleId: moduleId,
+            lessonId: lessonId,
+            stepId: stepId,
+            promiseFn: loadStep, 
+            watch: stepId
+        });
+    
+    if (isPending) {
+        return (
+            <div className="d-flex align-items-center justify-content-center pt-5">
+                <Spinner animation="border" variant="info"/>
+            </div>
+        )
+    }
+    if (error) {
+        console.log({error})
+        return <h1 className="text-danger">Error of loading course.</h1>
+    }
+    if (data) {
+        let stepObj = data.step;
+        console.log({stepObj});
+        return (
+            <>
+                <h2 className="text-center">{stepObj.title}</h2>
+                <hr />
+                <div className="step-content pb-3">
+                    {parseHtml(stepObj.content)}
+                    <hr />
+                </div>
+                
+            </>
+        )
+    }
 }
