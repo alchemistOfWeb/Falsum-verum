@@ -66,7 +66,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
 # <------------------------------------>
 class LessonTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lesson
+        model = LessonType
         fields = '__all__'
 
 
@@ -77,7 +77,7 @@ class StepShortSerializer(serializers.ModelSerializer):
 
 
 class LessonShortSerializer(serializers.ModelSerializer):
-    steps = StepShortSerializer(read_only=True)
+    steps = StepShortSerializer(read_only=True, many=True)
     lesson_type = LessonTypeSerializer(read_only=True)
 
     def to_representation(self, instance):
@@ -88,11 +88,11 @@ class LessonShortSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = '__all__', 
+        fields = '__all__' 
 
 
 class ModuleSerializer(serializers.ModelSerializer):
-    lessons = LessonShortSerializer(read_only=True)
+    lessons = LessonShortSerializer(read_only=True, many=True)
 
     class Meta:
         model = Module
@@ -100,7 +100,7 @@ class ModuleSerializer(serializers.ModelSerializer):
 
 
 class CourseFullSerializer(serializers.ModelSerializer):
-    modules = ModuleSerializer(read_only=True)
+    modules = ModuleSerializer(read_only=True, many=True)
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)

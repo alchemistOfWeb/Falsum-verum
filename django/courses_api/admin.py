@@ -28,29 +28,23 @@ class CourseReportAdmin(admin.ModelAdmin):
     list_display = ['author', 'course']
 
 
+class StepInLine(nested_admin.NestedStackedInline):
+    model = Step
+    verbose_name = "Шаг"
+    verbose_name_plural = "Шаги"
+
+
 class LessonInLine(nested_admin.NestedStackedInline):
     model = Lesson
     verbose_name = "Урок"
     verbose_name_plural = "Уроки"
-    # fieldsets = (
-    #     (None, {
-    #         'fields': (('title',), ('description',),)
-    #     }),
-    # )
 
 
 class ModuleInLine(nested_admin.NestedStackedInline):
-
     model = Module
     verbose_name = "Модуль"
     verbose_name_plural = "Модули"
     inlines = [LessonInLine]
-
-    # fieldsets = (
-    #     (None, {
-    #         'fields': (('title',), ('description',),)
-    #     }),
-    # )
 
 
 class CourseAdmin(nested_admin.NestedModelAdmin):
@@ -60,9 +54,11 @@ class CourseAdmin(nested_admin.NestedModelAdmin):
 
 class ModuleAdmin(admin.ModelAdmin):
     list_display = ['title', 'course', 'grade', 'order', 'doshow']
+    inlines = [LessonInLine]
 
-class LessonAdmin(admin.ModelAdmin):
+class LessonAdmin(nested_admin.NestedModelAdmin):
     list_display = ['title', 'module', 'grade', 'order', 'doshow']
+    inlines = [StepInLine]
 
 class LessonTypeAdmin(admin.ModelAdmin):
     list_display = ['title', 'icon_preview']

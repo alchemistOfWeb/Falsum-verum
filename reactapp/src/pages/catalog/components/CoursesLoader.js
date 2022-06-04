@@ -19,7 +19,11 @@ export default function CoursesLoader() {
         = useAsync({ promiseFn: loadCoursesList });
 
     if (isPending) {
-        return <Spinner animation="border" variant="info" />
+        return (
+            <div className="d-flex align-items-center justify-content-center pt-5">
+                <Spinner animation="border" variant="info"/>
+            </div>
+        )
     }
     if (error) {
         console.log({error})

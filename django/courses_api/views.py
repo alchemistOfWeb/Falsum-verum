@@ -280,7 +280,10 @@ class CourseViewSet(viewsets.ViewSet):
     def retrieve(self, request, pk=None):
         obj = get_object_or_404(self.queryset, pk=pk)
 
-        if request.data.get('full'):
+        
+        is_full = request.query_params.get('full')
+        
+        if is_full:
             obj_serializer = self.full_course_serializer_class(obj)
         else:
             obj_serializer = self.serializer_class(obj)

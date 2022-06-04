@@ -13,8 +13,9 @@ function activeLink2({isActive}) {
 }
 
 function LessonEl({courseId, lessonObj}) {
+    let stepsNum = lessonObj.steps.length;
     return (
-        <Nav.Item>
+        <Nav.Item className="d-flex justify-content-between align-items-center w-100">
             <OverlayTrigger
                 key={lessonObj.id}
                 placement={"right"}
@@ -31,19 +32,25 @@ function LessonEl({courseId, lessonObj}) {
                     // className="px-0 align-middle nav-link"
                 >
                     <i className="fs-4 bi-diagram-3-fill"></i> 
-                    <span className="ms-1">{lessonObj.title}</span>
+                    <span className="ms-1">
+                        {lessonObj.title}
+                    </span>
+
                 </NavLink>
+                
             </OverlayTrigger>
+            <strong>0/{stepsNum}</strong>
         </Nav.Item>
     )
 }
 
 export function ModuleEl({courseId, moduleObj}) {
+    let lessonsNum = moduleObj.lessons.length;
     return (
         <Accordion>
             <Accordion.Item eventKey="1" className="bg-transparent">
                 <Accordion.Header as="h1" className="h1 bg-transparent sidebar-menue-accordion">
-                    {moduleObj.title}
+                    <span class="col-9">{moduleObj.title}</span>  <strong>0/{lessonsNum}</strong>
                 </Accordion.Header>
                 <Accordion.Body>
                     <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
@@ -51,7 +58,13 @@ export function ModuleEl({courseId, moduleObj}) {
                             moduleObj.lessons.length > 0 
                             ?
                             moduleObj.lessons.map(
-                                (lesson, ind) => <LessonEl courseId={courseId} lessonObj={lesson} key={ind} />) 
+                                    (lesson, ind) => 
+                                    lesson.doshow 
+                                    ?
+                                    <LessonEl courseId={courseId} lessonObj={lesson} key={ind} />
+                                    :
+                                    ""
+                                ) 
                             :
                             "There are no sections in this section yet."
                         }

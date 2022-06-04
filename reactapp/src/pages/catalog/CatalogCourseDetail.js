@@ -31,11 +31,9 @@ export default function CatalogCourseDetail() {
 
     if (isPending) {
         return (
-            <>
-                <div className="d-flex align-items-center justify-content-center pt-5">
-                    <Spinner animation="border" variant="info"/>
-                </div>
-            </>
+            <div className="d-flex align-items-center justify-content-center pt-5">
+                <Spinner animation="border" variant="info"/>
+            </div>
         )
     }
     if (error) {
