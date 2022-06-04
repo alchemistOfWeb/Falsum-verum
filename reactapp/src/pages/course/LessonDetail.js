@@ -1,31 +1,75 @@
 import React from "react";
+import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../setting";
+import { request, getCookie } from '../../functions';
+import { useParams, Link, Outlet, NavLink } from "react-router-dom";
+import { useAsync } from 'react-async';
+import { Collapse, ListGroup, Nav, Container, Row, Col, Dropdown, Spinner } from "react-bootstrap";
+import CourseSidebar from "./CourseSidebar";
+
+
+function activeLink({isActive}) {
+    let defaultCls = "step-link nav-link"
+
+    return isActive ? 
+        defaultCls + " active"
+        : 
+        defaultCls;
+}
+
+function StepLink({stepObj}) {
+    let iconEl = '';
+    if (stepObj.step_type == 0) {
+        iconEl = <i className="bi bi-square-fill"></i> 
+    }
+    if (stepObj.step_type == 1) {
+        iconEl = <i class="bi bi-question-square-fill"></i>
+    }
+
+    return (
+        <NavLink to={`steps/${stepObj.id}`} className={activeLink}>
+            {iconEl}
+        </NavLink>
+    )
+}
 
 export default function LessonDetail() {
+    let urlParams = useParams();
+    const courseId = urlParams.courseId;
+    const moduleId = urlParams.moduleId;
+    const lessonId = urlParams.lessonId;
+
+    let currentModule = window.currentCourse.modules
+        .find((el)=>el.id == moduleId);
+
+    let currentLesson = currentModule.lessons
+        .find((el)=>el.id == lessonId);
+
+    console.log({currentModule, currentLesson})
+    // let currentLesson = window.currentCourse.modules[moduleId].lessons[lessonId];
+    // console.log({currentLesson})
+
+    // window.currentCourse.modules[]
     return (
         <>
-            <h2 className="mb-4">Урок 106</h2>
+            <Nav className="d-flex justify-content-center">
+                {
+                    currentLesson.steps
+                        .map((step, ind) => {
+                            return (
+                                <StepLink 
+                                    stepObj={step}
+                                />
+                            )
+                        })
+                }
+                {/* <NavLink to="/">
+                    <i className="bi bi-square-fill text-success mx-1"></i>
+                </NavLink> */}
+            </Nav>
             <hr />
-            <p>
-            В этом онлайн-курсе НИУ ВШЭ мы познакомимся с базовыми понятиями статистики, научимся аккуратно собирать данные, обрабатывать их и визуализировать. Также мы поговорим про базовые теоремы, которые используются в математической статистике: ЗБЧ и ЦПТ.
-            </p>
-            <p>
-            В онлайн-курсе мы изучим основы математической статистики и аккуратную работу с данными.  
-            </p>
-            <p>
-            Мы научимся собирать и обрабатывать данные с помощью Python, поговорим про их визуализацию и предварительный анализ. 
-            </p>
-            <p>
-            Мы также познакомимся с основными распределениями и описательными статистиками, с которыми аналитики сталкиваются на повседневной основе. И обсудим теоремы, на которых базируется вся наука о данных: закон больших чисел и центральную предельную теорему.
-            </p>
-            <p>
-            Github со всеми материалами курса:  https://github.com/FUlyankin/matstat_online
-            </p>
-            <p>
-            Курс состоит из 5 недель. Каждая включает в себя несколько  коротких видеолекций (суммарная продолжительность – от 60 до 100 минут), тест на знание теоретического материала (5 – 15 вопросов), а также тест, включающий в себя выполнение заданий по программированию и решение теоретических задач. 
-            </p>
-            <p>
-            На некоторых неделях задание по программированию заменено заданием на взаимное оценивание. В конце курса предусмотрен итоговый экзамен, состоящий из тестовых вопросов.
-            </p>
+            <h2 className="mb-4 text-center">{currentLesson.title}</h2>
+            <hr />
+            <Outlet/>
         </>
     )
 }

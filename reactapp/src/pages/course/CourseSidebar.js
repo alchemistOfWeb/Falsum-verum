@@ -78,7 +78,7 @@ export default function CourseSidebar({course}) {
                                         </Nav.Item>
                                         <Nav.Item>
                                             <NavLink
-                                                to={`/courses/${course.id}/lessons`}
+                                                to={`/courses/${course.id}/modules`}
                                                 role="button"
                                                 className={activeLink}
                                             >

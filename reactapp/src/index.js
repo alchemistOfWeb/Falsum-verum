@@ -40,6 +40,7 @@ import CourseStatistics from './pages/course/Statistics';
 import CourseSchedule from './pages/course/Schedule';
 import CourseRoadmap from './pages/course/Roadmap';
 import CourseAuthors from './pages/course/Authors';
+import StepDetail from './pages/course/StepDetail';
 
 
 export default function App() {
@@ -75,7 +76,9 @@ export default function App() {
           <Route path="schedule" element={<CourseSchedule/>} />
           <Route path="roadmap" element={<CourseRoadmap/>} />
           <Route path="authors" element={<CourseAuthors/>} />
-          <Route path="lessons/:lessonId" element={<LessonDetail/>} />
+          <Route path="modules/:moduleId/lessons/:lessonId" element={<LessonDetail/>} >
+            <Route path="steps/:stepId" element={<StepDetail/>} />
+          </Route>
         </Route>
         <Route path="*" element={<NoPage />} />
       </Routes>

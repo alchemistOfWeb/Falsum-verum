@@ -73,7 +73,7 @@ class LessonTypeSerializer(serializers.ModelSerializer):
 class StepShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
-        fields = 'title', 'step_type', 'doshow', 'grade', 'created_at', 'updated_at', 'order'
+        fields = 'id', 'title', 'step_type', 'doshow', 'grade', 'created_at', 'updated_at', 'order'
 
 
 class LessonShortSerializer(serializers.ModelSerializer):

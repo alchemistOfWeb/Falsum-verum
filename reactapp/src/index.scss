@@ -296,3 +296,14 @@ body {
     height: 100vh;
 }
 
+.step-link {
+    padding: 0px;
+    margin: 5px;
+    color: gray;
+    &.active {
+        filter: drop-shadow(0 0 4px rgb(30, 181, 184)) drop-shadow(0 0 2px rgb(104, 228, 230))
+    }
+    &.complete {
+        color: rgb(24, 133, 25);
+    }
+}
