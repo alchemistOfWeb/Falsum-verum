@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'nested_admin', 
+    'django_admin_json_editor',
     'ckeditor', 
     'ckeditor_uploader',
     'courses_api',
