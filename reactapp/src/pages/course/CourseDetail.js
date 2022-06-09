@@ -28,7 +28,7 @@ export default function CourseDetail() {
     if (isPending) {
         return (
             <div className="d-flex align-items-center justify-content-center pt-5">
-                <Spinner animation="border" variant="info"/>
+                <Spinner animation="border" variant="info" size="xl"/>
             </div>
         )
     }

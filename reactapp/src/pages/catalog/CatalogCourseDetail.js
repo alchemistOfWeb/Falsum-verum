@@ -32,7 +32,7 @@ export default function CatalogCourseDetail() {
     if (isPending) {
         return (
             <div className="d-flex align-items-center justify-content-center pt-5">
-                <Spinner animation="border" variant="info"/>
+                <Spinner animation="border" variant="info" size="xl"/>
             </div>
         )
     }
@@ -51,8 +51,8 @@ export default function CatalogCourseDetail() {
                     <div style={{backgroundImage: `url(${img_url})`}} className="course-banner" />
                     <div className="p-4 p-md-5 mb-4 container position-relative">
                         <div className="col-md-6 px-0">
-                            <h1 className="display-4 fst-italic">{courseObj.title}</h1>
-                            <p className="lead my-3">
+                            <h1 className="display-4 fst-italic course-title">{courseObj.title}</h1>
+                            <p className="lead my-3 course-short-description">
                                 { courseObj.short_description }
                             </p>
                             <p className="lead mb-0">
@@ -74,8 +74,8 @@ export default function CatalogCourseDetail() {
                                 <Nav.Link className="h5" href="#">Отзывы</Nav.Link>
                             </Nav>
 
-                            <div className="blog-post">
-                                <h2 className="blog-post-title">Про курс</h2>
+                            <div className="course-full-description">
+                                <h2 className="course-full-description__title">Про курс</h2>
                                 {/* <p className="blog-post-meta">
                                     December 23, 2020 by 
                                     <a href="#">Jacob</a>
@@ -87,11 +87,9 @@ export default function CatalogCourseDetail() {
 
                         <div className="col-md-4 ">
                             <div className="position-sticky mt-2">
-                                <div className="p-4 mb-3 rounded">
-                                    <h4 className="fst-italic">Start</h4>
-                                    <p className="mb-0">
-                                        Вы можете начать сейчас или запланировать на другое время.
-                                    </p>
+                                <div className="pt-4 mb-3 rounded">
+                                    {/* <h4 className="fst-italic">Start</h4> */}
+                                    
                                     <Nav defaultActiveKey="/home" className="flex-column" variant="pills">
                                         <Nav.Link 
                                             className="bg-success text-center my-2 text-light start-course-btn" 
@@ -106,10 +104,13 @@ export default function CatalogCourseDetail() {
                                             Запланировать
                                         </Nav.Link>
                                     </Nav>
+                                    <p className="mt-1 start-minitip">
+                                        Вы можете начать сейчас или запланировать на другое время.
+                                    </p>
                                 </div>
 
-                                <div className="p-4">
-                                    <h4 className="fst-italic">Поделиться</h4>
+                                <div className="p-2">
+                                    <h4 className="fst-italic text-center">Поделиться</h4>
                                     {/* <ol className="list-unstyled mb-0">
                                         <li><a href="#">вконтакте</a></li>
                                         <li><a href="#">telegram</a></li>
@@ -118,7 +119,7 @@ export default function CatalogCourseDetail() {
                                         <li><a href="#">twitter</a></li>
                                     </ol> */}
                                     
-                                    <ListGroup horizontal className="list-unstyled social-icons">
+                                    <ListGroup horizontal className="list-unstyled social-icons justify-content-center">
                                         <ListGroup.Item>
                                             <a 
                                                 target="_blank" 

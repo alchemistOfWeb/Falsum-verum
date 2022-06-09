@@ -150,7 +150,7 @@ export default function CourseSidebar({course}) {
                             course.modules.map(
                                 (m, ind) => <ModuleEl courseId={course.id} moduleObj={m} key={ind} />) 
                             :
-                            "There are no sections in this section yet."
+                            "Для данного курса занятия ещё не готовы."
                         }
                     </div>
                 </div>
