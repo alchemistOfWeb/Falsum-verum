@@ -5,10 +5,17 @@ from .models import (
     Profile, Organization, Course, 
     CourseReport, TagForCourse, StepComment,
     Lesson, Step, LessonType,
-    Module, Specialization
+    Module, Specialization, TextLecture,
+    VideoLecture, Test, TestTask,
+    VideoQuestion
 )
 import nested_admin
 from django_admin_json_editor import JSONEditorWidget
+from polymorphic.admin import (
+    PolymorphicParentModelAdmin, 
+    PolymorphicChildModelAdmin, 
+    PolymorphicChildModelFilter
+)
 
 admin.site.site_title = "Stepo - образовательная платформа"
 admin.site.site_header = "Stepo - образовательная платформа"
@@ -70,99 +77,109 @@ class LessonTypeAdmin(admin.ModelAdmin):
     icon_preview.allow_tags = True
 
 
-
-
-# DATA_SCHEMA = {
-#     'type': 'object',
-#     'title': 'Data',
-#     'properties': {
-#         'text': {
-#             'title': 'Some text',
-#             'type': 'string',
-#             'format': 'textarea',
-#         },
-#         'status': {
-#             'title': 'Status',
-#             'type': 'boolean',
-#         },
-#     },
-# }
-
-# "name": {
-#     "type": "string",
-#     "description": "First and Last name",
-#     "minLength": 4,
-#     "default": "Jeremy Dorn"
-# },
-# "age": {
-#     "type": "integer",
-#     "default": 25,
-#     "minimum": 18,
-#     "maximum": 99
-# },
-
-# "default": [
-#     {
-#         "type": "dog",
-#         "name": "Walter"
-#     }
-# ]
-
-DATA_SCHEMA = {
-    "title": "Data",
+TEST_DATA_SCHEMA = {
+    "title": "Задача",
     "type": "object",
     "options": {
         "class": "bg-dark"
     },
-    "required": [
-        "tasks"
-    ],
-    "properties": {
-        "tasks": {
-            "type": "array",
-            "format": "table",
-            "title": "Задания",
-            "uniqueItems": True,
-            "items": {
-                "type": "object",
-                "title": "Задача",
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "enum": [
-                            "Ответ текстом",
-                            "Выбор одного из списка",
-                            "Выбор нескольких из списка"
-                        ],
-                        "default": "Ответ текстом"
-                    },
-                    "question": {
-                        "type": "string",
-                        "format": "textarea"
-                    },
-                    "answers": {
-                        "type": "array",
-                        "format": "table",
-                        "title": "Ответы",
-                        "items": {
-                            "title": "Ответ",
-                            "type": "object",
-                            "properties": {
-                                "text": {
-                                    "type": "string",
-                                    "minLength": 1,
-                                },
-                                "is_correct": {
-                                    "type": "boolean",
-                                }
+    "oneOf": [
+        {
+            "title": "Choose correct answers",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "Choose correct answers",
+                    "options": {
+                    "hidden": "true"
+                    }
+                },
+                "answers": {
+                    "type": "array",
+                    "title": "answers",
+                    "format": "table",
+                    "items": {
+                        "type": "object",
+                        "title": "answer",
+                        "properties": {
+                            "text": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "is_correct": {
+                                "type": "boolean"
                             }
                         }
-                    },
+                    }
+                }
+            }
+        },
+        {
+            "title": "Correct mistakes in the text",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "Correct mistakes in text",
+                    "options": {
+                    "hidden": "true"
+                    }
+                },
+                "answers": {
+                    "type": "array",
+                    "title": "answers",
+                    "format": "table",
+                    "items": {
+                        "type": "object",
+                        "title": "answer",
+                        "properties": {
+                            "position": {
+                                "type": "integer"
+                            },
+                            "correct": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "title": "Short text answer",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "Short text answer",
+                    "options": {
+                    "hidden": "true"
+                    }
+                },
+                "answers": {
+                    "type": "array",
+                    "title": "correct answers",
+                    "format": "table",
+                    "items": {
+                        "title": "correct answer",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        {
+            "title": "Longer text answer",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "default": "Longer text answer",
+                    "options": {
+                        "hidden": "true"
+                    }
                 }
             }
         }
-    }
+    ]
 }
+
+
 
 # class JSONModelAdminForm(forms.ModelForm):
 #     class Meta:
@@ -173,13 +190,58 @@ DATA_SCHEMA = {
 #         }
 
 
-class StepAdmin(admin.ModelAdmin):
+class StepChildAdmin(PolymorphicChildModelAdmin):
+    """ Base admin class for all child models """
+    base_model = Step  # Optional, explicitly set here.
+
+    # By using these `base_...` attributes instead of the regular ModelAdmin `form` and `fieldsets`,
+    # the additional fields of the child models are automatically added to the admin form.
+    base_form = ...
+    base_fieldsets = (
+        ...
+    )
+
+
+@admin.register(Test)
+class TestAdmin(StepChildAdmin):
+    base_model = Test
+
+
+@admin.register(VideoLecture)
+class VideoLectureAdmin(TestAdmin):
+    base_model = VideoLecture
+    show_in_index = True 
+
+
+@admin.register(TextLecture)
+class TextLectureAdmin(TestAdmin):
+    base_model = TextLecture
+    show_in_index = True
+
+
+@admin.register(Step)
+class StepParentAdmin(PolymorphicParentModelAdmin):
+    """ The parent model admin """
+    base_model = Step  # Optional, explicitly set here.
+    child_models = (Test, VideoLecture, VideoLecture)
+    # list_filter = (PolymorphicChildModelFilter,)  # This is optional.
+    # list_display = ['title', 'lesson', 'step_type', 'grade', 'order', 'doshow']
+    list_display = "__all__"
+    
+
+@admin.register(TestTask)
+class TestTaskAdmin():
     def get_form(self, request, obj=None, **kwargs):
-        widget = JSONEditorWidget(DATA_SCHEMA, collapsed=False, sceditor=True)
-        form = super().get_form(request, obj, widgets={'test': widget}, **kwargs)
+        widget = JSONEditorWidget(TEST_DATA_SCHEMA, collapsed=False, sceditor=True)
+        form = super().get_form(request, obj, widgets={'task': widget}, **kwargs)
         return form
 
-    list_display = ['title', 'lesson', 'step_type', 'grade', 'order', 'doshow']
+
+class VideoQuestionAdmin():
+    def get_form(self, request, obj=None, **kwargs):
+        widget = JSONEditorWidget(TEST_DATA_SCHEMA, collapsed=False, sceditor=True)
+        form = super().get_form(request, obj, widgets={'task': widget}, **kwargs)
+        return form
 
 class StepCommentAdmin(admin.ModelAdmin):
     list_display = ['author', 'step', 'updated_at']

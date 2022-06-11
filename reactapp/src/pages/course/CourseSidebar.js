@@ -33,11 +33,13 @@ export default function CourseSidebar({course}) {
 
                 
                     <div className="p-4">
-                        <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <Link to="/" className="d-inline-block pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5">Stepus</span>
                         </Link>
-                        <div className="row">
-                            <h4>{course.title}</h4>
+                        <div className="d-inline-block">
+                            <Link to={`/catalog/courses/${course.id}`} className="text-decoration-none text-light">
+                                <h4>{course.title}</h4>
+                            </Link>
                         </div>
                         <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="0" className="bg-transparent">
@@ -46,14 +48,14 @@ export default function CourseSidebar({course}) {
                                 </Accordion.Header>
                                 <Accordion.Body>
                                     <Nav variant="pills" className="flex-column mb-sm-auto mb-0 align-items-start" id="menu">
-                                        <NavLink
+                                        {/* <NavLink
                                             to={`/catalog/courses/${course.id}`} 
                                             role="button"
                                             className={activeLink}
                                         >
                                             <i className="fs-4 bi-house"></i> 
                                             <span className="ms-1">На страницу каталога</span>
-                                        </NavLink>
+                                        </NavLink> */}
                                         <Nav.Item>
                                             <Nav.Link href="#submenu1" data-bs-toggle="collapse" className="px-0 align-middle">
                                                 <i className="fs-4 bi-speedometer2"></i> 

@@ -19,21 +19,27 @@ export function CourseCard({props}) {
         <div class="card catalog-list-card">
             <div class="card-body text-dark">
                 <div className="row">
-                    <div className="col-2 col-md-1">
+                    <div className="col-3 col-md-1 p-0 border border-solid">
                         <img 
                             src={img_url}
                             alt="Python для анализа данных" 
-                            width={50}
+                            width={"100%"}
+                            // height={"100%"}
                         />
                     </div>
-                    <div className="col-10 col-md-9">
-                        <h5 class="card-title">{props.title}</h5>
-                        <p className="card-text">{props.short_description}</p>
-                    </div>
-                    <div className="col-12 col-md-2 d-flex d-md-block justify-content-end mt-3 mt-md-0">
-                        <Link to={`/catalog/courses/${props.id}`} className="btn btn-primary">
-                            Открыть курс →
-                        </Link>
+                    <div className="col-9 col-md-11 row pe-0">
+                        <div className="col-12 col-md-9">
+                            <h5 class="card-title">{props.title}</h5>
+                            <p className="card-text">{props.short_description}</p>
+                        </div>
+                        <div className="catalog-list-item__link-wrapper col-12 col-md-3 d-flex justify-content-end mt-3 mt-md-0 p-0">
+                            <div className="d-block">
+                            <Link to={`/catalog/courses/${props.id}`} className="btn btn-primary">
+                                Открыть курс →
+                            </Link>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

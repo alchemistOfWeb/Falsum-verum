@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import User
@@ -6,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFit
 from django.core.validators import FileExtensionValidator
+from polymorphic import models as poly_models
 from ckeditor_uploader.fields import RichTextUploadingField
 import ckeditor
 
@@ -268,12 +268,11 @@ class LessonReaction(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True)
 
 
-class StepType(models.IntegerChoices):
-    LECTURE = 0, 'lecture'
-    TEST = 1, 'test'
+# class StepType(models.IntegerChoices):
+#     LECTURE = 0, 'lecture'
+#     TEST = 1, 'test'
 
-
-class Step(models.Model):
+class Step(poly_models.PolymorphicModel):
     title = models.CharField(max_length=512, null=False)
     lesson = models.ForeignKey(
         Lesson, 
@@ -281,9 +280,7 @@ class Step(models.Model):
         null=True, blank=False, 
         on_delete=models.CASCADE
     )
-    step_type = models.IntegerField(choices=StepType.choices, null=False)
-    content = RichTextUploadingField(max_length=4096, null=False, default='', blank=True)
-    doshow = models.BooleanField(default=False, blank=True)
+    doshow = models.BooleanField(null=False, default=False, blank=True)
     grade = models.PositiveIntegerField(null=False, default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
@@ -297,8 +294,6 @@ class Step(models.Model):
     #     null=True, 
     #     blank=True
     # )
-    video = models.URLField(null=True, blank=True)
-    test = models.JSONField(null=True, blank=True)
     order = models.SmallIntegerField(null=False, default=0)
 
     def __str__(self) -> str:
@@ -334,8 +329,43 @@ class StepReaction(models.Model):
     step = models.ForeignKey(Step, related_name='reactions', on_delete=models.CASCADE)
     value = models.SmallIntegerField(choices=StepReactionType.choices, null=False)
 
-# балы за урок
-# сертификат
-# дз
-# календарик (план занятий)
-# 
+
+class TextLecture(Step):
+    content = RichTextUploadingField(max_length=8192, null=False, default='', blank=True)
+
+
+class VideoLecture(Step):
+    content = ckeditor.fields.RichTextField(max_length=2048, null=False, default='', blank=True)
+    video = models.URLField(null=True, blank=True)
+    # questions as fk in VideoQeustion
+
+
+class Test(Step):
+    content = ckeditor.fields.RichTextField(max_length=2048, null=False, default='', blank=True)
+    # tasks as fk in TestTask
+
+
+class TestTask(models.Model):
+    description = models.TextField(max_length=512, null=False, default='', blank=True)
+    order = models.SmallIntegerField(null=False, default=0)
+    # task_type = models.IntegerField(choices=StepType.choices, null=False)
+    answers = models.JSONField(null=True, blank=True)
+    grade = models.PositiveSmallIntegerField(null=False, default=0, blank=True)
+    doshow = models.BooleanField(null=False, default=False, blank=True)
+    test = models.ForeignKey(Test, related_name="tasks", null=False)
+
+
+class VideoQuestion(models.Model):
+    description = models.TextField(max_length=512, null=False, default='', blank=True)
+    answers = models.JSONField(null=True, blank=True)
+    timing = models.TimeField(null=False)
+    grade = models.PositiveSmallIntegerField(null=False, default=0, blank=True)
+    doshow = models.BooleanField(null=False, default=False, blank=True)
+    video = models.ForeignKey(VideoLecture, related_name="questions", null=False)
+
+
+# grade per lesson
+# certificate
+# homework
+# calendare (or|and lessons schedule)
+# terms in TextLecture.content

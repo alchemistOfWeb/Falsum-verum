@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
+import 'mdb-react-ui-kit/dist/css/mdb.min.css'
 // import 'mdb-ui-kit/css/mdb.min.css';
 import './index.css';
 import './index.scss';

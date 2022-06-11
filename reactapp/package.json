@@ -13,6 +13,7 @@
     "dayjs": "^1.11.1",
     "html-react-parser": "^1.4.14",
     "jquery": "^3.6.0",
+    "mdb-react-ui-kit": "^3.0.0",
     "mdb-ui-kit": "^4.0.0",
     "qs": "^6.10.3",
     "react": "^18.1.0",
