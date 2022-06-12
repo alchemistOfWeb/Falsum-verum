@@ -15,7 +15,7 @@ from .models import (
 from .serializers import ( 
     CourseFullSerializer, ModuleSerializer, ProfileSerializer, 
     UserSerializer, SpecializationSerializer, OrganizationSerializer, 
-    CourseSerializer, LessonSerializer, PolymorphicStepSerializer
+    CourseSerializer, PolymorphicStepSerializer
 )
 from .filters import OrganizationFilter, SpecializationFilter, CourseFilter
 from django.utils.decorators import method_decorator

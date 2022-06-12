@@ -78,7 +78,7 @@ export default function CourseSidebar({course}) {
                                                 </li>
                                             </Nav>
                                         </Nav.Item>
-                                        <Nav.Item>
+                                        {/* <Nav.Item>
                                             <NavLink
                                                 to={`/courses/${course.id}/modules`}
                                                 role="button"
@@ -87,7 +87,7 @@ export default function CourseSidebar({course}) {
                                                 <i className="fs-4 bi-easel-fill"></i> 
                                                 <span className="ms-1">Прохождение</span> 
                                             </NavLink>
-                                        </Nav.Item>
+                                        </Nav.Item> */}
                                         <Nav.Item>
                                             <NavLink
                                                 to={`/courses/${course.id}/roadmap`}

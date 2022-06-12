@@ -74,7 +74,6 @@ class LessonTypeSerializer(serializers.ModelSerializer):
 
 class StepShortSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
-        instance = instance.filter(doshow=True)
         rep = super().to_representation(instance)
         rep["step_type"] = instance._meta.object_name
         return rep
@@ -85,13 +84,12 @@ class StepShortSerializer(serializers.ModelSerializer):
 
 
 class LessonShortSerializer(serializers.ModelSerializer):
-    steps = StepShortSerializer(read_only=True, many=True)
+    steps = serializers.SerializerMethodField()
     lesson_type = LessonTypeSerializer(read_only=True)
 
-    def to_representation(self, instance):
-        instance = instance.filter(doshow=True)
-        rep = super().to_representation(instance)
-        return rep
+    def get_steps(self, obj):
+        steps = obj.steps.filter(doshow=True)
+        return StepShortSerializer(steps, read_only=True, many=True).data
 
     class Meta:
         model = Lesson
@@ -99,12 +97,11 @@ class LessonShortSerializer(serializers.ModelSerializer):
 
 
 class ModuleSerializer(serializers.ModelSerializer):
-    lessons = LessonShortSerializer(read_only=True, many=True)
+    lessons = serializers.SerializerMethodField()
 
-    def to_representation(self, instance):
-        instance = instance.filter(doshow=True)
-        rep = super().to_representation(instance)
-        return rep
+    def get_lessons(self, obj):
+        lessons = obj.lessons.filter(doshow=True)
+        return LessonShortSerializer(lessons, read_only=True, many=True).data
     
     class Meta:
         model = Module
@@ -112,7 +109,11 @@ class ModuleSerializer(serializers.ModelSerializer):
 
 
 class CourseFullSerializer(serializers.ModelSerializer):
-    modules = ModuleSerializer(read_only=True, many=True)
+    modules = serializers.SerializerMethodField()
+
+    def get_modules(self, obj):
+        modules = obj.modules.filter(doshow=True)
+        return ModuleSerializer(modules, read_only=True, many=True).data
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -185,7 +186,7 @@ class PolymorphicStepSerializer(PolymorphicSerializer):
     }
 
     def to_representation(self, instance):
-        instance.filter(doshow=True)
+        # instance.filter(doshow=True)
         rep = super().to_representation(instance)
         rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()
         rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()

@@ -398,3 +398,32 @@ body {
     // border-left-color: aqua;
     // border-right-color: aqua;
 }
+
+.video-lecture{
+    &__iframe {
+        height: 300px;
+        width: 100%;
+
+        @media(min-width: $md) {
+            height: 370px;
+            width: 90%;
+        }
+
+        @media(min-width: $lg) {
+            height: 440px;
+            width: 80%;
+        }
+        
+        @media(min-width: $xl) {
+            height: 490px;
+            width: 900px;
+        }
+        
+        @media(min-width: $xxl) {
+            height: 520px;
+            width: 1024px;
+        }
+        
+    }
+
+}
