@@ -337,12 +337,12 @@ class TextLecture(Step):
 class VideoLecture(Step):
     content = ckeditor.fields.RichTextField(max_length=2048, null=False, default='', blank=True)
     video = models.URLField(null=True, blank=True)
-    # questions as fk in VideoQeustion
+    # questions (implemented by fk in VideoQeustion)
 
 
 class Test(Step):
     content = ckeditor.fields.RichTextField(max_length=2048, null=False, default='', blank=True)
-    # tasks as fk in TestTask
+    # tasks (implemented by fk in TestTask)
 
 
 class TestTask(models.Model):
@@ -352,7 +352,7 @@ class TestTask(models.Model):
     answers = models.JSONField(null=True, blank=True)
     grade = models.PositiveSmallIntegerField(null=False, default=0, blank=True)
     doshow = models.BooleanField(null=False, default=False, blank=True)
-    test = models.ForeignKey(Test, related_name="tasks", null=False)
+    test = models.ForeignKey(Test, related_name="tasks", null=False, on_delete=models.CASCADE)
 
 
 class VideoQuestion(models.Model):
@@ -361,7 +361,7 @@ class VideoQuestion(models.Model):
     timing = models.TimeField(null=False)
     grade = models.PositiveSmallIntegerField(null=False, default=0, blank=True)
     doshow = models.BooleanField(null=False, default=False, blank=True)
-    video = models.ForeignKey(VideoLecture, related_name="questions", null=False)
+    lecture = models.ForeignKey(VideoLecture, related_name="questions", null=False, on_delete=models.CASCADE)
 
 
 # grade per lesson

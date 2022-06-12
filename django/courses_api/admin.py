@@ -14,8 +14,13 @@ from django_admin_json_editor import JSONEditorWidget
 from polymorphic.admin import (
     PolymorphicParentModelAdmin, 
     PolymorphicChildModelAdmin, 
-    PolymorphicChildModelFilter
+    PolymorphicChildModelFilter,
+    PolymorphicInlineSupportMixin, 
+    StackedPolymorphicInline
 )
+
+from .jsonfield_schemes import TEST_DATA_SCHEMA
+
 
 admin.site.site_title = "Stepo - образовательная платформа"
 admin.site.site_header = "Stepo - образовательная платформа"
@@ -36,23 +41,61 @@ class CourseReportAdmin(admin.ModelAdmin):
     list_display = ['author', 'course']
 
 
-class StepInLine(nested_admin.NestedStackedInline):
+class TestTaskInline(nested_admin.NestedStackedInline):
+    model = TestTask
+    sortable_field_name = 'order'
+    extra = 0
+
+    # def get_form(self, request, obj=None, **kwargs):
+    #     widget = JSONEditorWidget(TEST_DATA_SCHEMA, collapsed=True, sceditor=True)
+    #     form = super().get_form(request, obj, widgets={'answers': widget}, **kwargs)
+    #     return form
+
+
+class VideoQeustionInline(nested_admin.NestedStackedInline):
+    model = VideoQuestion
+    extra = 0
+
+# class StepInLine(nested_admin.NestedStackedInline):
+#     model = Step
+#     verbose_name = "Шаг"
+#     verbose_name_plural = "Шаги"
+class StepInLine(nested_admin.NestedStackedPolymorphicInline):
     model = Step
     verbose_name = "Шаг"
-    verbose_name_plural = "Шаги"
+    verbose_name_plural = "Шаги"    
+    sortable_field_name = 'order'
+    extra = 0
+
+    class TestInline(nested_admin.NestedStackedPolymorphicInline.Child):
+        model = Test
+        inlines = [TestTaskInline]
+
+    class VideoLectureInline(nested_admin.NestedStackedPolymorphicInline.Child):
+        model = VideoLecture
+        inlines = [VideoQeustionInline]
+
+    class TextLectureInline(nested_admin.NestedStackedPolymorphicInline.Child):
+        model = TextLecture
+
+    child_inlines = (VideoLectureInline, TextLectureInline, TestInline)
 
 
 class LessonInLine(nested_admin.NestedStackedInline):
     model = Lesson
     verbose_name = "Урок"
     verbose_name_plural = "Уроки"
+    sortable_field_name = 'order'
+    extra = 0
 
 
 class ModuleInLine(nested_admin.NestedStackedInline):
     model = Module
     verbose_name = "Модуль"
     verbose_name_plural = "Модули"
+    sortable_field_name = 'order'
     inlines = [LessonInLine]
+    extra = 0
 
 
 class CourseAdmin(nested_admin.NestedModelAdmin):
@@ -64,9 +107,11 @@ class ModuleAdmin(admin.ModelAdmin):
     list_display = ['title', 'course', 'grade', 'order', 'doshow']
     inlines = [LessonInLine]
 
-class LessonAdmin(nested_admin.NestedModelAdmin):
+class LessonAdmin(nested_admin.NestedPolymorphicModelAdmin):
     list_display = ['title', 'module', 'grade', 'order', 'doshow']
+    sortable_field_name = 'order'
     inlines = [StepInLine]
+
 
 class LessonTypeAdmin(admin.ModelAdmin):
     list_display = ['title', 'icon_preview']
@@ -75,110 +120,6 @@ class LessonTypeAdmin(admin.ModelAdmin):
         return mark_safe(f"<img src='/media/{obj.icon}' width='30' />")
     icon_preview.short_description = 'Icon'
     icon_preview.allow_tags = True
-
-
-TEST_DATA_SCHEMA = {
-    "title": "Задача",
-    "type": "object",
-    "options": {
-        "class": "bg-dark"
-    },
-    "oneOf": [
-        {
-            "title": "Choose correct answers",
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "default": "Choose correct answers",
-                    "options": {
-                    "hidden": "true"
-                    }
-                },
-                "answers": {
-                    "type": "array",
-                    "title": "answers",
-                    "format": "table",
-                    "items": {
-                        "type": "object",
-                        "title": "answer",
-                        "properties": {
-                            "text": {
-                                "type": "string",
-                                "minLength": 1
-                            },
-                            "is_correct": {
-                                "type": "boolean"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "title": "Correct mistakes in the text",
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "default": "Correct mistakes in text",
-                    "options": {
-                    "hidden": "true"
-                    }
-                },
-                "answers": {
-                    "type": "array",
-                    "title": "answers",
-                    "format": "table",
-                    "items": {
-                        "type": "object",
-                        "title": "answer",
-                        "properties": {
-                            "position": {
-                                "type": "integer"
-                            },
-                            "correct": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "title": "Short text answer",
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "default": "Short text answer",
-                    "options": {
-                    "hidden": "true"
-                    }
-                },
-                "answers": {
-                    "type": "array",
-                    "title": "correct answers",
-                    "format": "table",
-                    "items": {
-                        "title": "correct answer",
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        {
-            "title": "Longer text answer",
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "default": "Longer text answer",
-                    "options": {
-                        "hidden": "true"
-                    }
-                }
-            }
-        }
-    ]
-}
-
 
 
 # class JSONModelAdminForm(forms.ModelForm):
@@ -196,52 +137,70 @@ class StepChildAdmin(PolymorphicChildModelAdmin):
 
     # By using these `base_...` attributes instead of the regular ModelAdmin `form` and `fieldsets`,
     # the additional fields of the child models are automatically added to the admin form.
-    base_form = ...
-    base_fieldsets = (
-        ...
-    )
+    # base_form = ...
+    # base_fieldsets = (
+    #     ...
+    # )
 
 
-@admin.register(Test)
+class TasksInline(admin.StackedInline):
+    model = TestTask
+    extra = 0
+
+
+class VideoQuestionsInline(admin.StackedInline):
+    model = VideoQuestion
+    extra = 0
+
+
 class TestAdmin(StepChildAdmin):
     base_model = Test
+    show_in_index = True
+
+    inlines = (TasksInline,)
 
 
-@admin.register(VideoLecture)
-class VideoLectureAdmin(TestAdmin):
+class VideoLectureAdmin(StepChildAdmin):
     base_model = VideoLecture
     show_in_index = True 
 
+    inlines = (VideoQuestionsInline,)
 
-@admin.register(TextLecture)
-class TextLectureAdmin(TestAdmin):
+
+class TextLectureAdmin(StepChildAdmin):
     base_model = TextLecture
     show_in_index = True
 
 
-@admin.register(Step)
+class StepCommentInline(admin.StackedInline):
+    model = StepComment
+    extra = 0
+
+
 class StepParentAdmin(PolymorphicParentModelAdmin):
     """ The parent model admin """
-    base_model = Step  # Optional, explicitly set here.
-    child_models = (Test, VideoLecture, VideoLecture)
+    base_model = Step
+    child_models = (Test, TextLecture, VideoLecture)
     # list_filter = (PolymorphicChildModelFilter,)  # This is optional.
-    # list_display = ['title', 'lesson', 'step_type', 'grade', 'order', 'doshow']
-    list_display = "__all__"
-    
-
-@admin.register(TestTask)
-class TestTaskAdmin():
-    def get_form(self, request, obj=None, **kwargs):
-        widget = JSONEditorWidget(TEST_DATA_SCHEMA, collapsed=False, sceditor=True)
-        form = super().get_form(request, obj, widgets={'task': widget}, **kwargs)
-        return form
+    list_display = ['title', 'lesson', 'grade', 'order', 'doshow']
+    inlines = (StepCommentInline,)
+    polymorphic_list = False
 
 
-class VideoQuestionAdmin():
-    def get_form(self, request, obj=None, **kwargs):
-        widget = JSONEditorWidget(TEST_DATA_SCHEMA, collapsed=False, sceditor=True)
-        form = super().get_form(request, obj, widgets={'task': widget}, **kwargs)
-        return form
+class TestTaskAdmin(admin.ModelAdmin):
+    model = TestTask
+    # def get_form(self, request, obj=None, **kwargs):
+    #     widget = JSONEditorWidget(TEST_DATA_SCHEMA, collapsed=False, sceditor=True)
+    #     form = super().get_form(request, obj, widgets={'answers': widget}, **kwargs)
+    #     return form
+
+
+class VideoQuestionAdmin(admin.ModelAdmin):
+    model = VideoQuestion
+    # def get_form(self, request, obj=None, **kwargs):
+    #     widget = JSONEditorWidget(TEST_DATA_SCHEMA, collapsed=False, sceditor=True)
+    #     form = super().get_form(request, obj, widgets={'answers': widget}, **kwargs)
+    #     return form
 
 class StepCommentAdmin(admin.ModelAdmin):
     list_display = ['author', 'step', 'updated_at']
@@ -261,5 +220,9 @@ admin.site.register(Module, ModuleAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(LessonType, LessonTypeAdmin)
 
-admin.site.register(Step, StepAdmin)
+admin.site.register(Test, TestAdmin)
+admin.site.register(TextLecture, TextLectureAdmin)
+admin.site.register(VideoLecture, VideoLectureAdmin)
+admin.site.register(Step, StepParentAdmin)
+admin.site.register(TestTask, TestTaskAdmin)
 admin.site.register(StepComment, StepCommentAdmin)

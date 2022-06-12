@@ -3,7 +3,7 @@ from .models import (
     Profile, Specialization, Organization, 
     Course, CourseReport, Module,
     Lesson, LessonType, Step, 
-    StepComment, StepType, LessonReactionType,
+    StepComment, LessonReactionType,
     StepReactionType
 )
 from django.db.models import Count
