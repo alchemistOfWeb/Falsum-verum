@@ -69,6 +69,7 @@ export default function StepDetail() {
                 <div className="step-content pb-3">
                     {parseHtml(stepObj.content)}
                     <hr />
+                    
                 </div>
                 
             </>

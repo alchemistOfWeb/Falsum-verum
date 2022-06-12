@@ -371,43 +371,43 @@ class ModuleViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class LessonViewSet(viewsets.ViewSet):
-    queryset = Lesson.objects
-    serializer_class = LessonSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+# class LessonViewSet(viewsets.ViewSet):
+#     queryset = Lesson.objects
+#     serializer_class = LessonSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def create(self, request, course, module):
-        data = request.data
-        serializer = self.serializer_class(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     def create(self, request, course, module):
+#         data = request.data
+#         serializer = self.serializer_class(data=data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, course, module, lesson):
-        obj = get_object_or_404(self.queryset, pk=lesson)
-        serializer = self.serializer_class(obj)
-        ctx = {'organization': serializer.data}
-        return Response(data=ctx, status=status.HTTP_200_OK)
+#     def retrieve(self, request, course, module, lesson):
+#         obj = get_object_or_404(self.queryset, pk=lesson)
+#         serializer = self.serializer_class(obj)
+#         ctx = {'organization': serializer.data}
+#         return Response(data=ctx, status=status.HTTP_200_OK)
 
-    def update(self, request, course, module, lesson):
-        obj = get_object_or_404(self.queryset, pk=lesson)
-        serializer = self.serializer_class(obj, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+#     def update(self, request, course, module, lesson):
+#         obj = get_object_or_404(self.queryset, pk=lesson)
+#         serializer = self.serializer_class(obj, data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
 
-    def partial_update(self, request, course, module, lesson):
-        obj = get_object_or_404(self.queryset, pk=lesson)
-        serializer = self.serializer_class(obj, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_205_RESET_CONTENT)
+#     def partial_update(self, request, course, module, lesson):
+#         obj = get_object_or_404(self.queryset, pk=lesson)
+#         serializer = self.serializer_class(obj, data=request.data, partial=True)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(status=status.HTTP_205_RESET_CONTENT)
 
-    def destroy(self, request, course, module, lesson):
-        obj = get_object_or_404(self.queryset, pk=lesson)
-        obj.is_active = False
-        obj.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def destroy(self, request, course, module, lesson):
+#         obj = get_object_or_404(self.queryset, pk=lesson)
+#         obj.is_active = False
+#         obj.save()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class StepViewSet(viewsets.ViewSet):

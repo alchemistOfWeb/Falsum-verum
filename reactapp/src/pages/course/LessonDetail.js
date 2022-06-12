@@ -18,11 +18,14 @@ function activeLink({isActive}) {
 
 function StepLink({courseId, moduleId, lessonId, stepObj}) {
     let iconEl = '';
-    if (stepObj.step_type == 0) {
+    if (stepObj.step_type == "TextLecture") {
         iconEl = <i className="bi bi-square-fill"></i> 
     }
-    if (stepObj.step_type == 1) {
+    if (stepObj.step_type == "Test") {
         iconEl = <i class="bi bi-question-square-fill"></i>
+    }
+    if (stepObj.step_type == "VideoLecture") {
+        iconEl = <i class="bi bi-caret-right-square-fill"></i>
     }
 
     return (

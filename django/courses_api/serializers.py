@@ -4,7 +4,7 @@ from .models import (
     Course, CourseReport, Module,
     Lesson, LessonType, Step, 
     StepComment, LessonReactionType,
-    StepReactionType, Test, TextLecture, VideoLecture
+    StepReactionType, Test, TestTask, TextLecture, VideoLecture, VideoQuestion
 )
 from django.db.models import Count
 from django.contrib.auth.models import User
@@ -74,9 +74,9 @@ class LessonTypeSerializer(serializers.ModelSerializer):
 
 class StepShortSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
+        instance = instance.filter(doshow=True)
         rep = super().to_representation(instance)
         rep["step_type"] = instance._meta.object_name
-            
         return rep
 
     class Meta:
@@ -89,9 +89,8 @@ class LessonShortSerializer(serializers.ModelSerializer):
     lesson_type = LessonTypeSerializer(read_only=True)
 
     def to_representation(self, instance):
+        instance = instance.filter(doshow=True)
         rep = super().to_representation(instance)
-        rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()
-        rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
         return rep
 
     class Meta:
@@ -102,6 +101,11 @@ class LessonShortSerializer(serializers.ModelSerializer):
 class ModuleSerializer(serializers.ModelSerializer):
     lessons = LessonShortSerializer(read_only=True, many=True)
 
+    def to_representation(self, instance):
+        instance = instance.filter(doshow=True)
+        rep = super().to_representation(instance)
+        return rep
+    
     class Meta:
         model = Module
         fields = '__all__'
@@ -123,19 +127,18 @@ class CourseFullSerializer(serializers.ModelSerializer):
 
 # ON LESSON|STEP PAGES
 # <------------------------------------>
-class LessonSerializer(serializers.ModelSerializer):
-    steps = StepShortSerializer(read_only=True)
-    lesson_type = LessonTypeSerializer()
+# class LessonSerializer(serializers.ModelSerializer):
+#     steps = StepShortSerializer(read_only=True, many=True)
+#     lesson_type = LessonTypeSerializer(read_only=True)
 
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()
-        rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
-        return rep
+#     def to_representation(self, instance):
+#         instance = instance.filter(doshow=True)
+#         rep = super().to_representation(instance)
+#         return rep
 
-    class Meta:
-        model = Step
-        fields = '__all__'
+#     class Meta:
+#         model = Lesson
+#         fields = '__all__'
 
 
 class TextLectureSerializer(serializers.ModelSerializer):
@@ -144,13 +147,29 @@ class TextLectureSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class VideoQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VideoQuestion
+        fields = '__all__'
+
+
 class VideoLectureSerializer(serializers.ModelSerializer):
+    questions = VideoQuestionSerializer(many=True, read_only=True)
+
     class Meta:
         model = VideoLecture
         fields = '__all__'
 
 
+class TestTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestTask
+        fields = '__all__'
+
+
 class TestSerializer(serializers.ModelSerializer):
+    tasks = TestTaskSerializer(many=True, read_only=True)
+
     class Meta:
         model = Test
         fields = '__all__'
@@ -166,6 +185,7 @@ class PolymorphicStepSerializer(PolymorphicSerializer):
     }
 
     def to_representation(self, instance):
+        instance.filter(doshow=True)
         rep = super().to_representation(instance)
         rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()
         rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
