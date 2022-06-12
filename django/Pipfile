@@ -17,6 +17,7 @@ django-ckeditor = "*"
 django-nested-admin = "*"
 django-admin-json-editor = "*"
 django-polymorphic = "*"
+django-rest-polymorphic = "*"
 
 [dev-packages]
 

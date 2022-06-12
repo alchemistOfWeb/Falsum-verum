@@ -15,7 +15,7 @@ from .models import (
 from .serializers import ( 
     CourseFullSerializer, ModuleSerializer, ProfileSerializer, 
     UserSerializer, SpecializationSerializer, OrganizationSerializer, 
-    CourseSerializer, LessonSerializer, StepSerializer
+    CourseSerializer, LessonSerializer, PolymorphicStepSerializer
 )
 from .filters import OrganizationFilter, SpecializationFilter, CourseFilter
 from django.utils.decorators import method_decorator
@@ -412,7 +412,7 @@ class LessonViewSet(viewsets.ViewSet):
 
 class StepViewSet(viewsets.ViewSet):
     queryset = Step.objects
-    serializer_class = StepSerializer
+    serializer_class = PolymorphicStepSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def create(self, request, course, module, lesson):

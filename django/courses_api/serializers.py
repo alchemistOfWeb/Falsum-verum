@@ -4,10 +4,12 @@ from .models import (
     Course, CourseReport, Module,
     Lesson, LessonType, Step, 
     StepComment, LessonReactionType,
-    StepReactionType
+    StepReactionType, Test, TextLecture, VideoLecture
 )
 from django.db.models import Count
 from django.contrib.auth.models import User
+from rest_polymorphic.serializers import PolymorphicSerializer
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -71,9 +73,15 @@ class LessonTypeSerializer(serializers.ModelSerializer):
 
 
 class StepShortSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep["step_type"] = instance._meta.object_name
+            
+        return rep
+
     class Meta:
         model = Step
-        fields = 'id', 'title', 'step_type', 'doshow', 'grade', 'created_at', 'updated_at', 'order'
+        fields = 'id', 'title', 'doshow', 'grade', 'created_at', 'updated_at', 'order'
 
 
 class LessonShortSerializer(serializers.ModelSerializer):
@@ -130,14 +138,40 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class StepSerializer(serializers.ModelSerializer):
+class TextLectureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TextLecture
+        fields = '__all__'
+
+
+class VideoLectureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VideoLecture
+        fields = '__all__'
+
+
+class TestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Test
+        fields = '__all__'
+
+
+class PolymorphicStepSerializer(PolymorphicSerializer):
+    resource_type_field_name = 'step_type'
+
+    model_serializer_mapping = {
+        TextLecture: TextLectureSerializer,
+        VideoLecture: VideoLectureSerializer,
+        Test: TestSerializer
+    }
+
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()
         rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
         return rep
 
-    class Meta:
-        model = Step
-        fields = '__all__'
+    # class Meta:
+    #     model = Step
+    #     fields = '__all__'
 # <------------------------------------/>
