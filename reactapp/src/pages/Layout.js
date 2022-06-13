@@ -9,20 +9,20 @@ const Layout = () => {
     // let user = userRequest()
     // window.user = user;
     
-    // const { data, error, isPending } 
-    //     = useAsync({ promiseFn: userRequest });
+    const { data, error, isPending } 
+        = useAsync({ promiseFn: userRequest });
 
-    // if (isPending) {
-    //     return <h1>Loading user...</h1>
-    // }
-    // if (error) {
-    //     console.log({error});
-    //     console.log('Error of loading user');
-    // }
-    // if (data) { 
-    //     console.log({user: data});
-    //     window.user = data.user;
-    // }
+    if (isPending) {
+        return <h1>Loading user...</h1>
+    }
+    if (error) {
+        console.log({error});
+        console.log('Error of loading user');
+    }
+    if (data) { 
+        console.log({user: data});
+        window.user = data.user;
+    }
     
     return (
         <>

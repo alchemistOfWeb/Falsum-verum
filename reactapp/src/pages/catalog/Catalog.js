@@ -22,9 +22,9 @@ export default function Catalog() {
             <hr/>
             <div className="container">
                 <form className="col-8 col-md-5 col-lg-4 col-xl-3">
-                    <div class="input-group">
-                        <input type="search" className="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-                        <button type="button" className="btn btn-primary ms-2">search</button>
+                    <div class="input-group catalog-search">
+                        <input type="search" className="h-100 form-control rounded" placeholder="название курса" aria-label="Search" aria-describedby="search-addon" />
+                        <button type="button" className="h-100 btn btn-primary ms-2">найти</button>
                     </div>
                 </form>
                 <Nav className="my-4 border-bottom catalog-category-list">

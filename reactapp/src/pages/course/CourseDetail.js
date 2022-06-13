@@ -1,5 +1,5 @@
 import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../setting";
-import { request, getCookie } from '../../functions';
+import { request, getCookie, userRequest } from '../../functions';
 import { useParams, Link, Outlet } from "react-router-dom";
 import React from 'react';
 import { useAsync } from 'react-async';
@@ -14,8 +14,7 @@ const loadFullCourse = async ({courseId}, options) => {
     return res;
 }
 
-
-export default function CourseDetail() {
+function CourseLoader() {
     let urlParams = useParams();
     const courseId = urlParams.courseId;
 
@@ -49,6 +48,29 @@ export default function CourseDetail() {
                     <Outlet/>
                 </div>
             </div>
+        )
+    }
+}
+
+
+export default function CourseDetail() {
+    const { data, error, isPending } 
+        = useAsync({ promiseFn: userRequest });
+
+    if (isPending) {
+        return <h1>Loading user...</h1>
+    }
+    if (error) {
+        console.log({error});
+        console.log('Error of loading user');
+        window.alert('Вы не авторизованы!');
+        window.location.href = '/signin';
+    }
+    if (data) { 
+        console.log({user: data});
+        window.user = data.user;
+        return (
+            <CourseLoader/>
         )
     }
 }

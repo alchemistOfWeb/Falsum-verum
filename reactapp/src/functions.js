@@ -76,7 +76,6 @@ export async function crdRequest(method, path, data, headers={}) {
     console.log({csrf});
     headers = {
         "X-CSRFToken": csrf,
-        // "Content-Type": "application/x-www-form-urlencoded",
         "Content-Type": "application/json",
         ...headers
     }

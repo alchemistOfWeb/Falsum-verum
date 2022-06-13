@@ -6,7 +6,6 @@ import React from "react";
 import jquery from "jquery";
 
 
-
 let inputErrors = {
     inputUsername: [],
     inputPassword: [],
@@ -44,10 +43,8 @@ async function loginResponse (username, password) {
 }
 
 
-
 export default function SignIn() {
-    console.log('hello sign in')
-    // if (window.user) window.location.href = '/';
+    if (window.user) window.location.href = '/';
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -78,7 +75,7 @@ export default function SignIn() {
 
     return (
         <main className="container mt-3 d-flex justify-content-center">
-            <form className="col-12 col-sm-6 col-md-4" onSubmit={handleSignIn}>
+            <form className="col-12 col-md-8 col-sm-9 col-lg-6 col-xl-4" onSubmit={handleSignIn}>
                 <h1 className="h3 mb-3 font-weight-normal text-center">Вход</h1>
                 <div className="mb-3">
                     <input 

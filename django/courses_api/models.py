@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -12,10 +11,10 @@ import ckeditor
 
 class Profile(models.Model):    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    score = models.PositiveBigIntegerField(default=0)
+    score = models.PositiveBigIntegerField(default=0, null=False, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
-    is_blocked = models.BooleanField(default=False, blank=True)
+    is_blocked = models.BooleanField(default=False, null=False, blank=True)
     image_sm = ProcessedImageField(verbose_name="avatar(sm)",
                                 upload_to='images/avatars/sm/',
                                 processors=[ResizeToFit(100, 100)],

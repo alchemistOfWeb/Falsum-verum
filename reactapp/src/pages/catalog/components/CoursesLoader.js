@@ -1,5 +1,5 @@
 import { BACKEND_ROOT_URL } from "../../../setting";
-import { getCookie, request,  } from "../../../functions";
+import { getCookie, request, deleteCookie} from "../../../functions";
 import React from 'react';
 import { useAsync } from 'react-async';
 import {Nav, Button, Spinner, ListGroup} from 'react-bootstrap';
@@ -7,7 +7,7 @@ import { CourseCard } from "./CourseCard";
 
 
 const loadCoursesList = async (options) => {
-    let headers = {'Authorization': getCookie('access_token')};
+    // let headers = {'Authorization': getCookie('access_token')};
     let url = `${BACKEND_ROOT_URL}courses/`;
     const res = await request('GET', url, {}, headers, {signal: options.signal})
     console.log({res})
@@ -31,6 +31,11 @@ export default function CoursesLoader() {
     }
     if (data) {
         console.log({data})
+        if (data.detail && data.detail == 'Недопустимый токен.') {
+            console.log('AAAAAAAAAAAAAAAAAAAA');
+            deleteCookie('access_token');
+        }
+
         let coursesList = data.courses;
         return (
             <>

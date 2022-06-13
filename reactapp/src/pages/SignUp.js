@@ -14,7 +14,7 @@ async function createuserResponse (params={}) {
     }
     let url = `${BACKEND_ROOT_URL}auth/users/`;
     const res = await crdRequest('POST', url, data);
-    if (!res.ok) throw new Error(res.statusText);
+    // if (!res.ok) throw new Error(res.statusText);
     return res.json();
 }
 
@@ -51,14 +51,15 @@ export default function SignUp() {
 
     return (
         <main className="container mt-3 d-flex justify-content-center">
-            <form className="col-6 col-sm-4" onSubmit={handleSignUp}>
+            <form className="col-12 col-md-8 col-sm-9 col-lg-6 col-xl-4" onSubmit={handleSignUp}>
                 <h1 className="h3 mb-3 font-weight-normal text-center">Регистрация</h1>
                 <div className="mb-3">
                     <input 
                         type="text" 
                         id="inputUsername" 
                         className="form-control" 
-                        placeholder="Логин" 
+                        placeholder="Логин"
+                        onChange={(e)=>{setUsername(e.target.value)}}
                         required autofocus=""
                     />
                     <div className="error-list  d-flex flex-column"></div>
@@ -69,6 +70,7 @@ export default function SignUp() {
                         id="inputEmail" 
                         className="form-control" 
                         placeholder="Email" 
+                        onChange={(e)=>{setEmail(e.target.value)}}
                         required autofocus=""
                     />
                     <div className="error-list d-flex flex-column"></div>
@@ -79,6 +81,7 @@ export default function SignUp() {
                         id="inputPassword" 
                         className="form-control" 
                         placeholder="Пароль" 
+                        onChange={(e)=>{setPassword(e.target.value)}}
                         required
                     />
                     <div className="error-list d-flex flex-column"></div>
@@ -89,6 +92,7 @@ export default function SignUp() {
                         id="inputPassword2" 
                         className="form-control" 
                         placeholder="Повторите пароль" 
+                        onChange={(e)=>{setConfirmPassword(e.target.value)}}
                         required
                     />
                     <div className="error-list d-flex flex-column"></div>

@@ -18,7 +18,7 @@ router.register(r'courses/(?P<course>\d+)/modules/(?P<module>\d+)/lessons/(?P<le
                 StepViewSet, basename='step_list')
 
 urlpatterns = [
-    # path('profile/', current_profile, name='profile'), # get|patch|delete
+    path('profile/', current_profile, name='profile'), # get|patch|delete
     path('csrf/', csrf, name='get_csrf'),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),

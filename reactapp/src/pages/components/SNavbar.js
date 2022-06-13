@@ -18,7 +18,7 @@ async function logoutResponse () {
 }
 
 function handleLogout() {
-    if (window.confirm('Do you really want to logout?')) {
+    if (window.confirm('Вы действительно хотите выйти?')) {
         logoutResponse()
             .then((res)=>{
                 console.log({res})
