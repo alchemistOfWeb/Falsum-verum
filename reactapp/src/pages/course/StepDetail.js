@@ -51,13 +51,13 @@ function TestTask({task, order}) {
             />
         },
     }
-    let mapCallback = taskTypes[task.answers.type];
+    let mapCallback = taskTypes[task.structure.type];
 
     if (mapCallback) {
         return (
             <Form.Group className="my-3">
                 <h5>{order+1}. {task.description}</h5>
-                {task.answers.answers.map(mapCallback)}
+                {task.structure.answers.map(mapCallback)}
             </Form.Group>
         )
     } else {

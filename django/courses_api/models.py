@@ -348,7 +348,7 @@ class TestTask(models.Model):
     description = models.TextField(max_length=512, null=False, default='', blank=True)
     order = models.SmallIntegerField(null=False, default=0)
     # task_type = models.IntegerField(choices=StepType.choices, null=False)
-    answers = models.JSONField(null=True, blank=True)
+    structure = models.JSONField(null=True, blank=True)
     grade = models.PositiveSmallIntegerField(null=False, default=0, blank=True)
     doshow = models.BooleanField(null=False, default=False, blank=True)
     test = models.ForeignKey(Test, related_name="tasks", null=False, on_delete=models.CASCADE)
@@ -356,7 +356,7 @@ class TestTask(models.Model):
 
 class VideoQuestion(models.Model):
     description = models.TextField(max_length=512, null=False, default='', blank=True)
-    answers = models.JSONField(null=True, blank=True)
+    structure = models.JSONField(null=True, blank=True)
     timing = models.TimeField(null=False)
     grade = models.PositiveSmallIntegerField(null=False, default=0, blank=True)
     doshow = models.BooleanField(null=False, default=False, blank=True)
