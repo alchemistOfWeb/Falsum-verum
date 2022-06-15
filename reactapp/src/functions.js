@@ -101,6 +101,9 @@ export async function request(method, path, data={}, headers={}, options={}) {
     console.log({params})
     return await fetch(path, params)
         .then((response) => {
+            if ([204, 205].find((a)=>a==response.status)) {
+                return {};
+            }
             return response.json();
         })
         .then((data) => {

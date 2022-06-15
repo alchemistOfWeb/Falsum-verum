@@ -12,7 +12,7 @@ async function createuserResponse (params={}) {
         email: params.email,
         password: params.password,
     }
-    let url = `${BACKEND_ROOT_URL}auth/users/`;
+    let url = `${BACKEND_ROOT_URL}create/`;
     const res = await crdRequest('POST', url, data);
     // if (!res.ok) throw new Error(res.statusText);
     return res.json();

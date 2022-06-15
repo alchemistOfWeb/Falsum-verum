@@ -9,7 +9,7 @@ import { CourseCard } from "./CourseCard";
 const loadCoursesList = async (options) => {
     // let headers = {'Authorization': getCookie('access_token')};
     let url = `${BACKEND_ROOT_URL}courses/`;
-    const res = await request('GET', url, {}, headers, {signal: options.signal})
+    const res = await request('GET', url, {}, {}, {signal: options.signal})
     console.log({res})
     return res;
 }

@@ -44,7 +44,10 @@ async function loginResponse (username, password) {
 
 
 export default function SignIn() {
-    if (window.user) window.location.href = '/';
+    if (window.user) {
+        alert('Вы уже авторизованы! Вам нужно выйти, если вы хотите войти с другого аккаунта.')
+        window.location.href = '/';
+    }
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -55,6 +58,7 @@ export default function SignIn() {
         if (!username || !password) {
             // console.log('password field is empty');
             // inputErrors.inputPassword.push('password field is empty');
+            alert('Поля формы не должны быть пустые');
             return;
         }
 
