@@ -25,9 +25,9 @@ import CatalogSpecDetail from './pages/catalog/CatalogSpecDetail';
 import CatalogSpecEdit from './pages/catalog/CatalogSpecEdit';
 
 import CatalogCourseList from './pages/catalog/CatalogCourseList';
-import CatalogCourseCreate from './pages/catalog/CatalogCourseCreate';
-import CatalogCourseDetail from './pages/catalog/CatalogCourseDetail';
-import CatalogCourseEdit from './pages/catalog/CatalogCourseEdit';
+import CatalogCourseCreate from './pages/catalog/course/CatalogCourseCreate';
+import CatalogCourseDetail from './pages/catalog/course/CatalogCourseDetail';
+import CatalogCourseEdit from './pages/catalog/course/CatalogCourseEdit';
 
 import CourseDetail from './pages/course/CourseDetail';
 import LessonDetail from './pages/course/LessonDetail';

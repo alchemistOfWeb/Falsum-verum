@@ -1,14 +1,15 @@
-import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../setting";
-import { request, getCookie } from '../../functions';
-import { useParams, Link } from "react-router-dom";
 import React from 'react';
+import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../../setting";
+import { request, getCookie } from '../../../functions';
+import { useParams, Link, NavLink } from "react-router-dom";
+import { Nav, Button, Spinner, ListGroup, Tab, Col, Container } from 'react-bootstrap';
 import { useAsync } from 'react-async';
-import Comment from '../components/Comment'
-import {Nav, Button, Spinner, ListGroup} from 'react-bootstrap';
-import telegram_icon from "../../images/social_icons/telegram.ico";
-import vk_icon from "../../images/social_icons/vk.ico";
-import whatsapp_icon from '../../images/social_icons/whatsapp.ico';
+// import Comment from '../../../components/Comment';
+import telegram_icon from "../../../images/social_icons/telegram.ico";
+import vk_icon from "../../../images/social_icons/vk.ico";
+import whatsapp_icon from '../../../images/social_icons/whatsapp.ico';
 import parseHtml from 'html-react-parser';
+import personImg from "../../../images/tesla-bot.jpg";
 
 
 const loadCourse = async ({courseId}, options) => {
@@ -16,6 +17,87 @@ const loadCourse = async ({courseId}, options) => {
     let url = `${BACKEND_ROOT_URL}courses/${courseId}/`;
     const res = await request('GET', url, {}, headers, {signal: options.signal});
     return res;
+}
+
+
+function SectionDescription({course}) {
+    return (
+        <div className="course-full-description">
+            <h2 className="course-full-description__title">Про курс</h2>
+            {parseHtml(course.description)}
+        </div>
+    )
+}
+
+function SectionProgram({course}) {
+    return (
+        <div className="course-full-description">
+            <h2 className="course-full-description__title">Программа</h2>
+            
+        </div>
+    )
+}
+
+function SectionAuthors({course}) {
+
+    function AuthorCard({author}) {
+        let avatarImg = author.avatar ? author.avatar : personImg;
+        
+        return (
+            <Col xs="12" lg="6" className="row author-card my-2">
+                <Col xs="12" lg="3" className="author-card__img-wrapper mx-auto mx-lg-0">
+                    <img src={avatarImg} alt="avatar" className="border"/>
+                </Col>
+                <Col lg="9" className="author-card__description-wrapper">
+                    <div className="h4 author-card__name">{author.full_name}</div>
+                    <div className="author-card__desc">{author.description}</div>
+                </Col>
+            </Col>
+        )
+    }
+
+    let authors = [
+        {
+            full_name: "Tom Wilson",
+            avatar: "", 
+            description: "Information about Tom Wilson. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
+        },
+        {
+            full_name: "Jack Dorsey",
+            img: "", 
+            description: "Information about Jack Dorsey. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
+        },
+        {
+            full_name: "Ilon Musk",
+            img: "", 
+            description: "Information about Ilon Musk. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
+        },
+    ]
+
+    return (
+        <div className="course-full-description">
+            <h2 className="course-full-description__title">Преподаватели курса</h2>
+            <div className="course-undergoing-authors-page">
+                <Container className="d-flex flex-wrap">
+                    Organization
+                </Container>
+                <Container className="d-flex flex-wrap">
+                    {authors.map((el, ind) => {
+                        return <AuthorCard key={`author-card-${ind}`} author={el}/>
+                    })}
+                </Container>
+            </div>
+        </div>
+    )
+}
+
+function SectionReports({course}) {
+    return (
+        <div className="course-full-description">
+            <h2 className="course-full-description__title">Отзывы</h2>
+
+        </div>
+    )
 }
 
 
@@ -65,27 +147,43 @@ export default function CatalogCourseDetail() {
 
                 
                 <div className="container position-relative">
-                    <div className="row g-5">
-                        <div className="col-md-8">
-                            <Nav className="my-4 border-bottom course-description-section-list">
-                                <Nav.Link className="h5" href="#" active>Описание</Nav.Link>
-                                <Nav.Link className="h5" href="#">Авторы</Nav.Link>
-                                <Nav.Link className="h5" href="#">Программа</Nav.Link>
-                                <Nav.Link className="h5" href="#">Отзывы</Nav.Link>
-                            </Nav>
-
-                            <div className="course-full-description">
-                                <h2 className="course-full-description__title">Про курс</h2>
-                                {/* <p className="blog-post-meta">
-                                    December 23, 2020 by 
-                                    <a href="#">Jacob</a>
-                                </p> */}
-                                {parseHtml(courseObj.description)}
-                                
+                    <div className="row">
+                        <Tab.Container  
+                            defaultActiveKey="description"
+                        >
+                            <div className="col-md-8" id="catalog-course-tab-container">
+                                <Nav className="my-4 border-bottom course-description-section-list">
+                                    <Nav.Link className="h5" eventKey="description">
+                                        Описание
+                                    </Nav.Link>
+                                    <Nav.Link className="h5" eventKey="authors">
+                                        Авторы
+                                    </Nav.Link>
+                                    <Nav.Link className="h5" eventKey="program">
+                                        Программа
+                                    </Nav.Link>
+                                    <Nav.Link className="h5" eventKey="reports">
+                                        Отзывы
+                                    </Nav.Link>
+                                </Nav>
+                                <Tab.Content className="course-catalog-tab-content">
+                                    <Tab.Pane eventKey="description">
+                                        <SectionDescription course={courseObj}/>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="authors">
+                                        <SectionAuthors course={courseObj}/>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="program">
+                                        <SectionProgram course={courseObj}/>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="reports">
+                                        <SectionReports course={courseObj}/>
+                                    </Tab.Pane>
+                                </Tab.Content>
                             </div>
-                        </div>
+                        </Tab.Container>
 
-                        <div className="col-md-4 ">
+                        <div className="col-md-4">
                             <div className="position-sticky mt-2">
                                 <div className="pt-4 mb-3 rounded">
                                     {/* <h4 className="fst-italic">Start</h4> */}

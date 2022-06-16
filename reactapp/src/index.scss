@@ -163,37 +163,33 @@ body {
     }
 }
 
-.catalog-category-list {
-    .nav-link {
-        // color: rgb(167, 197, 202);
-        color: $main-text-color;
-    }
-    .nav-link.active {        
-        border-bottom: 3px solid rgba(45, 200, 92, 0.842);
-    }
-} 
-.course-description-section-list {
+.course-description-section-list, .catalog-category-list {
     .nav-link {
         color: $main-text-color;
+        cursor: pointer;
+        // &:hover {
+
+        // }
     }
     .nav-link.active {        
-        border-bottom: 3px solid rgba(45, 200, 92, 0.842);
+        border-bottom: 3px solid rgba(55, 203, 99, 0.842);
     }
 }
 
 // .catalog-list-card {
 //     height: 120px;
 // }
-
-.course-full-description {
-    color: $main-text-color;
-    &__title, h1, h2 {
-        color: $heading-text-color;
-        text-shadow: $heading-text-shadow;
-    }
-    p {
-        font-size: 18px;
-        font-weight: 500;
+.course-catalog-tab-content {
+    .course-full-description {
+        color: $main-text-color;
+        &__title, h1, h2 {
+            color: $heading-text-color;
+            text-shadow: $heading-text-shadow;
+        }
+        p {
+            font-size: 18px;
+            font-weight: 500;
+        }
     }
 }
 

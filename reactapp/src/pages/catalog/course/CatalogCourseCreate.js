@@ -1,5 +1,5 @@
-import { BACKEND_ROOT_URL } from "../../setting";
-import { crdRequest, getAccessToken } from '../../functions';
+import { BACKEND_ROOT_URL } from "../../../setting";
+import { crdRequest, getAccessToken } from '../../../functions';
 import { useParams, Link } from "react-router-dom";
 import React from 'react';
 // import { useAsync } from 'react-async';
