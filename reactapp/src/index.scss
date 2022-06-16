@@ -13,7 +13,7 @@ $heading-text-color: #31377a;
 $heading-text-shadow: 1px 1px 1px #ffffe3;
 
 body {
-    overflow: hidden !important;
+    // overflow: hidden !important;
 }
 
 #signin-btn, #personal-btn {
@@ -49,8 +49,8 @@ body {
     background-size: 300px 300px;
     background-attachment: fixed;
     background-repeat: repeat;
-    overflow: auto;
-    height: 100vh;
+    // overflow: auto;
+    height: auto;
 
     h1 {
         color: $heading-text-color;
@@ -430,8 +430,10 @@ body {
 
 }
 
-.course-catalog-authors-page, .course-undergoing-authors-page {
+.course-catalog-authors-section, .course-undergoing-authors-page {
     .author-card {
+        margin: 10px 0px !important;
+
         &__img-wrapper {
             width: 100px;
             height: 100px;
@@ -442,14 +444,14 @@ body {
                 height: 100%;
             }
         }
-        &__name {
+        // &__name {
             
-        }
-        &__desc {
+        // }
+        // &__desc {
     
-        }
-        &__description-wrapper {
+        // }
+        // &__description-wrapper {
     
-        }
+        // }
     }
 }

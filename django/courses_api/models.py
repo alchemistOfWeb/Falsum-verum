@@ -52,7 +52,6 @@ class Organization(models.Model):
 
     class Meta:
         verbose_name = 'Организация'
-        # verbose_name_plural = '    Organizations' # 4
         verbose_name_plural = '    Организации' # 4
 
 
@@ -110,18 +109,46 @@ class TagForCourse(models.Model):
 
 
 class Course(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=128, null=False)
-    short_description = models.CharField(verbose_name="Короткое описание", max_length=255, null=False, default="", blank=True)
-    description = ckeditor.fields.RichTextField(verbose_name="Подробное описание", max_length=5000, null=True, blank=True)
-    duration = models.DurationField(verbose_name='продолжительность курса', null=True, blank=True)
-    doshow = models.BooleanField(verbose_name="Показывать слушателям курса", default=False, blank=True)
-    authors = models.ManyToManyField(User, verbose_name="Учителя", related_name="own_courses")
+    title = models.CharField(
+        verbose_name="Название",
+        max_length=128, null=False
+    )
+    
+    short_description = models.CharField(
+        verbose_name="Короткое описание",
+        max_length=255, 
+        null=False, 
+        default="", blank=True)
+
+    description = ckeditor.fields.RichTextField(
+        verbose_name="Подробное описание", 
+        max_length=5000, 
+        null=True, blank=True
+    )
+
+    duration = models.DurationField(
+        verbose_name='продолжительность курса', 
+        null=True, blank=True
+    )
+
+    doshow = models.BooleanField(
+        verbose_name="Показывать слушателям курса", 
+        default=False, 
+        blank=True
+    )
+
+    authors = models.ManyToManyField(
+        User, 
+        verbose_name="Учителя", 
+        related_name="own_courses"
+    )
+
     listeners = models.ManyToManyField(
         User, 
         verbose_name="Слушатели",  
         related_name="undergoing_courses",
         blank=True
-    ) # todo: add through_related
+    ) 
 
     specialization = models.ForeignKey(
         Specialization, 
@@ -130,6 +157,7 @@ class Course(models.Model):
         on_delete=models.CASCADE, 
         null=True, blank=True
     )
+
     organization = models.ForeignKey(
         Organization, 
         verbose_name="Организация",
@@ -137,30 +165,44 @@ class Course(models.Model):
         null=True, blank=False,
         on_delete=models.CASCADE
     )
+
     order_in_specialization = models.SmallIntegerField(
         verbose_name="Порядковый номер", 
         null=False, 
         default=0
     )
-    tags = models.ManyToManyField(TagForCourse, verbose_name="Теги", related_name="courses")
-    # roadmap = models.JSONField(null=False, blank=True, default=Value('null')) # in future
-    # category = models.ForeignKey(CourseCategory, on_delete=models.SET_NULL, null=True, blank=False)
-    created_at = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True, blank=True)
-    updated_at = models.DateTimeField(verbose_name="Последнее обновление", auto_now=True, blank=True)
-    image_sm = ProcessedImageField(verbose_name="image(sm)",
-                                upload_to='images/avatars/sm/',
-                                processors=[ResizeToFit(100, 100)],
-                                format='JPEG',
-                                options={'quality': 90},
-                                blank=True,
-                                null=True)
-    banner_lg = ProcessedImageField(verbose_name="banner(lg)",
-                                upload_to='images/avatars/sm/',
-                                processors=[ResizeToFit(1000, 300)],
-                                format='JPEG',
-                                options={'quality': 90},
-                                blank=True,
-                                null=True)
+
+    tags = models.ManyToManyField(
+        TagForCourse, 
+        verbose_name="Теги", 
+        related_name="courses")
+
+    created_at = models.DateTimeField(
+        verbose_name="Дата создания", 
+        auto_now_add=True, blank=True
+    )
+    updated_at = models.DateTimeField(
+        verbose_name="Последнее обновление", 
+        auto_now=True, blank=True
+    )
+    image_sm = ProcessedImageField(
+        verbose_name="image(sm)",
+        upload_to='images/avatars/sm/',
+        processors=[ResizeToFit(100, 100)],
+        format='JPEG',
+        options={'quality': 90},
+        blank=True,
+        null=True
+    )
+    banner_lg = ProcessedImageField(
+        verbose_name="banner(lg)",
+        upload_to='images/avatars/sm/',
+        processors=[ResizeToFit(1000, 300)],
+        format='JPEG',
+        options={'quality': 90},
+        blank=True,
+        null=True
+    )
 
     def __str__(self) -> str:
         return self.title

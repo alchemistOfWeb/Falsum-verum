@@ -26,9 +26,9 @@ const Layout = () => {
     
     return (
         <>
-            <div className="main-wrapper m-0">
+            <div className="main-wrapper">
                 <Navbar/>
-                <div className="overflow-auto content-section pb-3">
+                <div className="content-section pb-3">
                     <Outlet />
                 </div>
             </div>

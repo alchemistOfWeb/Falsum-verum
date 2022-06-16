@@ -44,7 +44,7 @@ function SectionAuthors({course}) {
         let avatarImg = author.avatar ? author.avatar : personImg;
         
         return (
-            <Col xs="12" lg="6" className="row author-card my-2">
+            <Col xs="12" lg="6" className="row author-card">
                 <Col xs="12" lg="3" className="author-card__img-wrapper mx-auto mx-lg-0">
                     <img src={avatarImg} alt="avatar" className="border"/>
                 </Col>
@@ -77,7 +77,7 @@ function SectionAuthors({course}) {
     return (
         <div className="course-full-description">
             <h2 className="course-full-description__title">Преподаватели курса</h2>
-            <div className="course-undergoing-authors-page">
+            <div className="course-catalog-authors-section">
                 <Container className="d-flex flex-wrap">
                     Organization
                 </Container>
