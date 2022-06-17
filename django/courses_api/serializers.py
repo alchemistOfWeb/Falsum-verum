@@ -1,7 +1,8 @@
+from multiprocessing import context
 from rest_framework import serializers
 from .models import (
-    Profile, Specialization, Organization, 
-    Course, CourseReport, Module,
+    AuthorsInCourse, Profile, Specialization, Organization, 
+    Course, CourseReview, Module,
     Lesson, LessonType, Step, 
     StepComment, LessonReactionType,
     StepReactionType, Test, TestTask, TextLecture, VideoLecture, VideoQuestion
@@ -40,7 +41,17 @@ class SpecializationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AuthorsInCourseSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
+    class Meta:
+        model = AuthorsInCourse
+        fields = '__all__'
+
+
 class CourseSerializer(serializers.ModelSerializer):
+    authors = AuthorsInCourseSerializer(many=True, source="authors_in_course") # todo: create, update
+
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep["total_listeners"] = instance.listeners.count()
@@ -176,8 +187,30 @@ class TestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class FilterCommentListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(parent=None)
+        return super().to_representation(data)
+
+
+class RecursiveSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        serializer = self.parent.parent.__class__(instance, context=self.context)
+        return serializer.data
+
+
+class StepCommentSerializer(serializers.ModelSerializer):
+    children = RecursiveSerializer(many=True)
+
+    class Meta:
+        list_serializer_class = FilterCommentListSerializer
+        model=StepComment
+        fields='__all__'
+
+
 class PolymorphicStepSerializer(PolymorphicSerializer):
     resource_type_field_name = 'step_type'
+    comments = StepCommentSerializer(many=True, read_only=True) # todo: comment it and add pagination
 
     model_serializer_mapping = {
         TextLecture: TextLectureSerializer,

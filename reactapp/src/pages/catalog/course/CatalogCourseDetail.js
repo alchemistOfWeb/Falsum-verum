@@ -41,7 +41,8 @@ function SectionProgram({course}) {
 function SectionAuthors({course}) {
 
     function AuthorCard({author}) {
-        let avatarImg = author.avatar ? author.avatar : personImg;
+        let profile = author.author.profile;
+        let avatarImg = profile.image_md ? `${BACKEND_DOMAIN}${profile.image_md}` : personImg;
         
         return (
             <Col xs="12" lg="6" className="row author-card">
@@ -49,40 +50,40 @@ function SectionAuthors({course}) {
                     <img src={avatarImg} alt="avatar" className="border"/>
                 </Col>
                 <Col lg="9" className="author-card__description-wrapper">
-                    <div className="h4 author-card__name">{author.full_name}</div>
+                    <div className="h4 author-card__name">{author.author.username}</div>
                     <div className="author-card__desc">{author.description}</div>
                 </Col>
             </Col>
         )
     }
 
-    let authors = [
-        {
-            full_name: "Tom Wilson",
-            avatar: "", 
-            description: "Information about Tom Wilson. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
-        },
-        {
-            full_name: "Jack Dorsey",
-            img: "", 
-            description: "Information about Jack Dorsey. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
-        },
-        {
-            full_name: "Ilon Musk",
-            img: "", 
-            description: "Information about Ilon Musk. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
-        },
-    ]
+    // let authors = [
+    //     {
+    //         full_name: "Tom Wilson",
+    //         avatar: "", 
+    //         description: "Information about Tom Wilson. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
+    //     },
+    //     {
+    //         full_name: "Jack Dorsey",
+    //         img: "", 
+    //         description: "Information about Jack Dorsey. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
+    //     },
+    //     {
+    //         full_name: "Ilon Musk",
+    //         img: "", 
+    //         description: "Information about Ilon Musk. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
+    //     },
+    // ]
 
     return (
         <div className="course-full-description">
-            <h2 className="course-full-description__title">Преподаватели курса</h2>
+            <h2 className="course-full-description__title">Авторы курса</h2>
             <div className="course-catalog-authors-section">
-                <Container className="d-flex flex-wrap">
-                    Organization
-                </Container>
-                <Container className="d-flex flex-wrap">
-                    {authors.map((el, ind) => {
+                {/* <Container className="d-flex flex-wrap">
+                    {course.organization}
+                </Container> */}
+                <Container className="d-flex flex-wrap p-0">
+                    {course.authors.map((el, ind) => {
                         return <AuthorCard key={`author-card-${ind}`} author={el}/>
                     })}
                 </Container>

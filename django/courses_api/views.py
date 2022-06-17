@@ -10,7 +10,7 @@ from rest_framework import viewsets, status, permissions, generics
 from rest_framework.views import APIView
 from .models import (
     Specialization, Organization, Course, 
-    Module, Lesson, Step, CourseReport, StepComment
+    Module, Lesson, Step, CourseReview, StepComment
 )
 from .serializers import ( 
     CourseFullSerializer, ModuleSerializer, ProfileSerializer, 

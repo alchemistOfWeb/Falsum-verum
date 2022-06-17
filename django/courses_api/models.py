@@ -108,6 +108,7 @@ class TagForCourse(models.Model):
         verbose_name_plural = 'Теги для курса'
 
 
+
 class Course(models.Model):
     title = models.CharField(
         verbose_name="Название",
@@ -137,11 +138,11 @@ class Course(models.Model):
         blank=True
     )
 
-    authors = models.ManyToManyField(
-        User, 
-        verbose_name="Учителя", 
-        related_name="own_courses"
-    )
+    # authors = models.ManyToManyField(
+    #     User, 
+    #     verbose_name="Учителя", 
+    #     related_name="own_courses"
+    # )
 
     listeners = models.ManyToManyField(
         User, 
@@ -212,15 +213,21 @@ class Course(models.Model):
         verbose_name_plural = 'Курсы'
 
 
+class AuthorsInCourse(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="authors_in_course")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="authors_in_course")
+    description = models.CharField(max_length=512, null=False, default="")
+
+
 # class CourseRoadmap(models.Model): ... # mongo?
 
 
-class CourseReport(models.Model):
+class CourseReview(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="reviews")
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
-    content = ckeditor.fields.RichTextField(max_length=5000, null=False, default='', blank=True)
+    content = ckeditor.fields.RichTextField(max_length=2000, null=False, default='', blank=True)
 
     class Meta:
         verbose_name = 'Отзыв на курс'
@@ -348,6 +355,7 @@ class Step(poly_models.PolymorphicModel):
 class StepComment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     step = models.ForeignKey(Step, related_name='comments', on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', related_name="children", null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
     content = ckeditor.fields.RichTextField(max_length=1000, null=True, blank=True)

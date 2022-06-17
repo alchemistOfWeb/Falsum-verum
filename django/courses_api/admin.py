@@ -2,8 +2,8 @@ from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import (
-    Profile, Organization, Course, 
-    CourseReport, TagForCourse, StepComment,
+    AuthorsInCourse, Profile, Organization, Course, 
+    CourseReview, TagForCourse, StepComment,
     Lesson, Step, LessonType,
     Module, Specialization, TextLecture,
     VideoLecture, Test, TestTask,
@@ -37,7 +37,7 @@ class SpecializationAdmin(admin.ModelAdmin):
     list_display = ['title', 'organization']
 
 
-class CourseReportAdmin(admin.ModelAdmin):
+class CourseReviewAdmin(admin.ModelAdmin):
     list_display = ['author', 'course']
 
 
@@ -98,9 +98,16 @@ class ModuleInLine(nested_admin.NestedStackedInline):
     extra = 0
 
 
+class AuthorInCourseInLine(nested_admin.NestedStackedInline):
+    model = AuthorsInCourse
+    verbose_name = "Автор"
+    verbose_name_plural = "Авторы"
+    extra = 0
+
+
 class CourseAdmin(nested_admin.NestedModelAdmin):
     list_display = ['title', 'specialization', 'order_in_specialization', 'doshow']
-    inlines = [ModuleInLine]
+    inlines = [ModuleInLine, AuthorInCourseInLine]
     # list_filter = ['category',]
 
 class ModuleAdmin(admin.ModelAdmin):
@@ -212,7 +219,7 @@ admin.site.register(Organization)
 admin.site.register(Specialization, SpecializationAdmin)
 
 admin.site.register(Course, CourseAdmin)
-admin.site.register(CourseReport, CourseReportAdmin)
+admin.site.register(CourseReview, CourseReviewAdmin)
 admin.site.register(TagForCourse)
 
 admin.site.register(Module, ModuleAdmin)
