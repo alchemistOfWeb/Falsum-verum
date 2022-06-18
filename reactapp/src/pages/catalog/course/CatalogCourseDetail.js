@@ -2,7 +2,7 @@ import React from 'react';
 import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../../setting";
 import { request, getCookie } from '../../../functions';
 import { useParams, Link, NavLink } from "react-router-dom";
-import { Nav, Button, Spinner, ListGroup, Tab, Col, Container } from 'react-bootstrap';
+import { Nav, Button, Spinner, ListGroup, Tab, Row, Col, Container } from 'react-bootstrap';
 import { useAsync } from 'react-async';
 // import Comment from '../../../components/Comment';
 import telegram_icon from "../../../images/social_icons/telegram.ico";
@@ -92,11 +92,62 @@ function SectionAuthors({course}) {
     )
 }
 
-function SectionReports({course}) {
+function SectionReviews({course}) {
+
+    function ReviewEl({review}) {
+        return (
+            <Row className="course-review">
+                <Col xs="12" className="course-review__header d-flex">
+                    <Col xs="2" className="course-review__img-wrapper">
+                        <img src={personImg} alt="" />
+                    </Col>
+                    <Col xs="8" className="course-review__title-wrapper">
+                        <Col xs="12">
+                            <span className="course-review__username">{review.user.username}</span>
+                        </Col>
+                        <Col xs="12">
+                            <span className="course-review__updated-at">{review.updated_at}</span>
+                        </Col>
+                    </Col>
+                </Col>
+                <Col xs="12" className="course-review__content-wrapper">
+                    {review.content}
+                </Col>
+            </Row>
+        )
+    }
+
+    let reviews = [
+        {
+            user: {
+                username: "Tom Soier"
+            },
+            updated_at: "09-09-2021",
+            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam eligendi quisquam perferendis commodi excepturi provident eaque consectetur praesentium possimus quis corporis, laborum quidem, exercitationem sint ab sed impedit, unde est."
+        },
+        {
+            user: {
+                username: "Giovanny Georgio"
+            },
+            updated_at: "09-09-2021",
+            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam eligendi quisquam perferendis commodi exceptud fgident eaque consectetur praesentium possimus quis corporis, laborum quidem, exercitationem sint ab sed impdfgt, unde est."
+        },
+        {
+            user: {
+                username: "Ilon Musk"
+            },
+            updated_at: "09-09-2021",
+            content: "GSFd ffds  dfum dolor sit amet consectetur adipisicing elit. Totam eligendi quisquam perferendis commodi excepturi provident eaque consectetur praesentium possimus quis corporis, laborum quidem, exsd fd tionem sint ab sed impedit, unde est."
+        },
+    ]
     return (
         <div className="course-full-description">
             <h2 className="course-full-description__title">Отзывы</h2>
-
+            <Container className="d-flex flex-wrap p-0">
+                {reviews.map((el, ind) => {
+                    return <ReviewEl key={`review-${ind}`} review={el}/>
+                })}
+            </Container>
         </div>
     )
 }
@@ -178,7 +229,7 @@ export default function CatalogCourseDetail() {
                                         <SectionProgram course={courseObj}/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="reports">
-                                        <SectionReports course={courseObj}/>
+                                        <SectionReviews course={courseObj}/>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>
