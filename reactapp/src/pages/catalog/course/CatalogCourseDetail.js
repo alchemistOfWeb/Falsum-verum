@@ -1,15 +1,17 @@
 import React from 'react';
 import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../../setting";
-import { request, getCookie } from '../../../functions';
+import { request, getCookie, getAccessToken, crdRequest } from '../../../functions';
 import { useParams, Link, NavLink } from "react-router-dom";
-import { Nav, Button, Spinner, ListGroup, Tab, Row, Col, Container } from 'react-bootstrap';
+import { Nav, Button, Spinner, ListGroup, Tab, Row, Col, Container, Form } from 'react-bootstrap';
 import { useAsync } from 'react-async';
+import { useState } from 'react';
 // import Comment from '../../../components/Comment';
 import telegram_icon from "../../../images/social_icons/telegram.ico";
 import vk_icon from "../../../images/social_icons/vk.ico";
 import whatsapp_icon from '../../../images/social_icons/whatsapp.ico';
 import parseHtml from 'html-react-parser';
 import personImg from "../../../images/tesla-bot.jpg";
+import jquery from 'jquery';
 
 
 const loadCourse = async ({courseId}, options) => {
@@ -140,14 +142,88 @@ function SectionReviews({course}) {
             content: "GSFd ffds  dfum dolor sit amet consectetur adipisicing elit. Totam eligendi quisquam perferendis commodi excepturi provident eaque consectetur praesentium possimus quis corporis, laborum quidem, exsd fd tionem sint ab sed impedit, unde est."
         },
     ]
+
+    function SendReviewForm() {
+        const [reviewBody, setReviewBody] = useState('');
+
+        async function reviewResponse(params={}) {
+            let url = `${BACKEND_ROOT_URL}reviews/`;
+            let headers = {
+                "Authorization": getAccessToken()
+            }
+            const res = await crdRequest('POST', url, params, headers);    
+            return res;
+        }
+
+        function handleReview(e) {
+            e.preventDefault();
+            if (!reviewBody) {
+                alert("Поле текста не может быть пустым");
+                return;
+            }
+            reviewResponse({content: reviewBody})
+                .then((res)=>{
+                    console.log(res);
+                    alert("Отзыв успешно отправлен");
+                })
+                .catch((err) => {
+                    console.log({err});
+                });
+        }
+
+        function showReviewFrom(e) {
+            jquery('#send-review-from').toggleClass(['d-none', 'show']);
+        }
+
+        return (
+            <>
+                <div className="d-flex open-review-form-btn__wrapper align-items-center">
+                    <Button className="open-review-form-btn" variant="success" onClick={showReviewFrom}>
+                        Оставить отзыв
+                    </Button>
+                    <small className="open-review-form-btn__label"> 
+                        - для того чтобы оставлять отзыв вам необходимо пройти больше 70% курса
+                    </small>
+
+                </div>
+                <Form className="review-form col-12 rounded px-0 py-3 fade d-none" onSubmit={handleReview} id="send-review-from">
+                    <Form.Group className="mb-1">
+                        <Form.Control 
+                            as="textarea" 
+                            rows={5}
+                            id="inputReviewBody" 
+                            className="" 
+                            placeholder="Введить текст отзыва сюда" 
+                            required autofocus=""
+                            onChange={(e)=>{setReviewBody(e.target.value)}}
+                        />
+                        <div className="error-list  d-flex flex-column"></div>
+                    </Form.Group>
+                    <div className="d-flex justify-content-end">
+                        <Button type="submit" className="btn-primary btn-block review-form__submit" size="lg">
+                            Отправить
+                        </Button>
+                    </div>
+                    <p>
+                        * максимальная длина сообщения 1000 символов.
+                    </p>
+                </Form>
+            </>
+        )
+    }
+    
     return (
         <div className="course-full-description">
             <h2 className="course-full-description__title">Отзывы</h2>
+            
+            <SendReviewForm />
             <Container className="d-flex flex-wrap p-0">
                 {reviews.map((el, ind) => {
                     return <ReviewEl key={`review-${ind}`} review={el}/>
                 })}
+                
             </Container>
+            
         </div>
     )
 }

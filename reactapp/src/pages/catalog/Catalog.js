@@ -9,7 +9,7 @@ import { useAsync } from 'react-async';
 
 // import * as mdb from 'mdb-ui-kit'; // lib
 // import { Input } from 'mdb-ui-kit'; // module
-import {Nav, Button, Spinner, ListGroup} from 'react-bootstrap';
+import { Nav, Button, Spinner, ListGroup, Container } from 'react-bootstrap';
 import { CourseCard } from "./components/CourseCard";
 import CoursesLoader from "./components/CoursesLoader";
 
@@ -32,9 +32,9 @@ export default function Catalog() {
                     <Nav.Link className="h5" href="#">Организации</Nav.Link>
                     <Nav.Link className="h5" href="#" active>Курсы</Nav.Link>
                 </Nav>
-                <ListGroup>
+                <Container>
                     <CoursesLoader/>
-                </ListGroup>
+                </Container>
             </div>
         </div>
     )

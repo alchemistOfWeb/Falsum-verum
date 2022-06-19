@@ -1,7 +1,8 @@
 import React from 'react';
 import { BACKEND_DOMAIN } from '../../../setting';
 import { Link } from 'react-router-dom';
-import {ListGroup} from 'react-bootstrap';
+import { Col, Row, Card } from 'react-bootstrap';
+import DayJS from 'react-dayjs';
 
 
 export function CourseCard({props}) {
@@ -15,10 +16,25 @@ export function CourseCard({props}) {
     }
 
     return (
-    <ListGroup.Item className="my-1 bg-light catalog-list-item" variant="light" bg="light">
-        <div class="card catalog-list-card">
+    <Col xs="12" sm="6" md="4" lg="3" className="catalog-card-wrapper">
+        
+        <Link to={`/catalog/courses/${props.id}`} className="catalog-card__linked-wrapper">
+            <Card className="card catalog-card">
+                <Card.Img variant="top" src={img_url} className="catalog-card__img"/>
+                <Card.Body className="catalog-card__body">
+                    <Card.Title>{props.title}</Card.Title>
+                    <Card.Text>{props.short_description}</Card.Text>
+                </Card.Body>
+                <Card.Footer className="catalog-card__footer">
+                    <small>
+                        Обновлено <DayJS format="MM-DD-YYYY">{props.updated_at}</DayJS>
+                    </small>
+                </Card.Footer>
+            </Card>
+        </Link>
+        {/* <div class="card catalog-list-card">
             <div class="card-body text-dark">
-                <div className="row">
+                <Row>
                     <div className="col-3 col-md-1 p-0 border border-solid">
                         <img 
                             src={img_url}
@@ -34,16 +50,15 @@ export function CourseCard({props}) {
                         </div>
                         <div className="catalog-list-item__link-wrapper col-12 col-md-3 d-flex justify-content-end mt-3 mt-md-0 p-0">
                             <div className="d-block">
-                            <Link to={`/catalog/courses/${props.id}`} className="btn btn-primary">
-                                Открыть курс →
-                            </Link>
-
+                                <Link to={`/catalog/courses/${props.id}`} className="btn btn-primary">
+                                    Открыть курс →
+                                </Link>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Row>
             </div>
-        </div>
-    </ListGroup.Item>
+        </div> */}
+    </Col>
     )
 }

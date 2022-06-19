@@ -61,26 +61,7 @@ body {
         height: 40px;
     }
 
-    .catalog-list-item {
-        background-color: #666f7091;
-        margin-top: 2px;
-        margin-bottom: 2px;
-        border-radius: 0;
-        box-shadow: -2px 1px 3px 1px #5e5e5e;
-        transition-duration: 400ms;
-        transition-property: all;
-        transition-timing-function: linear;
-        &:hover {
-            box-shadow: -2px 1px 10px 1px #5e5e5e;
-        }
-        .card {
-            border: none;
-            box-shadow: none;
-        }
-        &__link-wrapper {
-            white-space: nowrap;
-        }
-    }
+    
 
     .list-group-item.list-section-item:hover {
         background-color: #7e8c8e91;
@@ -491,6 +472,76 @@ body {
         }
     }
     &__content-wrapper {
+        font-weight: 500;
+    }
+}
+
+.catalog-card-wrapper {
+    // background-color: #666f7091;
+    margin: 0 0 20px 0;
+    border-radius: 0;
+    // box-shadow: -2px 1px 3px 1px #5e5e5e;
+    
+    .catalog-card {
+        border: none;
+        background-color: #e1e7ee;
+        border-radius: 5px;
+        height: 400px;
+        transition-duration: 200ms;
+        transition-property: all;
+        transition-timing-function: linear;
+        box-shadow: 0px 0px 2px 1px #5e5e5e;
+        &__linked-wrapper {
+            text-decoration: none;
+            cursor: pointer;
+        }
+        &__img {
+            height: 200px;
+        }
+        &__body {
+            // .card-title {
+
+            // }
+            color: #2d2d2d;
+            font-weight: 500;
+        }
+        &__footer {
+            color: #5c5c5c;
+            text-shadow: none;
+            font-weight: 500;
+        }
+        &:hover {
+            box-shadow: -2px 1px 10px 1px #5e5e5e;
+        }
+    }
+
+    &__link-wrapper {
+        white-space: nowrap;
+    }
+}
+
+.review-form {
+    transition-duration: 200ms;
+    transition-property: all;
+    &__submit {
+        width: fit-content;
+        font-size: 16px;
+    }
+}
+
+.open-review-form-btn {
+    background-color: #198754;
+    width: fit-content;
+    &.disabled {
+        background-color: #699681;
+    }
+    &__wrapper {
+        
+    }
+    &__label {
+        padding-left: 5px;
+        color: #5c5c5c;
+        text-shadow: none;
         font-weight: 500;
     }
 }

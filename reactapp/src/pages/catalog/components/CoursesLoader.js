@@ -2,7 +2,7 @@ import { BACKEND_ROOT_URL } from "../../../setting";
 import { getCookie, request, deleteCookie} from "../../../functions";
 import React from 'react';
 import { useAsync } from 'react-async';
-import {Nav, Button, Spinner, ListGroup} from 'react-bootstrap';
+import { Nav, Button, Spinner, Row, Col } from 'react-bootstrap';
 import { CourseCard } from "./CourseCard";
 
 
@@ -38,7 +38,7 @@ export default function CoursesLoader() {
 
         let coursesList = data.courses;
         return (
-            <>
+            <Row>
                 { 
                     coursesList.length > 0 
                     ?
@@ -48,7 +48,7 @@ export default function CoursesLoader() {
                     :
                     "По заданным параметрам курсов не найдено."
                 }
-            </>
+            </Row>
         )
 
     }
