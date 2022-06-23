@@ -16,7 +16,8 @@ from .models import (
 from .serializers import ( 
     CourseFullSerializer, ModuleSerializer, ProfileSerializer, 
     UserSerializer, SpecializationSerializer, OrganizationSerializer, 
-    CourseSerializer, PolymorphicStepSerializer, CourseReviewSerializer
+    CourseSerializer, PolymorphicStepSerializer, CourseReviewSerializer,
+    StepCommentSerializer
 )
 from .filters import OrganizationFilter, SpecializationFilter, CourseFilter
 from django.utils.decorators import method_decorator
@@ -231,10 +232,11 @@ class CourseReviewViewSet(viewsets.ViewSet):
     queryset = CourseReview.objects
     serializer_class = CourseReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    pagination_class = StandardResultsSetPagination
+    pagination_class = StandardResultsSetPagination()
 
     def list(self, request, course):
         qs = self.queryset.filter(course=course)
+        paginated_qs = self.pagination_class.paginate_queryset(queryset=qs, request=request)
         serializer = self.serializer_class(qs, many=True)
         ctx = {"reviews": serializer.data}
         return Response(data=ctx, status=status.HTTP_200_OK)
@@ -455,6 +457,54 @@ class StepViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
     def destroy(self, request, course, module, lesson, pk):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.is_active = False
+        obj.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class StepCommentsViewSet(viewsets.ViewSet):
+    queryset = StepComment.objects
+    serializer_class = StepCommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardResultsSetPagination()
+
+    def list(self, request, course, module, lesson, step):
+        qs = self.queryset.filter(step=step)
+        paginated_qs = self.pagination_class.paginate_queryset(queryset=qs, request=request)
+        serializer = self.serializer_class(qs, many=True)
+        ctx = {"comments": serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def create(self, request, course, module, lesson, step):
+        data = request.data
+        data.update({"step": step})
+        serializer = self.serializer_class(data=data, context={"author": request.user})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"comment": serializer.data}, status=status.HTTP_201_CREATED)
+
+    # def retrieve(self, request, course, module, lesson, pk):
+    #     obj = get_object_or_404(self.queryset, pk=pk)
+    #     serializer = self.serializer_class(obj)
+    #     ctx = {'step': serializer.data}
+    #     return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, course, module, lesson, step, pk):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, course, module, lesson, step, pk):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def destroy(self, request, course, module, lesson, step, pk):
         obj = get_object_or_404(self.queryset, pk=pk)
         obj.is_active = False
         obj.save()

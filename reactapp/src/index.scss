@@ -201,6 +201,11 @@ $heading-text-shadow: 1px 1px 1px #ffffe3;
     }
 }
 
+.section-title {
+    color: $heading-text-color;
+    text-shadow: $heading-text-shadow;
+}
+
 .start-minitip {
     font-size: 13px;
     font-weight: 400;
