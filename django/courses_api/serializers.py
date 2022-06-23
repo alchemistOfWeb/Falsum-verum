@@ -49,6 +49,18 @@ class AuthorsInCourseSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CourseReviewSerializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+
+    def create(self, validated_data):
+        # return super().create(validated_data)
+        return CourseReview.objects.create(**validated_data)
+
+    class Meta:
+        model = CourseReview
+        fields = '__all__'
+
+
 class CourseSerializer(serializers.ModelSerializer):
     authors = AuthorsInCourseSerializer(many=True, source="authors_in_course") # todo: create, update
 

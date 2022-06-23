@@ -3,8 +3,8 @@ import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../../setting";
 import { request, getCookie, getAccessToken, crdRequest } from '../../../functions';
 import { useParams, Link, NavLink } from "react-router-dom";
 import { Nav, Button, Spinner, ListGroup, Tab, Row, Col, Container, Form } from 'react-bootstrap';
-import { useAsync } from 'react-async';
-import { useState } from 'react';
+import { useAsync, useFetch } from 'react-async';
+import { useState, useContext } from 'react';
 // import Comment from '../../../components/Comment';
 import telegram_icon from "../../../images/social_icons/telegram.ico";
 import vk_icon from "../../../images/social_icons/vk.ico";
@@ -15,7 +15,10 @@ import jquery from 'jquery';
 
 
 const loadCourse = async ({courseId}, options) => {
-    let headers = {'Authorization': getCookie('access_token')};
+    let headers = {};
+    if (getAccessToken()) {
+        headers['Authorization'] = getAccessToken();
+    }
     let url = `${BACKEND_ROOT_URL}courses/${courseId}/`;
     const res = await request('GET', url, {}, headers, {signal: options.signal});
     return res;
@@ -59,24 +62,6 @@ function SectionAuthors({course}) {
         )
     }
 
-    // let authors = [
-    //     {
-    //         full_name: "Tom Wilson",
-    //         avatar: "", 
-    //         description: "Information about Tom Wilson. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
-    //     },
-    //     {
-    //         full_name: "Jack Dorsey",
-    //         img: "", 
-    //         description: "Information about Jack Dorsey. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
-    //     },
-    //     {
-    //         full_name: "Ilon Musk",
-    //         img: "", 
-    //         description: "Information about Ilon Musk. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, nihil."
-    //     },
-    // ]
-
     return (
         <div className="course-full-description">
             <h2 className="course-full-description__title">Авторы курса</h2>
@@ -94,7 +79,15 @@ function SectionAuthors({course}) {
     )
 }
 
-function SectionReviews({course}) {
+function SectionReviewsWrapper({course, isCurrent}) {
+    return (
+        <SectionReviews course={course} isCurrent={isCurrent} />
+    )
+}
+
+function SectionReviews({course, isCurrent}) {
+
+    // const [page, setPage] = useState(1);
 
     function ReviewEl({review}) {
         return (
@@ -119,37 +112,15 @@ function SectionReviews({course}) {
         )
     }
 
-    let reviews = [
-        {
-            user: {
-                username: "Tom Soier"
-            },
-            updated_at: "09-09-2021",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam eligendi quisquam perferendis commodi excepturi provident eaque consectetur praesentium possimus quis corporis, laborum quidem, exercitationem sint ab sed impedit, unde est."
-        },
-        {
-            user: {
-                username: "Giovanny Georgio"
-            },
-            updated_at: "09-09-2021",
-            content: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam eligendi quisquam perferendis commodi exceptud fgident eaque consectetur praesentium possimus quis corporis, laborum quidem, exercitationem sint ab sed impdfgt, unde est."
-        },
-        {
-            user: {
-                username: "Ilon Musk"
-            },
-            updated_at: "09-09-2021",
-            content: "GSFd ffds  dfum dolor sit amet consectetur adipisicing elit. Totam eligendi quisquam perferendis commodi excepturi provident eaque consectetur praesentium possimus quis corporis, laborum quidem, exsd fd tionem sint ab sed impedit, unde est."
-        },
-    ]
-
-    function SendReviewForm() {
+    function SendReviewForm({courseId}) {
         const [reviewBody, setReviewBody] = useState('');
 
-        async function reviewResponse(params={}) {
-            let url = `${BACKEND_ROOT_URL}reviews/`;
-            let headers = {
-                "Authorization": getAccessToken()
+        async function createReviewResponse(params={}, courseId) {
+            let url = `${BACKEND_ROOT_URL}courses/${courseId}/reviews`;
+            let headers = {};
+            let accessToken = getAccessToken();
+            if (accessToken) {
+                headers['Authorization'] = getAccessToken();
             }
             const res = await crdRequest('POST', url, params, headers);    
             return res;
@@ -161,7 +132,7 @@ function SectionReviews({course}) {
                 alert("Поле текста не может быть пустым");
                 return;
             }
-            reviewResponse({content: reviewBody})
+            createReviewResponse({content: reviewBody}, courseId)
                 .then((res)=>{
                     console.log(res);
                     alert("Отзыв успешно отправлен");
@@ -178,12 +149,29 @@ function SectionReviews({course}) {
         return (
             <>
                 <div className="d-flex open-review-form-btn__wrapper align-items-center">
-                    <Button className="open-review-form-btn" variant="success" onClick={showReviewFrom}>
+                    <Button className={`open-review-form-btn ${window.user ? "": "disabled"}`} variant="success" onClick={showReviewFrom}>
                         Оставить отзыв
                     </Button>
-                    <small className="open-review-form-btn__label"> 
-                        - для того чтобы оставлять отзыв вам необходимо пройти больше 70% курса
-                    </small>
+                    <div className="d-flex flex-column">
+                        {
+                            (() => {
+                                if (window.user) {
+                                    return (
+                                        <small className="open-review-form-btn__label"> 
+                                            - для того чтобы оставлять отзыв вам необходимо пройти больше 70% курса
+                                        </small>
+                                    )
+                                } else {
+                                    return (
+                                        <small className="open-review-form-btn__label"> 
+                                            - авторизуйтесь для того чтобы оставлять отзывы 
+                                        </small>
+                                    )
+                                }
+                            })()
+                        }
+                        
+                    </div>
 
                 </div>
                 <Form className="review-form col-12 rounded px-0 py-3 fade d-none" onSubmit={handleReview} id="send-review-from">
@@ -212,16 +200,114 @@ function SectionReviews({course}) {
         )
     }
     
+    
+    let reviews = [];
+    let innerContent = (
+        <>
+            {reviews.length > 0 
+            ? 
+                reviews.map((el, ind) => {
+                    return <ReviewEl key={`review-${ind}`} review={el}/>
+                })
+            :
+            <div className="h5">There are not reviews yet.</div>
+            }
+        </>
+    )
+
+    const loadReviews = async ([{courseId, page}], options) => {
+        if (isCurrent) {
+            let tkn = getAccessToken();
+            let headers = {};
+            if (tkn) {
+                headers['Authorization'] = tkn;
+            }
+            console.log('launch');
+    
+            console.log({courseId, options});
+            let url = `${BACKEND_ROOT_URL}courses/${courseId}/reviews?page=${page}`;
+            // console.log({signal: options.signal, options})
+            const res = await request('GET', url, {}, headers, {signal: options.signal});
+            return res;
+        }
+        return {}
+    }
+
+    let urlParams = useParams();
+
+    const { data, error, isPending, run }
+        = useAsync({ 
+            deferFn: loadReviews,
+        });
+
+    if (isPending) {
+        innerContent = (
+            <>
+                {innerContent}
+                <div className="d-flex align-items-center justify-content-center pt-5">
+                    <Spinner animation="border" variant="info" size="xl"/>
+                </div>
+            </>
+        )
+    }
+    if (error) {
+        console.log({error})
+        innerContent = (
+            <>
+                {innerContent}
+                <div className="d-flex align-items-center justify-content-center pt-5">
+                    <Spinner animation="border" variant="info" size="xl"/>
+                </div>
+                <h1 className="text-danger text-center">Ошибка загрузки отзывов.</h1>
+            </>
+        )
+    }
+    if (data) {
+        console.log({data, reviews});
+        reviews = reviews.concat(data.reviews);
+        // setPage(page+1);
+        innerContent = (
+            <>
+                {reviews.length > 0 
+                ? 
+                    reviews.map((el, ind) => {
+                        return <ReviewEl key={`review-${ind}`} review={el}/>
+                    })
+                :
+                <div className="h5">Пока здесь нет отзывов</div>
+                }
+                {
+                    data.reviews.length == 10
+                    ?
+                    <Button id="show-more-btn" onClick={HandleClickShowMore}>Показать ещё</Button>
+                    :
+                    ''
+                }
+            </>
+        )
+    }
+
+    console.log({isCurrent});
+    if (isCurrent && (!window.page || window.page <= 1)) {
+        window.page = 2;
+        HandleClickShowMore();
+    }
+
+    function HandleClickShowMore() {
+        console.log(urlParams.courseId);
+        console.log({page: window.page});
+        window.page++; 
+        run({courseId: urlParams.courseId, page: window.page})
+        
+    }
+
     return (
         <div className="course-full-description">
             <h2 className="course-full-description__title">Отзывы</h2>
             
-            <SendReviewForm />
-            <Container className="d-flex flex-wrap p-0">
-                {reviews.map((el, ind) => {
-                    return <ReviewEl key={`review-${ind}`} review={el}/>
-                })}
-                
+            <SendReviewForm courseId={course.id} />
+            <Container className="d-flex flex-wrap p-0" id="reviews-container">
+                {innerContent}
             </Container>
             
         </div>
@@ -232,6 +318,7 @@ function SectionReviews({course}) {
 export default function CatalogCourseDetail() {
     let urlParams = useParams();
     // urlParams.courseId;
+    const [isReviews, setIsReviews] = useState(false);
 
     const { data, error, isPending } 
         = useAsync({ 
@@ -251,7 +338,7 @@ export default function CatalogCourseDetail() {
         return <h1 className="text-danger">Error of loading course.</h1>
     }
     if (data) {
-        let courseObj = data.course;
+        let courseObj = data?.course;
         console.log(courseObj)
         let img_url = `${BACKEND_DOMAIN}${courseObj.banner_lg}`;
 
@@ -290,22 +377,22 @@ export default function CatalogCourseDetail() {
                                     <Nav.Link className="h5" eventKey="program">
                                         Программа
                                     </Nav.Link>
-                                    <Nav.Link className="h5" eventKey="reports">
+                                    <Nav.Link className="h5" eventKey="reports" onClick={(e)=>{setIsReviews(true)}}>
                                         Отзывы
                                     </Nav.Link>
                                 </Nav>
                                 <Tab.Content className="course-catalog-tab-content">
                                     <Tab.Pane eventKey="description">
-                                        <SectionDescription course={courseObj}/>
+                                        <SectionDescription course={courseObj}  key="s-1"/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="authors">
-                                        <SectionAuthors course={courseObj}/>
+                                        <SectionAuthors course={courseObj} key="s-2"/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="program">
-                                        <SectionProgram course={courseObj}/>
+                                        <SectionProgram course={courseObj} key="s-3"/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="reports">
-                                        <SectionReviews course={courseObj}/>
+                                        <SectionReviewsWrapper course={courseObj} isCurrent={isReviews} key="s-4"/>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>

@@ -534,6 +534,8 @@ body {
     width: fit-content;
     &.disabled {
         background-color: #699681;
+        border-color: #699681;
+        opacity: 1;
     }
     &__wrapper {
         

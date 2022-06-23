@@ -1,16 +1,16 @@
-from unicodedata import name
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 from .views import (
-    csrf, current_profile,
+    CourseReviewViewSet, csrf, current_profile,
     OrganizationViewSet, SpecializationViewSet, CourseViewSet,
-    ModuleViewSet, StepViewSet
+    StepViewSet
 )
 
 
 router = DefaultRouter()
 
 router.register(r'orgs', OrganizationViewSet, basename='org_list')
+router.register(r'courses/(?P<course>\d+)/reviews', CourseReviewViewSet, basename='course_reviews')
 router.register(r'courses', CourseViewSet, basename='course_list')
 router.register(r'specializations', SpecializationViewSet, basename='specialization_list')
 

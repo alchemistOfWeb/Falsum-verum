@@ -1,13 +1,5 @@
-import qs from 'qs';
-import jquery from 'jquery';
 import { BACKEND_ROOT_URL } from './setting';
 
-// export function getCookie(name) {
-//     let matches = document.cookie.match(new RegExp(
-//         "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-//     ));
-//     return matches ? decodeURIComponent(matches[1]) : undefined;
-// }
 
 async function requestCSRFToken() {
     let csrfToken = getCSRFtoken();
@@ -120,9 +112,13 @@ export function getAccessToken() {
 export async function userRequest(options={}) {
     let url = `${BACKEND_ROOT_URL}profile/`;
     let headers = {
-        // "Content-Type": "application/json",
         "Authorization": getAccessToken()
     }
     const res = await request('GET', url, {}, headers, options);
+    if (res?.detail == "Недопустимый токен.") {
+        window.user = undefined;
+        deleteCookie('access_token');
+        document.location.reload();
+    }
     return res;
 }

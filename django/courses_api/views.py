@@ -8,6 +8,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status, permissions, generics
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from .models import (
     Specialization, Organization, Course, 
     Module, Lesson, Step, CourseReview, StepComment
@@ -15,7 +16,7 @@ from .models import (
 from .serializers import ( 
     CourseFullSerializer, ModuleSerializer, ProfileSerializer, 
     UserSerializer, SpecializationSerializer, OrganizationSerializer, 
-    CourseSerializer, PolymorphicStepSerializer
+    CourseSerializer, PolymorphicStepSerializer, CourseReviewSerializer
 )
 from .filters import OrganizationFilter, SpecializationFilter, CourseFilter
 from django.utils.decorators import method_decorator
@@ -82,8 +83,6 @@ class OrganizationViewSet(viewsets.ViewSet):
     search_fields = ['title']
     ordering = ['updated_at']
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # swagger_schema = CustomAutoSchema
-    # my_tags = ['Tasks']
 
     def filter_queryset(self, queryset):
         for backend in self.filter_backends:
@@ -92,18 +91,13 @@ class OrganizationViewSet(viewsets.ViewSet):
         return queryset
 
     def list(self, request):
-        """ 
-        for all
-        """
-        serializer = self.serializer_class(self.filter_queryset(self.queryset), many=True)
+        serializer = self.serializer_class(
+            self.filter_queryset(self.queryset), many=True
+        )
         ctx = {'organizations': serializer.data}
         return Response(data=ctx, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """ 
-        For authorized user
-        """
-        # data = {**request.data, '': section_pk}
         data = request.data
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
@@ -117,9 +111,6 @@ class OrganizationViewSet(viewsets.ViewSet):
         return Response(data=ctx, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):
-        """ 
-        For owner|author
-        """
         obj = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(obj, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -127,9 +118,6 @@ class OrganizationViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
     def partial_update(self, request, pk=None):
-        """ 
-        For owner|author
-        """
         obj = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(obj, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -137,9 +125,6 @@ class OrganizationViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
     def delete(self, request, pk=None):
-        """ 
-        For owner|author
-        """
         obj = get_object_or_404(self.queryset, pk=pk)
         obj.is_active = False
         obj.save()
@@ -147,9 +132,6 @@ class OrganizationViewSet(viewsets.ViewSet):
 
     @action(detail=True, methods=['patch'])
     def attach_user(self, request, pk=None):
-        """ 
-        For owner|author
-        """
         obj = get_object_or_404(self.queryset, pk=pk)
         obj.user = get_object_or_404(User.objects, pk=request.data.get('user_pk'))
         obj.save()
@@ -239,6 +221,58 @@ class SpecializationViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
+class CourseReviewViewSet(viewsets.ViewSet):
+    queryset = CourseReview.objects
+    serializer_class = CourseReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = StandardResultsSetPagination
+
+    def list(self, request, course):
+        qs = self.queryset.filter(course=course)
+        serializer = self.serializer_class(qs, many=True)
+        ctx = {"reviews": serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def create(self, request, course):
+        data = request.data
+        data.update({"course": course, "author": request.user})
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"review", serializer.data}, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj)
+        ctx = {"review": serializer.data}
+        return Response(data=ctx, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def partial_update(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        serializer = self.serializer_class(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_205_RESET_CONTENT)
+
+    def destroy(self, request, pk=None):
+        obj = get_object_or_404(self.queryset, pk=pk)
+        obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class CourseViewSet(viewsets.ViewSet):
     queryset = Course.objects
     serializer_class = CourseSerializer
@@ -259,18 +293,11 @@ class CourseViewSet(viewsets.ViewSet):
         return queryset
 
     def list(self, request):
-        """ 
-        for all
-        """
         serializer = self.serializer_class(self.filter_queryset(self.queryset), many=True)
         ctx = {'courses': serializer.data}
         return Response(data=ctx, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """ 
-        For authorized user
-        """
-        # data = {**request.data, '': section_pk}
         data = request.data
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
@@ -279,23 +306,17 @@ class CourseViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         obj = get_object_or_404(self.queryset, pk=pk)
-
-        
         is_full = request.query_params.get('full')
-        
+
         if is_full:
             obj_serializer = self.full_course_serializer_class(obj)
         else:
             obj_serializer = self.serializer_class(obj)
         
         ctx = {'course': obj_serializer.data}
-
         return Response(data=ctx, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):
-        """ 
-        For owner|author
-        """
         obj = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(obj, data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -303,19 +324,13 @@ class CourseViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
     def partial_update(self, request, pk=None):
-        """ 
-        For owner|author
-        """
         obj = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(obj, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_205_RESET_CONTENT)
 
-    def delete(self, request, pk=None):
-        """ 
-        For owner|author
-        """
+    def destroy(self, request, pk=None):
         obj = get_object_or_404(self.queryset, pk=pk)
         obj.is_active = False
         obj.save()
@@ -323,9 +338,6 @@ class CourseViewSet(viewsets.ViewSet):
 
     @action(detail=True, methods=['patch'])
     def attach_user(self, request, pk=None):
-        """ 
-        For owner|author
-        """
         obj = get_object_or_404(self.queryset, pk=pk)
         obj.user = get_object_or_404(User.objects, pk=request.data.get('user_pk'))
         obj.save()
@@ -347,7 +359,7 @@ class ModuleViewSet(viewsets.ViewSet):
     def retrieve(self, request, course, module):
         obj = get_object_or_404(self.queryset, pk=module)
         serializer = self.serializer_class(obj)
-        ctx = {'organization': serializer.data}
+        ctx = {'module': serializer.data}
         return Response(data=ctx, status=status.HTTP_200_OK)
 
     def update(self, request, course, module):

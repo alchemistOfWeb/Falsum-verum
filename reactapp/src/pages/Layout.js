@@ -6,8 +6,6 @@ import { userRequest } from '../functions';
 
 const Layout = () => {
     console.log('hello');
-    // let user = userRequest()
-    // window.user = user;
     
     const { data, error, isPending } 
         = useAsync({ promiseFn: userRequest });

@@ -332,16 +332,6 @@ class Step(poly_models.PolymorphicModel):
     grade = models.PositiveIntegerField(null=False, default=0)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
-    # video = models.FileField(
-    #     upload_to='lessons/videos/',
-    #     validators=[
-    #         FileExtensionValidator(
-    #             allowed_extensions=['mp3', 'mp4', 'avi', 'ogg', 'webm']
-    #         )
-    #     ],
-    #     null=True, 
-    #     blank=True
-    # )
     order = models.SmallIntegerField(null=False, default=0)
 
     def __str__(self) -> str:
