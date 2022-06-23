@@ -98,7 +98,7 @@ function SectionReviews({course, isCurrent}) {
                     </Col>
                     <Col xs="8" className="course-review__title-wrapper">
                         <Col xs="12">
-                            <span className="course-review__username">{review.user.username}</span>
+                            <span className="course-review__username">{review.author.username}</span>
                         </Col>
                         <Col xs="12">
                             <span className="course-review__updated-at">{review.updated_at}</span>
@@ -116,7 +116,7 @@ function SectionReviews({course, isCurrent}) {
         const [reviewBody, setReviewBody] = useState('');
 
         async function createReviewResponse(params={}, courseId) {
-            let url = `${BACKEND_ROOT_URL}courses/${courseId}/reviews`;
+            let url = `${BACKEND_ROOT_URL}courses/${courseId}/reviews/`;
             let headers = {};
             let accessToken = getAccessToken();
             if (accessToken) {
@@ -136,9 +136,11 @@ function SectionReviews({course, isCurrent}) {
                 .then((res)=>{
                     console.log(res);
                     alert("Отзыв успешно отправлен");
+                    document.location.reload();
                 })
                 .catch((err) => {
                     console.log({err});
+                    alert("что-то пошло не так");
                 });
         }
 
@@ -202,6 +204,7 @@ function SectionReviews({course, isCurrent}) {
     
     
     let reviews = [];
+    
     let innerContent = (
         <>
             {reviews.length > 0 
@@ -222,9 +225,7 @@ function SectionReviews({course, isCurrent}) {
             if (tkn) {
                 headers['Authorization'] = tkn;
             }
-            console.log('launch');
-    
-            console.log({courseId, options});
+            console.log({courseId, page, options});
             let url = `${BACKEND_ROOT_URL}courses/${courseId}/reviews?page=${page}`;
             // console.log({signal: options.signal, options})
             const res = await request('GET', url, {}, headers, {signal: options.signal});
@@ -263,8 +264,8 @@ function SectionReviews({course, isCurrent}) {
         )
     }
     if (data) {
-        console.log({data, reviews});
         reviews = reviews.concat(data.reviews);
+        console.log({data, reviews});
         // setPage(page+1);
         innerContent = (
             <>
@@ -288,16 +289,14 @@ function SectionReviews({course, isCurrent}) {
     }
 
     console.log({isCurrent});
-    if (isCurrent && (!window.page || window.page <= 1)) {
-        window.page = 2;
+    if (isCurrent && (!window.page || window.page < 1)) {
+        window.page = 1;
         HandleClickShowMore();
     }
 
     function HandleClickShowMore() {
-        console.log(urlParams.courseId);
-        console.log({page: window.page});
-        window.page++; 
-        run({courseId: urlParams.courseId, page: window.page})
+        // window.page++; 
+        run({courseId: urlParams.courseId, page: window.page++})
         
     }
 

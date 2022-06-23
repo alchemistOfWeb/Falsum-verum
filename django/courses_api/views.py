@@ -241,11 +241,11 @@ class CourseReviewViewSet(viewsets.ViewSet):
 
     def create(self, request, course):
         data = request.data
-        data.update({"course": course, "author": request.user})
-        serializer = self.serializer_class(data=data)
+        data.update({"course": course})
+        serializer = self.serializer_class(data=data, context={"author": request.user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"review", serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"review": serializer.data}, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
         obj = get_object_or_404(self.queryset, pk=pk)

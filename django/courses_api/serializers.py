@@ -53,8 +53,10 @@ class CourseReviewSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
 
     def create(self, validated_data):
-        # return super().create(validated_data)
-        return CourseReview.objects.create(**validated_data)
+        return CourseReview.objects.create(
+            **validated_data,
+            author=self.context.get('author')
+        )
 
     class Meta:
         model = CourseReview
