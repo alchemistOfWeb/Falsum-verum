@@ -5,6 +5,7 @@ import React from 'react';
 import { useAsync } from 'react-async';
 import { Collapse, ListGroup, Nav, Container, Row, Col, Dropdown, Spinner } from "react-bootstrap";
 import CourseSidebar from "./CourseSidebar";
+import "../../styles/course_undergoing.scss";
 
 
 const loadFullCourse = async ({courseId}, options) => {

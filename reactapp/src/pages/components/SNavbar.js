@@ -80,11 +80,10 @@ export default function SNavbar() {
 
     return (
         <header 
-        className="p-3 bg-dark text-white"
-        style={{height: "58px"}}
+        className="p-3 bg-dark text-white navigation-header"
         >
             <Navbar 
-                className="fixed-top" 
+                className="fixed-top navigation-header__navbar" 
                 expand="md"
                 variant="dark"
                 bg="dark"
