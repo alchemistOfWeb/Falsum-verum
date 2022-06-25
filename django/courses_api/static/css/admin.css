@@ -13,20 +13,30 @@
 }
 
 body {
-    background-color: #273e7e !important;
+    background-color: #7d99b7 !important;
     line-height: 1.2 !important;
     font-size: 14px !important;
     font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif !important;
 }
 
-.breadcrumbs {
+/* .breadcrumbs {
     background: #264b5d !important;
     font-size: 14px !important;
     font-family: "Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif !important;
+} */
+
+.login #content {
+    background: #4c5ccb !important;
 }
 
-#content {
-    background: #273e7e !important;
+.login .form-row label {
+    color: #e3e1e1 !important;
+    font-weight: 600 !important;
+}
+
+input[type=submit] {
+    background: #2a2c30 !important;
+    color: #fff !important;
 }
 
 caption {
@@ -50,7 +60,7 @@ caption {
     width: 100% !important;
 }
 
-.module h3 {
+/* .module h3 {
     margin-top: 0.1em;
 }
 
@@ -68,4 +78,4 @@ caption {
     font-weight: bold !important;
     font-size: 16px !important;
     color: var(--body-quiet-color) !important;
-}
+} */

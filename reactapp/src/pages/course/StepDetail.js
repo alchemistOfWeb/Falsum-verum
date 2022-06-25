@@ -163,7 +163,7 @@ export default function StepDetail() {
 
 function getCommentsUrl({courseId, moduleId, lessonId, stepId, page=null}) {
     return `${BACKEND_ROOT_URL}courses/${courseId}/modules/${moduleId}/`
-    + `lessons/${lessonId}/steps/${stepId}/comments${page?'page='+page:'/'}`;
+    + `lessons/${lessonId}/steps/${stepId}/comments${page?'?page='+page:'/'}`;
 }
 
 function CommentsList({step}) {
@@ -214,29 +214,8 @@ function CommentsList({step}) {
             <>
                 <div className="d-flex open-comment-form-btn__wrapper align-items-center">
                     <Button className={`open-comment-form-btn ${window.user ? "": "disabled"}`} variant="success" onClick={showCommentFrom}>
-                        Оставить отзыв
+                        Прокомментировать
                     </Button>
-                    <div className="d-flex flex-column">
-                        {
-                            (() => {
-                                if (window.user) {
-                                    return (
-                                        <small className="open-comment-form-btn__label"> 
-                                            - для того чтобы оставлять отзыв вам необходимо пройти больше 70% курса
-                                        </small>
-                                    )
-                                } else {
-                                    return (
-                                        <small className="open-comment-form-btn__label"> 
-                                            - авторизуйтесь для того чтобы оставлять отзывы 
-                                        </small>
-                                    )
-                                }
-                            })()
-                        }
-                        
-                    </div>
-
                 </div>
                 <Form className="comment-form col-12 rounded px-0 py-3 fade d-none" onSubmit={handleComment} id="send-comment-from">
                     <Form.Group className="mb-1">
@@ -288,6 +267,7 @@ function CommentsList({step}) {
     }
 
     const loadComments = async ([{courseId, moduleId, lessonId, stepId, page}], options) => {
+        console.log('hello')
         let tkn = getAccessToken();
         let headers = {};
         if (tkn) {
@@ -311,6 +291,7 @@ function CommentsList({step}) {
         });
 
     function HandleClickShowMore() {
+        console.log('HandleClickShowMore')
         run({
             courseId: urlParams.courseId,
             moduleId: urlParams.moduleId,
@@ -331,7 +312,7 @@ function CommentsList({step}) {
             {comments.map((el, ind) => {
                 return <Comment key={`comment-${ind}`} comment={el}/>
             })}
-            <Button id="show-more-btn" onClick={HandleClickShowMore}>Показать ещё</Button>
+            <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>Показать ещё</Button>
         </>
     )
     
@@ -341,7 +322,7 @@ function CommentsList({step}) {
                 ?
                 commentsInCashContent
                 :
-                <Button id="show-more-btn" onClick={HandleClickShowMore}>Показать комментарии</Button>
+                <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>Показать комментарии</Button>
             }
         </>
     )
@@ -385,7 +366,7 @@ function CommentsList({step}) {
                 {
                     data.comments.length == 10
                     ?
-                    <Button id="show-more-btn" onClick={HandleClickShowMore}>Показать ещё</Button>
+                    <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>Показать ещё</Button>
                     :
                     ''
                 }
@@ -394,14 +375,14 @@ function CommentsList({step}) {
     }
 
     return (
-        <div className="step-comments">
-            <h2 className="section-title">Комментарии</h2>
+        <Container className="step-comments col-12 col-lg-10 col-xl-8">
+            <h2 className="section-title text-center">Комментарии</h2>
             
             <SendCommentForm stepId={step.id} />
             <Container className="d-flex flex-wrap p-0 step-comments__inner" id="comments-container">
                 {innerContent}
             </Container>
             
-        </div>
+        </Container>
     )
 }

@@ -11,7 +11,7 @@ from django.db.models import Count
 from django.contrib.auth.models import User
 from rest_polymorphic.serializers import PolymorphicSerializer
 
-
+        
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
@@ -167,19 +167,6 @@ class CourseFullSerializer(serializers.ModelSerializer):
 
 # ON LESSON|STEP PAGES
 # <------------------------------------>
-# class LessonSerializer(serializers.ModelSerializer):
-#     steps = StepShortSerializer(read_only=True, many=True)
-#     lesson_type = LessonTypeSerializer(read_only=True)
-
-#     def to_representation(self, instance):
-#         instance = instance.filter(doshow=True)
-#         rep = super().to_representation(instance)
-#         return rep
-
-#     class Meta:
-#         model = Lesson
-#         fields = '__all__'
-
 
 class TextLectureSerializer(serializers.ModelSerializer):
     class Meta:
@@ -253,7 +240,4 @@ class PolymorphicStepSerializer(PolymorphicSerializer):
         rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
         return rep
 
-    # class Meta:
-    #     model = Step
-    #     fields = '__all__'
 # <------------------------------------/>
