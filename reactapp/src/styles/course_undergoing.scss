@@ -163,9 +163,24 @@ $sidebar-text-color: #a7c5ca;
 //     margin-top: 5px;
 // }
 
+i.like, i.dislike {
+    color: gray;
+    cursor: pointer;
+    &:hover {
+        color: rgb(48, 46, 46);    
+    }
+}
+
+i.like.active, i.dislike.active {
+    color: rgb(48, 46, 46);
+}
+
 .step-comment {
-    
+    margin: 10px 0;
     // &__header {
+
+    // }
+    // &__reply-btn {
 
     // }
 
@@ -179,6 +194,12 @@ $sidebar-text-color: #a7c5ca;
             height: 100%;
         }
     
+    }
+
+    &__footer {
+        i {
+            font-size: 20px;
+        }
     }
 
     // &__comments-container {

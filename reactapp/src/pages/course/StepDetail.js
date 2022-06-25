@@ -246,7 +246,28 @@ function CommentsList({step}) {
         )
     }
 
+    
     function Comment({comment}) {
+        function handleShowReplyForm(e) {
+            e.preventDefault();
+            console.log('handleShowReplyForm');
+        }
+
+        function handleShowReplies(e) {
+            e.preventDefault();
+            console.log('handleShowReplies');
+        }
+
+        function handleLike(e) {
+            e.preventDefault();
+            console.log('handleLike');
+        }
+
+        function handleDislike(e) {
+            e.preventDefault();
+            console.log('handleDislike');
+        }
+
         return (
             <Row className="step-comment">
                 <Col xs="12" className="step-comment__header d-flex">
@@ -264,6 +285,32 @@ function CommentsList({step}) {
                 </Col>
                 <Col xs="12" className="step-comment__content-wrapper">
                     {comment.content}
+                </Col>
+                <Col xs="12" className="step-comment__footer">
+                    <i 
+                        onClick={handleLike} 
+                        className="like active bi bi-hand-thumbs-up-fill"
+                    ></i> 111
+                    <i 
+                        onClick={handleDislike} 
+                        className="dislike bi bi-hand-thumbs-down-fill"
+                    ></i> 111
+                    <a 
+                        href="#" 
+                        className="step-comment__reply-btn ms-2"
+                        onClick={handleShowReplyForm}
+                    >
+                        Ответить
+                    </a>
+                </Col>
+                <Col xs="12" className="step-comment__footer">
+                    <a 
+                        href="#" 
+                        onClick={handleShowReplies}
+                        className="step-comment__reply-btn ms-2"
+                    >
+                        показать 6 ответов
+                    </a>
                 </Col>
             </Row>
         )
@@ -364,7 +411,7 @@ function CommentsList({step}) {
         console.log({data, comments});
         // setPage(page+1);
         beforeCommentsContent = '';
-        
+
         if (comments.length > 0) {
             commentsContainer = (
                 comments.map((el, ind) => {
