@@ -152,7 +152,10 @@ $sidebar-text-color: #a7c5ca;
 .step-comments {
     // padding: 0 50px;
     &__inner {
-
+        
+    }
+    #show-more-btn {
+        width: fit-content;
     }
 }
 
@@ -160,13 +163,25 @@ $sidebar-text-color: #a7c5ca;
 //     margin-top: 5px;
 // }
 
-.course-comment {
+.step-comment {
     
     // &__header {
 
     // }
 
-    // &__img-wrapper {
+    &__img-wrapper {
+        width: 50px;
+        height: 50px;
+        padding: 0;
+        img {
+            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+        }
+    
+    }
+
+    // &__comments-container {
 
     // }
 

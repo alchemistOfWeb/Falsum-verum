@@ -63,19 +63,6 @@ class CourseReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class StepCommentSerializer(serializers.ModelSerializer):
-    author = UserSerializer(read_only=True)
-
-    def create(self, validated_data):
-        return StepComment.objects.create(
-            **validated_data,
-            author=self.context.get('author')
-        )
-
-    class Meta:
-        model = StepComment
-        fields = '__all__'
-
 
 class CourseSerializer(serializers.ModelSerializer):
     authors = AuthorsInCourseSerializer(many=True, source="authors_in_course") # todo: create, update
@@ -215,7 +202,14 @@ class RecursiveSerializer(serializers.Serializer):
 
 
 class StepCommentSerializer(serializers.ModelSerializer):
-    children = RecursiveSerializer(many=True)
+    children = RecursiveSerializer(many=True, read_only=True)
+    author = UserSerializer(read_only=True)
+
+    def create(self, validated_data):
+        return StepComment.objects.create(
+            **validated_data,
+            author=self.context.get('author')
+        )
 
     class Meta:
         list_serializer_class = FilterCommentListSerializer

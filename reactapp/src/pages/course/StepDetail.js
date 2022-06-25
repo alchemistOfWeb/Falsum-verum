@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../setting";
 import { request, getCookie, getAccessToken, crdRequest } from '../../functions';
 import { useEffect, useState } from "react";
@@ -169,12 +169,15 @@ function getCommentsUrl({courseId, moduleId, lessonId, stepId, page=null}) {
 function CommentsList({step}) {
 
     // const [page, setPage] = useState(1);
+    const refComments = useRef([]);
+    let comments = refComments.current;
 
-    function SendCommentForm({courseId}) {
+
+    function SendCommentForm({uriParams}) {
         const [commentBody, setCommentBody] = useState('');
 
-        async function createCommentResponse(params={}, courseId, moduleId, lessonId, stepId) {
-            let url = getCommentsUrl({courseId, moduleId, lessonId, stepId})
+        async function createCommentResponse(body={}, uriParams) {
+            let url = getCommentsUrl(uriParams)
             // let url = 
             //     `${BACKEND_ROOT_URL}courses/${courseId}/modules/${moduleId}/`
             //     + `lessons/${lessonId}/steps/${stepId}/comments/`;
@@ -184,7 +187,7 @@ function CommentsList({step}) {
             if (accessToken) {
                 headers['Authorization'] = getAccessToken();
             }
-            const res = await crdRequest('POST', url, params, headers);    
+            const res = await crdRequest('POST', url, body, headers);    
             return res;
         }
 
@@ -194,11 +197,11 @@ function CommentsList({step}) {
                 alert("Поле текста не может быть пустым");
                 return;
             }
-            createCommentResponse({content: commentBody}, courseId)
+            createCommentResponse({content: commentBody}, uriParams)
                 .then((res)=>{
-                    console.log(res);
+                    console.log({createCommentRes: res});
                     alert("Отзыв успешно отправлен");
-                    document.location.reload();
+                    // document.location.reload();
                 })
                 .catch((err) => {
                     console.log({err});
@@ -211,8 +214,8 @@ function CommentsList({step}) {
         }
 
         return (
-            <>
-                <div className="d-flex open-comment-form-btn__wrapper align-items-center">
+            <Row>
+                <div className="d-flex justify-content-center open-comment-form-btn__wrapper align-items-center">
                     <Button className={`open-comment-form-btn ${window.user ? "": "disabled"}`} variant="success" onClick={showCommentFrom}>
                         Прокомментировать
                     </Button>
@@ -239,27 +242,27 @@ function CommentsList({step}) {
                         * максимальная длина сообщения 1000 символов.
                     </p>
                 </Form>
-            </>
+            </Row>
         )
     }
 
     function Comment({comment}) {
         return (
-            <Row className="course-comment">
-                <Col xs="12" className="course-comment__header d-flex">
-                    <Col xs="2" className="course-comment__img-wrapper">
+            <Row className="step-comment">
+                <Col xs="12" className="step-comment__header d-flex">
+                    <Col xs="2" className="step-comment__img-wrapper">
                         <img src={personImg} alt="" />
                     </Col>
-                    <Col xs="8" className="course-comment__title-wrapper">
+                    <Col xs="8" className="step-comment__title-wrapper">
                         <Col xs="12">
-                            <span className="course-comment__username">{comment.author.username}</span>
+                            <span className="step-comment__username">{comment.author.username}</span>
                         </Col>
                         <Col xs="12">
-                            <span className="course-comment__updated-at">{comment.updated_at}</span>
+                            <span className="step-comment__updated-at">{comment.updated_at}</span>
                         </Col>
                     </Col>
                 </Col>
-                <Col xs="12" className="course-comment__content-wrapper">
+                <Col xs="12" className="step-comment__content-wrapper">
                     {comment.content}
                 </Col>
             </Row>
@@ -293,10 +296,7 @@ function CommentsList({step}) {
     function HandleClickShowMore() {
         console.log('HandleClickShowMore')
         run({
-            courseId: urlParams.courseId,
-            moduleId: urlParams.moduleId,
-            lessonId: urlParams.lessonId,
-            stepId: urlParams.stepId,
+            ...urlParams,
             page: window.page++}
         )
     }
@@ -305,32 +305,42 @@ function CommentsList({step}) {
         window.page = 1;
     }
 
-    let comments = [];
-
-    let commentsInCashContent = (
+    let commentsContainer = (
         <>
             {comments.map((el, ind) => {
                 return <Comment key={`comment-${ind}`} comment={el}/>
             })}
-            <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>Показать ещё</Button>
         </>
     )
     
-    let innerContent = (
-        <>
-            {comments.length > 0 
-                ?
-                commentsInCashContent
-                :
-                <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>Показать комментарии</Button>
-            }
-        </>
-    )
+    let afterCommentsContent = '';
+    let beforeCommentsContent = '';
+
+    if (comments.length > 0) {
+        afterCommentsContent = (
+            <Row>
+                <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>
+                    Показать ещё
+                </Button>
+            </Row>
+        )
+    } else {
+        console.log('hello comments just no')
+        beforeCommentsContent = (
+            <Row>
+                <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>
+                    Показать комментарии
+                </Button>
+            </Row>
+        )
+        
+    }
+
 
     if (isPending) {
-        innerContent = (
+        commentsContainer = (
             <>
-                {innerContent}
+                {commentsContainer}
                 <div className="d-flex align-items-center justify-content-center pt-5">
                     <Spinner animation="border" variant="info" size="xl"/>
                 </div>
@@ -339,13 +349,13 @@ function CommentsList({step}) {
     }
     if (error) {
         console.log({error})
-        innerContent = (
+        commentsContainer = (
             <>
-                {innerContent}
+                {commentsContainer}
                 <div className="d-flex align-items-center justify-content-center pt-5">
                     <Spinner animation="border" variant="info" size="xl"/>
                 </div>
-                <h1 className="text-danger text-center">Ошибка загрузки отзывов.</h1>
+                <h1 className="text-danger text-center">Ошибка загрузки комментариев.</h1>
             </>
         )
     }
@@ -353,34 +363,54 @@ function CommentsList({step}) {
         comments = comments.concat(data.comments);
         console.log({data, comments});
         // setPage(page+1);
-        innerContent = (
-            <>
-                {comments.length > 0 
-                ? 
-                    comments.map((el, ind) => {
-                        return <Comment key={`comment-${ind}`} comment={el}/>
-                    })
-                :
-                <div className="h5">Пока здесь нет комментариев</div>
-                }
-                {
-                    data.comments.length == 10
-                    ?
-                    <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>Показать ещё</Button>
-                    :
-                    ''
-                }
-            </>
-        )
+        beforeCommentsContent = '';
+        
+        if (comments.length > 0) {
+            commentsContainer = (
+                comments.map((el, ind) => {
+                    return <Comment key={`comment-${ind}`} comment={el}/>
+                })
+            )
+        } else {
+            commentsContainer = <div className="h5">Пока здесь нет комментариев</div>
+        }
+
+
+        if (data.comments.length == 10) {
+            afterCommentsContent = 
+                data.comments.length == 10
+                ? (
+                    <Row>
+                        <Button id="show-more-btn" className="mt-1" onClick={HandleClickShowMore}>
+                            Показать ещё
+                        </Button>
+                    </Row>
+                )
+                : '';
+        } else if (data.comments.length > 10) {
+            alert('Mb comments pagination page size was increased. Check it out and correct the code.');
+        } else {
+            afterCommentsContent = ''
+        }
+        
     }
 
     return (
         <Container className="step-comments col-12 col-lg-10 col-xl-8">
             <h2 className="section-title text-center">Комментарии</h2>
             
-            <SendCommentForm stepId={step.id} />
-            <Container className="d-flex flex-wrap p-0 step-comments__inner" id="comments-container">
-                {innerContent}
+            <SendCommentForm uriParams={urlParams} />
+            <Container className="d-flex flex-wrap justify-content-center p-0 step-comments__inner">
+                {beforeCommentsContent}
+
+                <div 
+                    className="d-flex flex-wrap w-100 comments-list__comments-container" 
+                    id="comments-container"
+                >
+                    {commentsContainer}
+                </div>
+
+                {afterCommentsContent}
             </Container>
             
         </Container>
