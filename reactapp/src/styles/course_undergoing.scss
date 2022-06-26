@@ -175,8 +175,15 @@ i.like.active, i.dislike.active {
     color: rgb(48, 46, 46);
 }
 
+i.step-dislike, i.step-like {
+    font-size: 25px;
+}
+
 .step-comment {
     margin: 10px 0;
+    * {
+        padding: 0px;
+    }
     // &__header {
 
     // }
@@ -205,6 +212,10 @@ i.like.active, i.dislike.active {
     // &__comments-container {
 
     // }
+
+    &__subcomments {
+        padding: 0 0 0 30px;
+    }
 
     // &__title-wrapper {
 

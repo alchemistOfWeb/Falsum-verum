@@ -6,6 +6,8 @@ import { useParams, Link, Outlet } from "react-router-dom";
 import { useAsync } from 'react-async';
 import jquery from "jquery";
 import personImg from "../../images/tesla-bot.jpg";
+import DayJS from 'react-dayjs'; 
+
 
 import { 
     Collapse, Form, ListGroup, 
@@ -132,7 +134,6 @@ export default function StepDetail() {
             additionalContent = (
                 <>
                     <TestForm tasks={stepObj.tasks}/>
-                    <hr/>
                 </>
             )
         }
@@ -140,19 +141,53 @@ export default function StepDetail() {
             additionalContent = (
                 <>
                     <VideoComponent step={stepObj}/>
-                    <hr/>
                 </>
             )
+        }
+        function handleStepLike(e) {
+            e.preventDefault();
+            console.log('handleStepLike');
+        }
+
+        function handleStepDislike(e) {
+            e.preventDefault();
+            console.log('handleStepDislike');
         }
 
         return (
             <>
                 <h2 className="text-center">{stepObj.title}</h2>
-                <hr />
+                
                 <div className="step-content pb-3">
-                    {parseHtml(stepObj.content)}
-                    <hr />
-                    {additionalContent}
+                    <div className="">
+                        <Row className="w-100 d-flex justify-content-center">
+                            <Col xs={12} lg={10} xl={8}>
+                                {parseHtml(stepObj.content)}
+                            </Col>
+                        </Row>
+                        <hr />
+                        <Row className="w-100 d-flex justify-content-center">
+                            <Col xs={12} lg={10} xl={8}>
+                                {additionalContent}
+                            </Col>
+                        </Row>
+                        {additionalContent ? <hr/> : ''}
+                        
+                    </div>
+                    <Container className="step-comments col-12 col-lg-10 col-xl-8">
+                        <Row>
+                            <Col xs="12">
+                                <i 
+                                    onClick={handleStepLike} 
+                                    className="like step-like active bi bi-hand-thumbs-up-fill"
+                                ></i> 111
+                                <i 
+                                    onClick={handleStepDislike} 
+                                    className="dislike step-dislike bi bi-hand-thumbs-down-fill"
+                                ></i> 111
+                            </Col>
+                        </Row>
+                    </Container>
                     <CommentsList step={stepObj} />
                 </div>
                 
@@ -170,6 +205,7 @@ function CommentsList({step}) {
 
     // const [page, setPage] = useState(1);
     const refComments = useRef([]);
+    const page = useRef(1);
     let comments = refComments.current;
 
 
@@ -246,30 +282,75 @@ function CommentsList({step}) {
         )
     }
 
+    function handleLike(e) {
+        e.preventDefault();
+        console.log('handleLike');
+    }
+
+    function handleDislike(e) {
+        e.preventDefault();
+        console.log('handleDislike');
+    }
+
+    function handleShowReplyForm(e) {
+        e.preventDefault();
+        console.log('handleShowReplyForm');
+    }
+
+    function Subcomment({subcomment}) {
+        return (
+            <Row className="step-comment">
+                <Col xs="12" className="step-comment__header d-flex">
+                    <Col xs="2" className="step-comment__img-wrapper">
+                        <img src={personImg} alt="" />
+                    </Col>
+                    <Col xs="8" className="step-comment__title-wrapper">
+                        <Col xs="12">
+                            <span className="step-comment__username">{subcomment.author.username}</span>
+                        </Col>
+                        <Col xs="12">
+                            <span className="step-comment__updated-at">
+                                <DayJS format="MM-DD-YYYY HH:mm">{subcomment.updated_at}</DayJS>
+                            </span>
+                        </Col>
+                    </Col>
+                </Col>
+                <Col xs="12" className="step-comment__content-wrapper">
+                    {subcomment.content}
+                </Col>
+                <Col xs="12" className="step-comment__footer">
+                    <i 
+                        onClick={handleLike} 
+                        className="like active bi bi-hand-thumbs-up-fill"
+                    ></i> 111
+                    <i 
+                        onClick={handleDislike} 
+                        className="dislike bi bi-hand-thumbs-down-fill"
+                    ></i> 111
+                    <a 
+                        href="#" 
+                        className="step-comment__reply-btn ms-2"
+                        onClick={handleShowReplyForm}
+                    >
+                        Ответить
+                    </a>
+                </Col>
+            </Row>
+        )
+    }
+
     
     function Comment({comment}) {
-        function handleShowReplyForm(e) {
-            e.preventDefault();
-            console.log('handleShowReplyForm');
-        }
 
         function handleShowReplies(e) {
             e.preventDefault();
-            console.log('handleShowReplies');
-        }
-
-        function handleLike(e) {
-            e.preventDefault();
-            console.log('handleLike');
-        }
-
-        function handleDislike(e) {
-            e.preventDefault();
-            console.log('handleDislike');
+            const parent = jquery(jquery(e.target).closest('.step-comment')[0])
+            const subcommentsEl = parent.find('.step-comment__subcomments');
+            subcommentsEl.toggleClass('d-none');
         }
 
         return (
-            <Row className="step-comment">
+            <Row className="step-comment" id={`comment-${comment.id}`}>
                 <Col xs="12" className="step-comment__header d-flex">
                     <Col xs="2" className="step-comment__img-wrapper">
                         <img src={personImg} alt="" />
@@ -279,7 +360,9 @@ function CommentsList({step}) {
                             <span className="step-comment__username">{comment.author.username}</span>
                         </Col>
                         <Col xs="12">
-                            <span className="step-comment__updated-at">{comment.updated_at}</span>
+                            <span className="step-comment__updated-at">
+                                <DayJS format="MM-DD-YYYY HH:mm">{comment.updated_at}</DayJS>
+                            </span>
                         </Col>
                     </Col>
                 </Col>
@@ -312,6 +395,9 @@ function CommentsList({step}) {
                         показать 6 ответов
                     </a>
                 </Col>
+                <Col xs="12" className="step-comment__subcomments d-none">
+                    <Subcomment subcomment={comment}/>
+                </Col>
             </Row>
         )
     }
@@ -334,6 +420,7 @@ function CommentsList({step}) {
     }
 
     let urlParams = useParams();
+    console.log({Startcomments: comments})
 
     const { data, error, isPending, run }
         = useAsync({ 
@@ -344,13 +431,13 @@ function CommentsList({step}) {
         console.log('HandleClickShowMore')
         run({
             ...urlParams,
-            page: window.page++}
+            page: page.current++}
         )
     }
 
-    if (!window.page || window.page < 1) {
-        window.page = 1;
-    }
+    // if (!page.current || page.current < 1) {
+    //     page.current = 1;
+    // }
 
     let commentsContainer = (
         <>
@@ -444,7 +531,7 @@ function CommentsList({step}) {
 
     return (
         <Container className="step-comments col-12 col-lg-10 col-xl-8">
-            <h2 className="section-title text-center">Комментарии</h2>
+            {/* <h2 className="section-title text-center">Комментарии</h2> */}
             
             <SendCommentForm uriParams={urlParams} />
             <Container className="d-flex flex-wrap justify-content-center p-0 step-comments__inner">

@@ -80,15 +80,14 @@ export default function SNavbar() {
 
     return (
         <header 
-        className="p-3 bg-dark text-white navigation-header"
+        className="p-3 text-white navigation-header"
         >
             <Navbar 
                 className="fixed-top navigation-header__navbar" 
                 expand="md"
                 variant="dark"
-                bg="dark"
             >
-                <Container fluid>
+                <Container className="navigation-header__buttons" fluid>
                     <Navbar.Brand href="/">Stepos</Navbar.Brand>
                     <Navbar.Toggle aria-controls="navbarCollapse"/>
                     <Navbar.Collapse id="navbarCollapse">

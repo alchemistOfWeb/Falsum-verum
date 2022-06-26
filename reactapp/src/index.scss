@@ -55,12 +55,22 @@ $heading-text-shadow: 1px 1px 1px #ffffe3;
 
 .navbar-brand {
     text-shadow: 0 0 2px white, 0 0 3px blue, 0 0 3px blue, 0 0 3px blue, 0 0 3px blue, 0 0 3px blue, 0 0 3px blue, 0 0 3px blue;
+    font-size: 25px;
 }
 
 .navigation-header {
     height: 58px;
     &__navbar {
         height: inherit;
+        background-color: #3445b4;
+    }
+    &__buttons {
+        background-color: #3445b4;
+    }
+    @media (max-width: $md) {
+        .collapse {
+            padding: 0 0 10px 0;
+        }
     }
 }
 
@@ -87,9 +97,7 @@ $heading-text-shadow: 1px 1px 1px #ffffe3;
     .catalog-search {
         height: 40px;
     }
-
     
-
     .list-group-item.list-section-item:hover {
         background-color: #7e8c8e91;
     }
