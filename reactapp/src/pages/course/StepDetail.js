@@ -174,17 +174,24 @@ export default function StepDetail() {
                         {additionalContent ? <hr/> : ''}
                         
                     </div>
-                    <Container className="step-comments col-12 col-lg-10 col-xl-8">
+                    <Container className="step-comments col-12 col-lg-10 col-xl-8 px-0">
                         <Row>
-                            <Col xs="12">
-                                <i 
-                                    onClick={handleStepLike} 
-                                    className="like step-like active bi bi-hand-thumbs-up-fill"
-                                ></i> 111
-                                <i 
-                                    onClick={handleStepDislike} 
-                                    className="dislike step-dislike bi bi-hand-thumbs-down-fill"
-                                ></i> 111
+                            <Col xs="12" className="ps-0">
+                                <span className="ms-2 step-comments-num">
+                                    <i 
+                                        onClick={handleStepLike} 
+                                        className="like step-like active bi bi-hand-thumbs-up-fill"
+                                    ></i> {stepObj.likes}
+                                </span>
+                                <span className="ms-2 step-comments-num">
+                                    <i 
+                                        onClick={handleStepDislike} 
+                                        className="dislike step-dislike bi bi-hand-thumbs-down-fill"
+                                    ></i> {stepObj.dislikes}
+                                </span>
+                                <span className="ms-2 step-comments-num">
+                                    Комментариев: {stepObj.comments_num}
+                                </span>
                             </Col>
                         </Row>
                     </Container>
@@ -208,80 +215,6 @@ function CommentsList({step}) {
     const page = useRef(1);
     let comments = refComments.current;
 
-
-    function SendCommentForm({uriParams}) {
-        const [commentBody, setCommentBody] = useState('');
-
-        async function createCommentResponse(body={}, uriParams) {
-            let url = getCommentsUrl(uriParams)
-            // let url = 
-            //     `${BACKEND_ROOT_URL}courses/${courseId}/modules/${moduleId}/`
-            //     + `lessons/${lessonId}/steps/${stepId}/comments/`;
-
-            let headers = {};
-            let accessToken = getAccessToken();
-            if (accessToken) {
-                headers['Authorization'] = getAccessToken();
-            }
-            const res = await crdRequest('POST', url, body, headers);    
-            return res;
-        }
-
-        function handleComment(e) {
-            e.preventDefault();
-            if (!commentBody) {
-                alert("Поле текста не может быть пустым");
-                return;
-            }
-            createCommentResponse({content: commentBody}, uriParams)
-                .then((res)=>{
-                    console.log({createCommentRes: res});
-                    alert("Отзыв успешно отправлен");
-                    // document.location.reload();
-                })
-                .catch((err) => {
-                    console.log({err});
-                    alert("что-то пошло не так");
-                });
-        }
-
-        function showCommentFrom(e) {
-            jquery('#send-comment-from').toggleClass(['d-none', 'show']);
-        }
-
-        return (
-            <Row>
-                <div className="d-flex justify-content-center open-comment-form-btn__wrapper align-items-center">
-                    <Button className={`open-comment-form-btn ${window.user ? "": "disabled"}`} variant="success" onClick={showCommentFrom}>
-                        Прокомментировать
-                    </Button>
-                </div>
-                <Form className="comment-form col-12 rounded px-0 py-3 fade d-none" onSubmit={handleComment} id="send-comment-from">
-                    <Form.Group className="mb-1">
-                        <Form.Control 
-                            as="textarea" 
-                            rows={5}
-                            id="inputCommentBody" 
-                            className="" 
-                            placeholder="Введить текст отзыва сюда" 
-                            required autofocus=""
-                            onChange={(e)=>{setCommentBody(e.target.value)}}
-                        />
-                        <div className="error-list  d-flex flex-column"></div>
-                    </Form.Group>
-                    <div className="d-flex justify-content-end">
-                        <Button type="submit" className="btn-primary btn-block comment-form__submit" size="lg">
-                            Отправить
-                        </Button>
-                    </div>
-                    <p>
-                        * максимальная длина сообщения 1000 символов.
-                    </p>
-                </Form>
-            </Row>
-        )
-    }
-
     function handleLike(e) {
         e.preventDefault();
         console.log('handleLike');
@@ -292,31 +225,53 @@ function CommentsList({step}) {
         console.log('handleDislike');
     }
 
-    function handleShowReplyForm(e) {
-        e.preventDefault();
-        console.log('handleShowReplyForm');
-    }
+    // function handleShowReplyForm(e) {
+    //     e.preventDefault();
+    //     console.log('handleShowReplyForm');
+    //     const parentComment = jquery(jquery(e.target).closest(".parent-comment")[0]);
+    //     const replyForm = parentComment.find('.comment-form');
+    //     replyForm.toggleClass('d-none');
+    // }
 
-    function Subcomment({subcomment}) {
+    function RepliesList({comment, replyTo, onReply}) {
+        // const [replyTo, setReplyTo] = useState(null);
         return (
-            <Row className="step-comment">
+            <>
+                {comment.children.map((el, ind) => {
+                    return <Reply reply={el} onReply={onReply}/>
+                })}
+                <SendCommentForm parent={comment.id} replyTo={replyTo} />
+            </>
+        )
+    }
+    
+    function Reply({reply, onReply}) {
+        let avatarImg = '';
+        if (reply.author.profile.image_sm) {
+            avatarImg = BACKEND_DOMAIN + reply.author.profile.image_sm;
+        } else {
+            avatarImg = personImg;
+        }
+
+        return (
+            <Row className="step-comment" data-comment-id={reply.id}>
                 <Col xs="12" className="step-comment__header d-flex">
                     <Col xs="2" className="step-comment__img-wrapper">
-                        <img src={personImg} alt="" />
+                        <img src={avatarImg} alt="" />
                     </Col>
                     <Col xs="8" className="step-comment__title-wrapper">
                         <Col xs="12">
-                            <span className="step-comment__username">{subcomment.author.username}</span>
+                            <span className="step-comment__username">{reply.author.username}</span>
                         </Col>
                         <Col xs="12">
                             <span className="step-comment__updated-at">
-                                <DayJS format="MM-DD-YYYY HH:mm">{subcomment.updated_at}</DayJS>
+                                <DayJS format="MM-DD-YYYY HH:mm">{reply.updated_at}</DayJS>
                             </span>
                         </Col>
                     </Col>
                 </Col>
                 <Col xs="12" className="step-comment__content-wrapper">
-                    {subcomment.content}
+                    {reply.content}
                 </Col>
                 <Col xs="12" className="step-comment__footer">
                     <i 
@@ -330,7 +285,7 @@ function CommentsList({step}) {
                     <a 
                         href="#" 
                         className="step-comment__reply-btn ms-2"
-                        onClick={handleShowReplyForm}
+                        onClick={onReply}
                     >
                         Ответить
                     </a>
@@ -341,19 +296,37 @@ function CommentsList({step}) {
 
     
     function Comment({comment}) {
+        const [replyTo, setReplyTo] = useState(null);
 
         function handleShowReplies(e) {
             e.preventDefault();
+            console.log("handleShowReplies");
             const parent = jquery(jquery(e.target).closest('.step-comment')[0])
+            console.log(parent);
             const subcommentsEl = parent.find('.step-comment__subcomments');
             subcommentsEl.toggleClass('d-none');
         }
 
+        function handleShowReplyForm(e) {
+            jquery(e.target).closest(".step-comment")
+            setReplyTo(e.target.getAttribute('data-comment-id'));
+        }
+
+        // const onReply = (e) => {
+        //     setReply(e.target(''))
+        // }
+        let avatarImg = '';
+        if (comment.author.profile.image_sm) {
+            avatarImg = BACKEND_DOMAIN + comment.author.profile.image_sm;
+        } else {
+            avatarImg = personImg;
+        }
+
         return (
-            <Row className="step-comment" id={`comment-${comment.id}`}>
+            <Row className="step-comment parent-comment" data-comment-id={comment.id} id={`comment-${comment.id}`}>
                 <Col xs="12" className="step-comment__header d-flex">
                     <Col xs="2" className="step-comment__img-wrapper">
-                        <img src={personImg} alt="" />
+                        <img src={avatarImg} alt="" />
                     </Col>
                     <Col xs="8" className="step-comment__title-wrapper">
                         <Col xs="12">
@@ -373,11 +346,11 @@ function CommentsList({step}) {
                     <i 
                         onClick={handleLike} 
                         className="like active bi bi-hand-thumbs-up-fill"
-                    ></i> 111
+                    ></i> {comment.dislikes}
                     <i 
                         onClick={handleDislike} 
                         className="dislike bi bi-hand-thumbs-down-fill"
-                    ></i> 111
+                    ></i> {comment.likes}
                     <a 
                         href="#" 
                         className="step-comment__reply-btn ms-2"
@@ -387,20 +360,28 @@ function CommentsList({step}) {
                     </a>
                 </Col>
                 <Col xs="12" className="step-comment__footer">
-                    <a 
-                        href="#" 
-                        onClick={handleShowReplies}
-                        className="step-comment__reply-btn ms-2"
-                    >
-                        показать 6 ответов
-                    </a>
+                    {(()=>{
+                        if (comment.comments_num) {
+                            return (
+                                <a 
+                                    href="#" 
+                                    onClick={handleShowReplies}
+                                    className="step-comment__reply-btn ms-2"
+                                >
+                                    показать {comment.comments_num} ответов
+                                </a>
+                            )
+                        }
+                    })()}
                 </Col>
                 <Col xs="12" className="step-comment__subcomments d-none">
-                    <Subcomment subcomment={comment}/>
+                    <RepliesList replyTo={replyTo} onReply={handleShowReplyForm} comment={comment} />
                 </Col>
             </Row>
         )
     }
+
+    
 
     const loadComments = async ([{courseId, moduleId, lessonId, stepId, page}], options) => {
         console.log('hello')
@@ -529,11 +510,22 @@ function CommentsList({step}) {
         
     }
 
+    function showCommentFrom(e) {
+        console.log('hello');
+        jquery('#send-comment-form').toggleClass(['d-none', 'show']);
+    }
+
     return (
-        <Container className="step-comments col-12 col-lg-10 col-xl-8">
+        <Container className="step-comments col-12 col-lg-10 col-xl-8 px-0">
             {/* <h2 className="section-title text-center">Комментарии</h2> */}
-            
-            <SendCommentForm uriParams={urlParams} />
+            <Row>
+                <div className="d-flex justify-content-center open-comment-form-btn__wrapper align-items-center">
+                    <Button className={`open-comment-form-btn ${window.user ? "": "disabled"}`} variant="success" onClick={showCommentFrom}>
+                        Прокомментировать
+                    </Button>
+                </div>
+                <SendCommentForm />
+            </Row>
             <Container className="d-flex flex-wrap justify-content-center p-0 step-comments__inner">
                 {beforeCommentsContent}
 
@@ -548,5 +540,88 @@ function CommentsList({step}) {
             </Container>
             
         </Container>
+    )
+}
+
+function SendCommentForm({parent=null, replyTo=null}) {
+    const [commentBody, setCommentBody] = useState('');
+    let uriParams = useParams();
+
+    async function createCommentResponse(body={}, uriParams) {
+        let url = getCommentsUrl(uriParams)
+        // let url = 
+        //     `${BACKEND_ROOT_URL}courses/${courseId}/modules/${moduleId}/`
+        //     + `lessons/${lessonId}/steps/${stepId}/comments/`;
+
+        let headers = {};
+        let accessToken = getAccessToken();
+        if (accessToken) {
+            headers['Authorization'] = getAccessToken();
+        }
+        const res = await crdRequest('POST', url, body, headers);    
+        return res;
+    }
+
+    function handleComment(e) {
+        let params = {}
+        
+        e.preventDefault();
+        if (!commentBody) {
+            alert("Поле текста не может быть пустым");
+            return;
+        }
+        if (replyTo) {
+            params['parent'] = replyTo;
+        }
+        params['content'] = commentBody
+        createCommentResponse(params, uriParams)
+            .then((res)=>{
+                console.log({createCommentRes: res});
+                alert("Отзыв успешно отправлен");
+                // document.location.reload();
+            })
+            .catch((err) => {
+                console.log({err});
+                alert("что-то пошло не так");
+            });
+    }
+
+    let formId = '';
+    let inputId = '';
+
+    if (parent) {
+        formId = "reply-form-" + parent;
+        inputId = `input-reply-body-${parent}`;
+        // className = 'send-reply-form';
+    } else {
+        formId = "send-comment-form";
+        inputId = "input-comment-body";
+    }
+
+    return (
+        <>
+            <Form className="comment-form col-12 rounded px-0 py-3 fade d-none" onSubmit={handleComment} id={formId}>
+                <Form.Group className="mb-1">
+                    <Form.Control 
+                        as="textarea" 
+                        rows={5}
+                        id={inputId} 
+                        className="" 
+                        placeholder="Введить текст отзыва сюда" 
+                        required autofocus=""
+                        onChange={(e)=>{setCommentBody(e.target.value)}}
+                    />
+                    <div className="error-list  d-flex flex-column"></div>
+                </Form.Group>
+                <div className="d-flex justify-content-end">
+                    <Button type="submit" className="btn-primary btn-block comment-form__submit" size="lg">
+                        Отправить
+                    </Button>
+                </div>
+                <p>
+                    * максимальная длина сообщения 1000 символов.
+                </p>
+            </Form>
+        </>
     )
 }

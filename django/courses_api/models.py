@@ -368,6 +368,11 @@ class StepReaction(models.Model):
     step = models.ForeignKey(Step, related_name='reactions', on_delete=models.CASCADE)
     value = models.SmallIntegerField(choices=StepReactionType.choices, null=False)
 
+class StepCommentReaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.ForeignKey(StepComment, related_name='reactions', on_delete=models.CASCADE)
+    value = models.SmallIntegerField(choices=StepReactionType.choices, null=False)
+
 
 class TextLecture(Step):
     content = RichTextUploadingField(max_length=8192, null=False, default='', blank=True)

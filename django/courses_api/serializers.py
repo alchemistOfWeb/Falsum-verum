@@ -190,9 +190,10 @@ class TestSerializer(serializers.ModelSerializer):
 
 
 class FilterCommentListSerializer(serializers.ListSerializer):
-    def to_representation(self, data):
-        data = data.filter(parent=None)
-        return super().to_representation(data)
+    def to_representation(self, instance):
+        instance = instance.filter(parent=None)
+        rep = super().to_representation(instance)
+        return rep
 
 
 class RecursiveSerializer(serializers.Serializer):
@@ -200,9 +201,33 @@ class RecursiveSerializer(serializers.Serializer):
         serializer = self.parent.parent.__class__(instance, context=self.context)
         return serializer.data
 
+class ShortUserSerializer(serializers.Serializer):
+    class Meta:
+        model = User
+        fields = 'username', 'id'
+
+class CommentParentSerializer(serializers.Serializer):
+    author = ShortUserSerializer(read_only=True)
+    class Meta: 
+        model = StepComment
+        fields = 'author', 'id'
+
+class StepReplyCommentSerializer(serializers.Serializer):
+    parent = CommentParentSerializer(read_only=True)
+    author = UserSerializer(read_only=True)
+    # def to_representation(self, instance):
+    #     ...
+        # serializer = self.parent.parent.__class__(instance, context=self.context)
+        # return serializer.data
+    
+    class Meta: 
+        model = StepComment
+        fields = '__all__'
+
 
 class StepCommentSerializer(serializers.ModelSerializer):
-    children = RecursiveSerializer(many=True, read_only=True)
+    # children = RecursiveSerializer(many=True, read_only=True)
+    children = StepReplyCommentSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
 
     def create(self, validated_data):
@@ -210,6 +235,13 @@ class StepCommentSerializer(serializers.ModelSerializer):
             **validated_data,
             author=self.context.get('author')
         )
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['comments_num'] = instance.children.count()
+        rep['likes'] = instance.reactions.filter(value=StepReactionType.LIKE).count()
+        rep['dislikes'] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
+        return rep
 
     class Meta:
         list_serializer_class = FilterCommentListSerializer
@@ -232,6 +264,7 @@ class PolymorphicStepSerializer(PolymorphicSerializer):
         rep = super().to_representation(instance)
         rep["likes"] = instance.reactions.filter(value=StepReactionType.LIKE).count()
         rep["dislikes"] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
+        rep["comments_num"] = instance.comments.count()
         return rep
 
 # <------------------------------------/>

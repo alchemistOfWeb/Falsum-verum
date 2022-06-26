@@ -178,6 +178,10 @@ i.like.active, i.dislike.active {
 i.step-dislike, i.step-like {
     font-size: 25px;
 }
+.step-comments-num {
+    font-weight: 600;
+    font-size: 20px;
+}
 
 .step-comment {
     margin: 10px 0;
@@ -217,9 +221,9 @@ i.step-dislike, i.step-like {
         padding: 0 0 0 30px;
     }
 
-    // &__title-wrapper {
-
-    // }
+    &__title-wrapper {
+        padding: 0 0 0 5px;
+    }
 
     // &__username {
 
