@@ -251,6 +251,7 @@ function CommentsList({step}) {
         } else {
             avatarImg = personImg;
         }
+        console.log({reply});
 
         return (
             <Row className="step-comment" data-comment-id={reply.id}>
@@ -276,11 +277,11 @@ function CommentsList({step}) {
                     <i 
                         onClick={handleLike} 
                         className="like active bi bi-hand-thumbs-up-fill"
-                    ></i> 111
+                    ></i> {reply.likes}
                     <i 
                         onClick={handleDislike} 
                         className="dislike bi bi-hand-thumbs-down-fill"
-                    ></i> 111
+                    ></i> {reply.dislikes}
                     <a 
                         href="#" 
                         className="step-comment__reply-btn ms-2"
@@ -372,7 +373,7 @@ function CommentsList({step}) {
                                 <a 
                                     href="#" 
                                     onClick={handleShowReplies}
-                                    className="step-comment__reply-btn ms-2"
+                                    className="step-comment__reply-btn"
                                 >
                                     показать {comment.comments_num} ответов
                                 </a>
@@ -581,6 +582,7 @@ function SendCommentForm({parent=null, replyTo=null}) {
             params['parent'] = replyTo;
         }
         params['content'] = commentBody
+        console.log({params});
         createCommentResponse(params, uriParams)
             .then((res)=>{
                 console.log({createCommentRes: res});
@@ -621,7 +623,7 @@ function SendCommentForm({parent=null, replyTo=null}) {
                         rows={5}
                         id={inputId} 
                         className="" 
-                        placeholder="Введить текст отзыва сюда" 
+                        placeholder="Введите текст комментария сюда" 
                         required autofocus=""
                         onChange={(e)=>{setCommentBody(e.target.value)}}
                     />

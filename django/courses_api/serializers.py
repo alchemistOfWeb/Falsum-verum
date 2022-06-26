@@ -212,13 +212,19 @@ class CommentParentSerializer(serializers.Serializer):
         model = StepComment
         fields = 'author', 'id'
 
-class StepReplyCommentSerializer(serializers.Serializer):
+class StepReplyCommentSerializer(serializers.ModelSerializer):
     parent = CommentParentSerializer(read_only=True)
     author = UserSerializer(read_only=True)
     # def to_representation(self, instance):
     #     ...
         # serializer = self.parent.parent.__class__(instance, context=self.context)
         # return serializer.data
+        
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['likes'] = instance.reactions.filter(value=StepReactionType.LIKE).count()
+        rep['dislikes'] = instance.reactions.filter(value=StepReactionType.DISLIKE).count()
+        return rep
     
     class Meta: 
         model = StepComment
