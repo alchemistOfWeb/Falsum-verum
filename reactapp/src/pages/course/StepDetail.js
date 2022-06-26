@@ -233,14 +233,13 @@ function CommentsList({step}) {
     //     replyForm.toggleClass('d-none');
     // }
 
-    function RepliesList({comment, replyTo, onReply}) {
+    function RepliesList({comment, onReply}) {
         // const [replyTo, setReplyTo] = useState(null);
         return (
             <>
                 {comment.children.map((el, ind) => {
                     return <Reply reply={el} onReply={onReply}/>
                 })}
-                <SendCommentForm parent={comment.id} replyTo={replyTo} />
             </>
         )
     }
@@ -308,8 +307,15 @@ function CommentsList({step}) {
         }
 
         function handleShowReplyForm(e) {
-            jquery(e.target).closest(".step-comment")
-            setReplyTo(e.target.getAttribute('data-comment-id'));
+            e.preventDefault();
+            console.log('handleShowReplyForm');
+            const commentEl = jquery(e.target).closest(".step-comment")[0];
+            let commentId = commentEl.getAttribute('data-comment-id');
+            if (replyTo == commentId) {
+                setReplyTo(null);
+            } else {
+                setReplyTo(commentId);
+            }
         }
 
         // const onReply = (e) => {
@@ -375,8 +381,9 @@ function CommentsList({step}) {
                     })()}
                 </Col>
                 <Col xs="12" className="step-comment__subcomments d-none">
-                    <RepliesList replyTo={replyTo} onReply={handleShowReplyForm} comment={comment} />
+                    <RepliesList onReply={handleShowReplyForm} comment={comment} />
                 </Col>
+                <SendCommentForm parent={comment.id} replyTo={replyTo} />
             </Row>
         )
     }
@@ -598,9 +605,16 @@ function SendCommentForm({parent=null, replyTo=null}) {
         inputId = "input-comment-body";
     }
 
+    let formClassName = '';
+    if (replyTo) {
+        formClassName = "comment-form col-12 rounded px-0 py-3"
+    } else {
+        formClassName = "comment-form col-12 rounded px-0 py-3 d-none"
+    }
+
     return (
         <>
-            <Form className="comment-form col-12 rounded px-0 py-3 fade d-none" onSubmit={handleComment} id={formId}>
+            <Form className={formClassName} onSubmit={handleComment} id={formId}>
                 <Form.Group className="mb-1">
                     <Form.Control 
                         as="textarea" 
