@@ -45,6 +45,21 @@ def current_profile(request):
     serializer = UserSerializer(request.user)
     return Response({'user': serializer.data})
 
+@api_view(['GET'])
+def catalog(request):
+    print(request.COOKIES) 
+    # profile = get_object_or_404(Profile.objects, request.user.id)
+    # serializer = UserSerializer(request.user)
+    course_serializer = CourseSerializer(Course.objects.all()[:10], many=True)
+    spec_serializer = SpecializationSerializer(Specialization.objects.all()[:10], many=True)
+    org_serializer = OrganizationSerializer(Organization.objects.all()[:10], many=True)
+    ctx = {
+        'courses': course_serializer.data,
+        'specializations': spec_serializer.data,
+        'organizations': org_serializer.data,
+    }
+    return Response(data=ctx)
+
 
 
 # Courses + Specializations + Organizations) with filters

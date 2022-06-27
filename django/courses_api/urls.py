@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     CourseReviewViewSet, csrf, current_profile,
     OrganizationViewSet, SpecializationViewSet, CourseViewSet,
-    StepViewSet, StepCommentsViewSet
+    StepViewSet, StepCommentsViewSet, catalog
 )
 
 
@@ -25,6 +25,7 @@ router.register(
 urlpatterns = [
     path('profile/', current_profile, name='profile'), # get|patch|delete
     path('csrf/', csrf, name='get_csrf'),
+    path('catalog/', catalog, name='catalog'),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/', include('djoser.urls.jwt')),

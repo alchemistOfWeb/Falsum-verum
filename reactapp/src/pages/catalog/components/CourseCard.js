@@ -32,33 +32,6 @@ export function CourseCard({props}) {
                 </Card.Footer>
             </Card>
         </Link>
-        {/* <div class="card catalog-list-card">
-            <div class="card-body text-dark">
-                <Row>
-                    <div className="col-3 col-md-1 p-0 border border-solid">
-                        <img 
-                            src={img_url}
-                            alt="Python для анализа данных" 
-                            width={"100%"}
-                            // height={"100%"}
-                        />
-                    </div>
-                    <div className="col-9 col-md-11 row pe-0">
-                        <div className="col-12 col-md-9">
-                            <h5 class="card-title">{props.title}</h5>
-                            <p className="card-text">{props.short_description}</p>
-                        </div>
-                        <div className="catalog-list-item__link-wrapper col-12 col-md-3 d-flex justify-content-end mt-3 mt-md-0 p-0">
-                            <div className="d-block">
-                                <Link to={`/catalog/courses/${props.id}`} className="btn btn-primary">
-                                    Открыть курс →
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </Row>
-            </div>
-        </div> */}
     </Col>
     )
 }

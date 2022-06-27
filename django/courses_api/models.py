@@ -39,6 +39,15 @@ class Organization(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True)
     is_active = models.BooleanField(null=False, default=True)
+    image_sm = ProcessedImageField(
+        verbose_name="image(sm)",
+        upload_to='images/organizations/logos/sm/',
+        processors=[ResizeToFit(100, 100)],
+        format='JPEG',
+        options={'quality': 90},
+        blank=True,
+        null=True
+    )
     users = models.ManyToManyField(
         User, 
         related_name='organizations', 

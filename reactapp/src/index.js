@@ -19,12 +19,12 @@ import Rules from './pages/Rules';
 
 import Catalog from './pages/catalog/Catalog';
 
-import CatalogSpecList from './pages/catalog/CatalogSpecList';
+// import CatalogSpecList from './pages/catalog/CatalogSpecList';
 import CatalogSpecCreate from './pages/catalog/CatalogSpecCreate';
 import CatalogSpecDetail from './pages/catalog/CatalogSpecDetail';
 import CatalogSpecEdit from './pages/catalog/CatalogSpecEdit';
 
-import CatalogCourseList from './pages/catalog/CatalogCourseList';
+// import CatalogCourseList from './pages/catalog/CatalogCourseList';
 import CatalogCourseCreate from './pages/catalog/course/CatalogCourseCreate';
 import CatalogCourseDetail from './pages/catalog/course/CatalogCourseDetail';
 import CatalogCourseEdit from './pages/catalog/course/CatalogCourseEdit';
@@ -58,12 +58,12 @@ export default function App() {
           {/* <Route path="settings" element={<Settings />} /> */}
           
           <Route path="catalog" element={<Catalog/>} />
-          <Route path="catalog/specializations" element={<CatalogSpecList/>} />
+          {/* <Route path="catalog/specializations" element={<CatalogSpecList/>} /> */}
           <Route path="catalog/specializations/create" element={<CatalogSpecCreate/>} />
           <Route path="catalog/specializations/:specId" element={<CatalogSpecDetail/>} />
           <Route path="catalog/specializations/:specId/edit" element={<CatalogSpecEdit/>} />
 
-          <Route path="catalog/courses" element={<CatalogCourseList/>} />
+          {/* <Route path="catalog/courses" element={<CatalogCourseList/>} /> */}
           <Route path="catalog/courses/create" element={<CatalogCourseCreate/>} />
           <Route path="catalog/courses/:courseId" element={<CatalogCourseDetail/>} />
           <Route path="catalog/courses/:courseId/edit" element={<CatalogCourseEdit/>} />
