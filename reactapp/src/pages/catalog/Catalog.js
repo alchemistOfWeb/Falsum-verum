@@ -1,7 +1,7 @@
 import { BACKEND_ROOT_URL, BACKEND_DOMAIN } from "../../setting";
 import { crdRequest, getAccessToken, request, deleteCookie } from '../../functions';
 import { useParams, Link, Outlet } from "react-router-dom";
-import { Nav, Button, Spinner, ListGroup, Container, Row, Col, Card } from 'react-bootstrap';
+import { Nav, Button, Spinner, ListGroup, Container, Row, Col, Card, Form } from 'react-bootstrap';
 import React, { useMemo } from 'react';
 import jquery from 'jquery';
 // import { useAsync } from 'react-async';
@@ -38,7 +38,8 @@ export default function Catalog() {
                     <Nav.Link className="h5" href="#" active>Курсы</Nav.Link>
                 </Nav> */}
                 <FilterForm onSubmit={handleFilter} />
-                <Container>
+                <hr/>
+                <Container className="p-0">
                     <ContentLoader params={filterParams}/>
                     {/* <CoursesLoader/> */}
                     {/* <CatalogLoader /> */}
@@ -50,15 +51,25 @@ export default function Catalog() {
 
 function FilterForm({onSubmit}) {
     const [searchText, setSearchText] = useState('');
+    const [filterType, setFilterType] = useState('');
     function handleSubmit() {
-        onSubmit();
+        onSubmit({searchText,});
     }
     return (
         <>
-            <form className="col-8 col-md-5 col-lg-4 col-xl-3" onSubmit={handleSubmit}>
+            <Form className="col-8 col-md-5 col-lg-4 col-xl-3 mb-3 w-100" onSubmit={handleSubmit}>
+                <Row>
+                <Col xs={12} lg={4}>
+                <Form.Group className="mb-3">
+                    <Form.Label>Искать среди</Form.Label>
+                    <Form.Select onSelect={(e)=>{setFilterType(e.target.value);}}>
+                        <option value="courses">Курсов</option>
+                        <option value="organizations">Организаций</option>
+                        <option value="specializations">Специализаций</option>
+                    </Form.Select>
+                </Form.Group>
                 <div class="input-group catalog-search">
                     <input 
-                        value={searchText} 
                         type="search" 
                         onClick={(e) => {setSearchText(e.target.value);}}
                         className="h-100 form-control rounded" 
@@ -68,7 +79,16 @@ function FilterForm({onSubmit}) {
                     />
                     <button type="button" className="h-100 btn btn-primary ms-2">найти</button>
                 </div>
-            </form>
+                </Col>
+                <Col xs={12} lg={8} className="mt-4 text-dark">
+                    <Form.Group className="mb-3">
+                        <Form.Check type="radio" name="sortby" label="сортировать по частоте обновления" />
+                        <Form.Check type="radio" name="sortby" label="сортировать по числу слушателей" />
+                        <Form.Check type="radio" name="sortby" label="сортировать по рейтингу" />
+                    </Form.Group>
+                </Col>
+                </Row>
+            </Form>
             {/* <Nav className="my-4 border-bottom catalog-category-list">
                 <Nav.Link className="h5" href="#">Специализации</Nav.Link>
                 <Nav.Link className="h5" href="#">Организации</Nav.Link>
@@ -339,11 +359,20 @@ function CoursesList({data}) {
 function CourseCard({obj}) {
     console.log(obj)
 
-    let img_url = "";
+    const defaultImg = "https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://coursera-course-photos.s3.amazonaws.com/b4/f98ce0fd2911e89919af3b4975e9e1/logo_python_2.png";
+
+    let img_url = '';
     if (obj.image_sm) {
         img_url = `${BACKEND_DOMAIN}${obj.image_sm}`;
     } else {
-        img_url = "https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://coursera-course-photos.s3.amazonaws.com/b4/f98ce0fd2911e89919af3b4975e9e1/logo_python_2.png";
+        img_url = defaultImg;
+    }
+
+    let orgImageUrl = '';
+    if (obj.organization.image_sm) {
+        orgImageUrl = `${BACKEND_DOMAIN}${obj.organization.image_sm}`;
+    } else {
+        orgImageUrl = defaultImg;
     }
 
     return (
@@ -351,7 +380,13 @@ function CourseCard({obj}) {
             
             <Link to={`/catalog/courses/${obj.id}`} className="catalog-card__linked-wrapper">
                 <Card className="card catalog-card">
-                    <Card.Img variant="top" src={img_url} className="catalog-card__img"/>
+                    {/* <Card.Img variant="top" src={img_url} className="catalog-card__img"/> */}
+                    <div className="card-img-top catalog-card__img-wrapper">
+                        <img class="catalog-card__img" src={img_url} />
+                        <a class="catalog-card__org-img-link" href="#">
+                            <img class="catalog-card__org-img" src={orgImageUrl} />
+                        </a>
+                    </div>
                     <Card.Body className="catalog-card__body">
                         <Card.Title>{obj.title}</Card.Title>
                         <Card.Text>{obj.short_description}</Card.Text>

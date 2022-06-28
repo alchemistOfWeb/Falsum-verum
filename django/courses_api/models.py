@@ -198,7 +198,7 @@ class Course(models.Model):
     image_sm = ProcessedImageField(
         verbose_name="image(sm)",
         upload_to='images/avatars/sm/',
-        processors=[ResizeToFit(100, 100)],
+        processors=[ResizeToFit(200, 200)],
         format='JPEG',
         options={'quality': 90},
         blank=True,
@@ -386,16 +386,28 @@ class StepCommentReaction(models.Model):
 class TextLecture(Step):
     content = RichTextUploadingField(max_length=8192, null=False, default='', blank=True)
 
+    class Meta:
+        verbose_name = 'Текстовая лекция'
+        verbose_name_plural = 'Текстовые лекции'
+
 
 class VideoLecture(Step):
     content = ckeditor.fields.RichTextField(max_length=2048, null=False, default='', blank=True)
     video = models.URLField(null=True, blank=True)
     # questions (implemented by fk in VideoQeustion)
+    
+    class Meta:
+        verbose_name = 'Видеолекция'
+        verbose_name_plural = 'Видеолекции'
 
 
 class Test(Step):
     content = ckeditor.fields.RichTextField(max_length=2048, null=False, default='', blank=True)
     # tasks (implemented by fk in TestTask)
+    
+    class Meta:
+        verbose_name = 'Тест'
+        verbose_name_plural = 'Тесты'
 
 
 class TestTask(models.Model):
@@ -406,6 +418,11 @@ class TestTask(models.Model):
     grade = models.PositiveSmallIntegerField(null=False, default=0, blank=True)
     doshow = models.BooleanField(null=False, default=False, blank=True)
     test = models.ForeignKey(Test, related_name="tasks", null=False, on_delete=models.CASCADE)
+
+    
+    class Meta:
+        verbose_name = 'Вопрос в тесте'
+        verbose_name_plural = 'Вопросы в тестах'
 
 
 class VideoQuestion(models.Model):

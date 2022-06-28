@@ -63,9 +63,16 @@ class CourseReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class OrganizationInCourseSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Organization
+        fields = '__all__'
+
 
 class CourseSerializer(serializers.ModelSerializer):
-    authors = AuthorsInCourseSerializer(many=True, source="authors_in_course") # todo: create, update
+    authors = AuthorsInCourseSerializer(read_only=True, many=True, source="authors_in_course") # todo: create, update
+    organization = OrganizationInCourseSerializer(read_only=True)
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
