@@ -12,6 +12,13 @@ import { useAsync } from 'react-async';
 import DayJS from 'react-dayjs';
 // import { CourseCard } from "./components/CourseCard";
 // import CoursesLoader from "./components/CoursesLoader";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
+
+
+
+
 
 
 export default function Catalog() {
@@ -158,9 +165,12 @@ async function loadOrganizations(options, filterParams) {
 
 async function loadContent({filterType, ...filterParams}, options) {
     console.log({filterParams});
+    console.log("load Content");
     if (!filterType) {
+        console.log("load Catalog");
         return await loadCatalog(options);
     } else if (filterType == "courses") {
+        console.log("load Courses");
         return await loadCourses(options, filterParams);
     } else if (filterType == "specializations") {
         return await loadSpecializations(options, filterParams);
@@ -184,10 +194,10 @@ function ContentLoader({params}) {
             // ...uriParams,
             filterParams: params,
             watchFn: (el) => {
+                console.log('start watchFn');
                 console.log(el.filterParams?.filterType);
                 let elFilterType = el.filterParams?.filterType;
                 let paramsFilterType = params.filterParams?.filterType;
-                console.log('start');
 
                 let elSearch = el.filterParams?.searchText;
                 let paramsSearch = params.filterParams?.searchText;
@@ -216,8 +226,8 @@ function ContentLoader({params}) {
     }
     if (data) {
         let courses = data?.courses;
-        let orgs = data?.orgs;
-        let specs = data?.specs;
+        let orgs = data?.organizations;
+        let specs = data?.specializations;
         console.log({data});
 
         if (data.detail && data.detail == 'Недопустимый токен.') {
@@ -262,42 +272,214 @@ function ContentLoader({params}) {
     
 }
 
+function TestCard({id}) {
+
+    const defaultImg = "https://d3njjcbhbojbot.cloudfront.net/api/utilities/v1/imageproxy/https://coursera-course-photos.s3.amazonaws.com/b4/f98ce0fd2911e89919af3b4975e9e1/logo_python_2.png";
+
+    return (
+        <>
+            <Link to={`/catalog/courses/${1*id}`} className="catalog-org-item" onMouseDown={(e)=>{e.preventDefault()}}>
+                <div className="catalog-org-item__linked-wrapper">
+                    <img class="catalog-org-item__img" src={defaultImg} />
+                </div>
+            </Link>
+            <Link to={`/catalog/courses/${1*id+1}`} className="catalog-org-item" onMouseDown={(e)=>{e.preventDefault()}}>
+                <div className="catalog-org-item__linked-wrapper">
+                    <img class="catalog-org-item__img" src={defaultImg} />
+                </div>
+            </Link>
+        </>
+    )
+    // return (
+    //     <Link to={`/catalog/courses/${1}`} className="catalog-card__linked-wrapper" onMouseDown={(e)=>{e.preventDefault()}}>
+    //         <Card className="card catalog-card">
+    //             {/* <Card.Img variant="top" src={img_url} className="catalog-card__img"/> */}
+    //             <div className="card-img-top catalog-card__img-wrapper">
+    //                 <img class="catalog-card__img" src={defaultImg} />
+    //                 <a class="catalog-card__org-img-link" href="#">
+    //                     <img class="catalog-card__org-img" src={defaultImg} />
+    //                 </a>
+    //             </div>
+    //             <Card.Body className="catalog-card__body">
+    //                 <Card.Title>hello world</Card.Title>
+    //                 <Card.Text>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio voluptatum est recusandae animi praesentium iste laborum possimus, vel natus error.</Card.Text>
+    //             </Card.Body>
+    //             <Card.Footer className="catalog-card__footer">
+    //                 <small>
+    //                     Обновлено <DayJS format="MM-DD-YYYY">20-03-22</DayJS>
+    //                 </small>
+    //             </Card.Footer>
+    //         </Card>
+    //     </Link>
+    // )
+}
+
 function CatalogList({data}) {
     console.log("CatalogList");
+
+    let testArray = [1, 2, 3, 4, 5, 6];
+    function CustomLeftBtn({ onClick, ...rest }) {
+        const {
+            onMove,
+            carouselState: { currentSlide, deviceType }
+        } = rest;
+        return (
+            <div className="relative">
+                <button 
+                    aria-label="Go to previous slide" 
+                    className="react-multiple-carousel__arrow react-multiple-carousel__arrow--left fixed"
+                    onClick={() => onClick()}
+                    type="button"
+                >
+                </button>
+            </div>
+        )
+    }
+    function CustomRightBtn({ onClick, ...rest }) {
+        const {
+            onMove,
+            carouselState: { currentSlide, deviceType }
+        } = rest;
+        return (
+            <div className="relative">
+                <button 
+                    aria-label="Go to next slide" 
+                    className="react-multiple-carousel__arrow react-multiple-carousel__arrow--right fixed"
+                    onClick={() => onClick()}
+                    type="button"
+                >
+                </button>
+            </div>
+        )
+    }
+    const responsiveCoursesSettings = {
+        superLargeDesktop: {
+            // the naming can be any, depends on you.
+            breakpoint: { max: 4000, min: 3000 },
+            items: 5
+        },
+        desktop: {
+            breakpoint: { max: 3000, min: 1024 },
+            items: 4
+        },
+        tablet: {
+            breakpoint: { max: 1024, min: 464 },
+            items: 2
+        },
+        mobile: {
+            breakpoint: { max: 464, min: 0 },
+            items: 1
+        }
+    }
+
+    const responsiveOrgsSettings = {
+        superLargeDesktop: {
+            // the naming can be any, depends on you.
+            breakpoint: { max: 4000, min: 3000 },
+            items: 6
+        },
+        desktop: {
+            breakpoint: { max: 3000, min: 1024 },
+            items: 5
+        },
+        tablet: {
+            breakpoint: { max: 1024, min: 464 },
+            items: 3
+        },
+        mobile: {
+            breakpoint: { max: 464, min: 0 },
+            items: 2
+        }
+    };
+    
     return (
         <Row>
             <Col xs={12}>
-                { 
-                    data.specializations.length > 0 
-                    ?
-                    data.specializations.map(
-                        (courseObj, ind) => <SpecializationCard key={ind} obj={courseObj}/>
-                    ) 
-                    :
-                    "По заданным параметрам специализаций не найдено."
-                }
+                <Row>
+                    { 
+                        data.specializations.length > 0 
+                        ?
+                        data.specializations.map(
+                            (courseObj, ind) => <SpecializationCard key={ind} obj={courseObj}/>
+                        ) 
+                        :
+                        "По заданным параметрам специализаций не найдено."
+                    }
+                </Row>
+            </Col>
+            {/* <Col xs={12}>
+                <Row>
+                    { 
+                        data.organizations.length > 0 
+                        ?
+                        data.organizations.map(
+                            (courseObj, ind) => <OrganizationCard key={ind} obj={courseObj}/>
+                        ) 
+                        :
+                        "По заданным параметрам организаций не найдено."
+                    }
+                </Row>
+            </Col> */}
+            {/* <Col xs={12}>
+                <Row>
+                    <Carousel 
+                        className="p-0" 
+                        responsive={responsiveOrgsSettings} 
+                        itemClass="catalog-list__item catalog-orgs-list__pair" 
+                        renderButtonGroupOutside={true}
+                        renderDotsOutside={true}
+                        customRightArrow={<CustomRightBtn/>}
+                        customLeftArrow={<CustomLeftBtn/>}
+                    >
+                        { 
+                            data.organizations.length > 0 
+                            ?
+                            data.organizations.map(
+                                (courseObj, ind) => <OrganizationCard key={ind} obj={courseObj}/>
+                            ) 
+                            :
+                            "По заданным параметрам организаций не найдено."
+                        }
+                    </Carousel>
+                </Row>
+            </Col> */}
+            <Col xs={12}>
+                <Row>
+                    <Carousel 
+                        className="p-0" 
+                        responsive={responsiveCoursesSettings} 
+                        itemClass="catalog-list__item catalog-card-wrapper" 
+                        renderButtonGroupOutside={true}
+                        renderDotsOutside={true}
+                        customRightArrow={<CustomRightBtn/>}
+                        customLeftArrow={<CustomLeftBtn/>}
+                    >
+                        { 
+                            data.courses.length > 0 
+                            ?
+                            data.courses.map(
+                                (courseObj, ind) => <CourseCard key={ind} obj={courseObj}/>
+                            ) 
+                            :
+                            "По заданным параметрам курсов не найдено."
+                        }
+                    </Carousel>
+                </Row>
             </Col>
             <Col xs={12}>
-                { 
-                    data.organizations.length > 0 
-                    ?
-                    data.organizations.map(
-                        (courseObj, ind) => <OrganizationCard key={ind} obj={courseObj}/>
-                    ) 
-                    :
-                    "По заданным параметрам организаций не найдено."
-                }
-            </Col>
-            <Col xs={12}>
-                { 
-                    data.courses.length > 0 
-                    ?
-                    data.courses.map(
-                        (courseObj, ind) => <CourseCard key={ind} obj={courseObj}/>
-                    ) 
-                    :
-                    "По заданным параметрам курсов не найдено."
-                }
+                <Row>
+                    <Carousel 
+                        className="p-0" 
+                        responsive={responsiveOrgsSettings} 
+                        itemClass="catalog-list__item catalog-orgs-list__pair" 
+                        renderButtonGroupOutside={true}
+                        renderDotsOutside={true}
+                        customRightArrow={<CustomRightBtn/>}
+                        customLeftArrow={<CustomLeftBtn/>}
+                    >
+                        {testArray.map((el, ind) => <TestCard key={ind} id={el}/>)}
+                    </Carousel>
+                </Row>
             </Col>
         </Row>
     )
@@ -375,30 +557,52 @@ function CourseCard({obj}) {
         orgImageUrl = defaultImg;
     }
 
-    return (
-        <Col xs="12" sm="6" md="4" lg="3" className="catalog-card-wrapper">
+    // return (
+    //     <Col xs="12" sm="6" md="4" lg="3" className="catalog-card-wrapper">
             
-            <Link to={`/catalog/courses/${obj.id}`} className="catalog-card__linked-wrapper">
-                <Card className="card catalog-card">
-                    {/* <Card.Img variant="top" src={img_url} className="catalog-card__img"/> */}
-                    <div className="card-img-top catalog-card__img-wrapper">
-                        <img class="catalog-card__img" src={img_url} />
-                        <a class="catalog-card__org-img-link" href="#">
-                            <img class="catalog-card__org-img" src={orgImageUrl} />
-                        </a>
-                    </div>
-                    <Card.Body className="catalog-card__body">
-                        <Card.Title>{obj.title}</Card.Title>
-                        <Card.Text>{obj.short_description}</Card.Text>
-                    </Card.Body>
-                    <Card.Footer className="catalog-card__footer">
-                        <small>
-                            Обновлено <DayJS format="MM-DD-YYYY">{obj.updated_at}</DayJS>
-                        </small>
-                    </Card.Footer>
-                </Card>
-            </Link>
-        </Col>
+    //         <Link to={`/catalog/courses/${obj.id}`} className="catalog-card__linked-wrapper">
+    //             <Card className="card catalog-card">
+    //                 {/* <Card.Img variant="top" src={img_url} className="catalog-card__img"/> */}
+    //                 <div className="card-img-top catalog-card__img-wrapper">
+    //                     <img class="catalog-card__img" src={img_url} />
+    //                     <a class="catalog-card__org-img-link" href="#">
+    //                         <img class="catalog-card__org-img" src={orgImageUrl} />
+    //                     </a>
+    //                 </div>
+    //                 <Card.Body className="catalog-card__body">
+    //                     <Card.Title>{obj.title}</Card.Title>
+    //                     <Card.Text>{obj.short_description}</Card.Text>
+    //                 </Card.Body>
+    //                 <Card.Footer className="catalog-card__footer">
+    //                     <small>
+    //                         Обновлено <DayJS format="MM-DD-YYYY">{obj.updated_at}</DayJS>
+    //                     </small>
+    //                 </Card.Footer>
+    //             </Card>
+    //         </Link>
+    //     </Col>
+    // )
+    return (
+        <Link to={`/catalog/courses/${obj.id}`} className="catalog-card__linked-wrapper" onMouseDown={(e)=>{e.preventDefault()}}>
+            <Card className="card catalog-card">
+                {/* <Card.Img variant="top" src={img_url} className="catalog-card__img"/> */}
+                <div className="card-img-top catalog-card__img-wrapper">
+                    <img class="catalog-card__img" src={img_url} />
+                    <a class="catalog-card__org-img-link" href="#">
+                        <img class="catalog-card__org-img" src={orgImageUrl} />
+                    </a>
+                </div>
+                <Card.Body className="catalog-card__body">
+                    <Card.Title>{obj.title}</Card.Title>
+                    <Card.Text>{obj.short_description}</Card.Text>
+                </Card.Body>
+                <Card.Footer className="catalog-card__footer">
+                    <small>
+                        Обновлено <DayJS format="MM-DD-YYYY">{obj.updated_at}</DayJS>
+                    </small>
+                </Card.Footer>
+            </Card>
+        </Link>
     )
 }
 
@@ -462,4 +666,19 @@ function OrganizationCard({obj}) {
         </Link>
     </Col>
     )
+
+    // return (
+    //     <>
+    //         <Link to={`/catalog/courses/${obj.id}`} className="catalog-org-item" onMouseDown={(e)=>{e.preventDefault()}}>
+    //             <div className="catalog-org-item__linked-wrapper">
+    //                 <img class="catalog-org-item__img" src={defaultImg} />
+    //             </div>
+    //         </Link>
+    //         <Link to={`/catalog/courses/${1*id+1}`} className="catalog-org-item" onMouseDown={(e)=>{e.preventDefault()}}>
+    //             <div className="catalog-org-item__linked-wrapper">
+    //                 <img class="catalog-org-item__img" src={defaultImg} />
+    //             </div>
+    //         </Link>
+    //     </>
+    // )
 }
